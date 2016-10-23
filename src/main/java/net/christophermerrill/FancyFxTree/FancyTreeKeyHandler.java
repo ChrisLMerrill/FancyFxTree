@@ -1,0 +1,48 @@
+package net.christophermerrill.FancyFxTree;
+
+import javafx.collections.*;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
+
+/**
+ * @author Christopher L Merrill (see LICENSE.txt for license details)
+ */
+public class FancyTreeKeyHandler
+    {
+    public FancyTreeKeyHandler(TreeView tree_view, FancyTreeOperationHandler handler)
+        {
+        _tree = tree_view;
+        _handler = handler;
+
+        _tree.setOnKeyPressed(event ->
+            {
+//System.out.println("control down = " + event.isControlDown());
+//System.out.println("shift down = " + event.isShiftDown());
+//System.out.println("key code = " + event.getCode());
+
+            ObservableList selected_items = _tree.getSelectionModel().getSelectedItems();
+            boolean handled = false;
+            if (event.getCode().equals(KeyCode.DELETE))
+                handled = _handler.handleDelete(selected_items);
+            else if ((event.isControlDown() && event.getCode().equals(KeyCode.C))
+                || (event.isControlDown() && event.getCode().equals(KeyCode.INSERT)))
+                handled = _handler.handleCopy(selected_items);
+            else if ((event.isControlDown() && event.getCode().equals(KeyCode.X))
+                || (event.isShiftDown() && event.getCode().equals(KeyCode.DELETE)))
+                handled = _handler.handleCut(selected_items);
+            else if ((event.isControlDown() && event.getCode().equals(KeyCode.V))
+                || (event.isShiftDown() && event.getCode().equals(KeyCode.INSERT)))
+                handled = _handler.handlePaste(selected_items);
+            else
+                return;
+
+            if (handled)
+                event.consume();
+            });
+        }
+
+    private TreeView _tree;
+    private FancyTreeOperationHandler _handler;
+    }
+
+
