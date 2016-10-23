@@ -10,8 +10,6 @@ import net.christophermerrill.FancyFxTree.example.*;
 import net.christophermerrill.testfx.*;
 import org.junit.*;
 
-import java.util.*;
-
 import static javafx.scene.input.KeyCode.*;
 
 /**
@@ -56,27 +54,16 @@ public class FancyTreeTests extends ComponentTest
         }
 
     @Test
-    public void nodeAdded()
+    public void addNode()
         {
         createBasicTreeAndData();
-
         addNodeAndVerifyDisplayed(_model);
         addNodeAndVerifyDisplayed(_model.getChildren().get(0));
         addNodeAndVerifyDisplayed(_model.getChildren().get(0).getChildren().get(0));
         }
 
     @Test
-    public void nodeInserted()
-        {
-        createBasicTreeAndData();
-
-        insertNodeAndVerifyDisplayed(_model);
-        insertNodeAndVerifyDisplayed(_model.getChildren().get(0));
-        insertNodeAndVerifyDisplayed(_model.getChildren().get(0).getChildren().get(0));
-        }
-
-    @Test
-    public void nodeWithChildrenAdded()
+    public void addNodeWithChildren()
         {
         createBasicTreeAndData();
         ExampleDataNode new_parent = new ExampleDataNode("new_parent");
@@ -230,20 +217,49 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertTrue("shift-insert event not captured", _operations_handler._paste && _operations_handler._selected_items.size() == 1);
         }
 
-    /**
-     * This test passes in isolation but fails when run after certain tests.
-     * Diagnosis reveals that the drag handler (FancyTreeCell) never gets called.
-     * Unable to determine cause.
-     */
     @Test
-    public void dragAndDropOnto()
+    public void moveByDragOnto()
         {
         createBasicTreeAndData();
 
-        drag("1.1", MouseButton.PRIMARY).dropTo("1.2.2");
+        ExampleDataNode target_parent = _model.getNodeByName("1.1");
+        ExampleDataNode target_node = _model.getNodeByName("1.1.1");
+        ExampleDataNode destination_node = _model.getNodeByName("1.2.2");
+
+        Assert.assertTrue("expected root to start with 2 children", target_parent.getChildren().size() == 2);
+        Assert.assertTrue("expected destination node to start with no children", destination_node.getChildren().size() == 0);
+
+        drag(target_node.getName(), MouseButton.PRIMARY).dropTo(destination_node.getName());
         waitForUiEvents();
 
-        Assert.assertEquals("the content was not dropped", "1.1", _operations_handler._dropped_content);
+        Assert.assertNotNull("node not found in tree", _model.getNodeByName("1.1.1"));
+
+        Assert.assertTrue("node was not removed from root", target_parent.getChildren().size() == 1);
+        Assert.assertTrue("node was not added to destination", destination_node.getChildren().size() == 1);
+        }
+
+    @Test
+    public void copyByDragOnto()
+        {
+        createBasicTreeAndData();
+
+        ExampleDataNode target_parent = _model.getNodeByName("1.1");
+        ExampleDataNode target_node = _model.getNodeByName("1.1.1");
+        ExampleDataNode destination_node = _model.getNodeByName("1.2.2");
+
+        Assert.assertTrue("expected root to start with 2 children", target_parent.getChildren().size() == 2);
+        Assert.assertTrue("expected destination node to start with no children", destination_node.getChildren().size() == 0);
+
+        drag(target_node.getName(), MouseButton.PRIMARY);
+        press(CONTROL);
+        dropTo(destination_node.getName());
+        release(CONTROL);
+        waitForUiEvents();
+
+        Assert.assertNotNull("copy not found", _model.getNodeByName(ExampleDataNode.getCopyName(target_node)));
+
+        Assert.assertFalse("node was removed from root", target_parent.getChildren().size() == 1);
+        Assert.assertTrue("node was not added to destination", destination_node.getChildren().size() == 1);
         }
 
     /**
@@ -252,7 +268,7 @@ public class FancyTreeTests extends ComponentTest
      * Unable to determine cause.
      */
     @Test
-    public void dragAndDropMultiple()
+    public void moveMultipleByDragOnto()
         {
         createBasicTreeAndData();
 
@@ -260,9 +276,63 @@ public class FancyTreeTests extends ComponentTest
         press(SHIFT).clickOn("1.1.2").release(SHIFT);
         drag("1.1.2", MouseButton.PRIMARY);
         dropTo("1.2.2");
+        waitForUiEvents();
 
         Assert.assertEquals("2 items should be dragged", 2, _operations_handler._drag_count);
+        Assert.assertTrue("first item was not dragged", dragListContains(_operations_handler._dragged_items, _model.getNodeByName("1.1.1")));
+        Assert.assertTrue("second item was not dragged", dragListContains(_operations_handler._dragged_items, _model.getNodeByName("1.1.2")));
+
+        ExampleDataNode destination = _model.getNodeByName("1.1.2");
+        Assert.assertTrue(destination.contains(_model.getNodeByName("1.1.1")));
+        Assert.assertTrue(destination.contains(_model.getNodeByName("1.1.2")));
         }
+
+    /**
+     * This test passes in isolation but fails when run after certain tests.
+     * Diagnosis reveals that the drag handler (FancyTreeCell) never gets called.
+     * Unable to determine cause.
+     */
+    @Test
+    public void copyMultipleByDragOnto()
+        {
+        createBasicTreeAndData();
+
+        ExampleDataNode target_parent = _model.getNodeByName("1.1");
+        ExampleDataNode target_node_1 = _model.getNodeByName("1.1.1");
+        ExampleDataNode target_node_2 = _model.getNodeByName("1.1.2");
+        ExampleDataNode destination = _model.getNodeByName("1.2.2");
+
+        clickOn(target_node_1.getName());
+        press(SHIFT).clickOn(target_node_2.getName()).release(SHIFT);
+        press(CONTROL);
+        drag(target_node_2.getName(), MouseButton.PRIMARY);
+        dropTo(destination.getName());
+        release(CONTROL);
+        waitForUiEvents();
+
+        Assert.assertEquals("2 items should be dragged", 2, _operations_handler._drag_count);
+        Assert.assertTrue("first item was not dragged", dragListContains(_operations_handler._dragged_items, _model.getNodeByName("1.1.1")));
+        Assert.assertTrue("second item was not dragged", dragListContains(_operations_handler._dragged_items, _model.getNodeByName("1.1.2")));
+
+        Assert.assertTrue("orignal #1 was removed", target_parent.contains(target_node_1));
+        Assert.assertTrue("orignal #2 was removed", target_parent.contains(target_node_2));
+
+        ExampleDataNode copy_1 = _model.getNodeByName(ExampleDataNode.getCopyName(target_node_1));
+        Assert.assertNotNull("1st node was not copied", copy_1);
+        ExampleDataNode copy_2 = _model.getNodeByName(ExampleDataNode.getCopyName(target_node_2));
+        Assert.assertNotNull("2nd node was not copied", copy_2);
+        Assert.assertTrue("1st copy is not in destination", destination.contains(copy_1));
+        Assert.assertTrue("2nd copy is not in destination", destination.contains(copy_2));
+        }
+
+    private boolean dragListContains(ObservableList<TreeItem<ExampleTreeNodeFacade>> dragged_items, ExampleDataNode node)
+        {
+        for (TreeItem<ExampleTreeNodeFacade> item : dragged_items)
+            if (item.getValue().getModelNode() == node)
+                return true;
+        return false;
+        }
+
 
     @Test
     public void dragAndDropOntoDenied()
@@ -300,45 +370,6 @@ public class FancyTreeTests extends ComponentTest
         Assert.fail("this test is not yet finished"); // TODO
         }
 
-/*
-    @Test
-    public void moveByDrag_single()
-        {
-
-        Assert.fail("this test is not yet finished"); // TODO
-        }
-*/
-
-    @Test
-    public void copyByDrag_multiple_continguous()
-        {
-
-        Assert.fail("this test is not yet finished"); // TODO
-        }
-
-    @Test
-    public void moveByDrag_multiple_continguous()
-        {
-
-        Assert.fail("this test is not yet finished"); // TODO
-        }
-
-/*
-    @Test
-    public void copyByDrag_multiple_dispersed()
-        {
-
-        Assert.fail("this test is not yet finished"); // TODO
-        }
-*/
-
-    @Test
-    public void moveByDrag_multiple_dispersed()
-        {
-
-        Assert.fail("this test is not yet finished"); // TODO
-        }
-
     @Test
     public void pasteByDragFromOtherTree()
         {
@@ -346,20 +377,11 @@ public class FancyTreeTests extends ComponentTest
         Assert.fail("this test is not yet finished"); // TODO
         }
 
-/*
-    @Test
-    public void cutToOtherTree()
-        {
-
-        Assert.fail("this test is not yet finished"); // TODO
-        }
-*/
-
     @Test
     public void expandToNode()
         {
         // this is tested indirectly by the node addition tests, since they must make the node visible
-        // in order to check that it displayed in the tree. This no-op test remains for clarity/documentation.
+        // in order to check that it displayed in the tree. This no-op test remains for clarity and documentation.
         }
 
     @Test
@@ -386,6 +408,14 @@ public class FancyTreeTests extends ComponentTest
         System.out.println("is node 1.2.2.2.2.2 visible?");
         }
 
+    @Test
+    public void defaultStyleApplied()
+        {
+        createBasicTreeAndData();
+        Node node = lookup("1.1").query();
+        Assert.assertTrue("style is missing from TreeCell", node.getStyleClass().contains(FancyTreeCell.CELL_STYLE));
+        }
+
     private void createBasicTreeAndData()
         {
         ExampleDataNode root = ExampleDataNodeBuilder.create(new int[] {2,2});
@@ -396,9 +426,9 @@ public class FancyTreeTests extends ComponentTest
         {
         _model = root;
         ExampleTreeNodeFacade root_facade = new ExampleTreeNodeFacade(_model);
-        TreeItem<FancyTreeItemValueHolder> root_item = FancyTreeItemBuilder.create(root_facade);
+        TreeItem<FancyTreeNodeFacade> root_item = FancyTreeItemBuilder.create(root_facade);
 
-        _operations_handler = new MockOperationHandler();
+        _operations_handler = new ExampleOperationHandler(_model);
         _tree = new FancyTreeView(_operations_handler);
         _tree.setRoot(root_item);
         _tree.expandAll();
@@ -431,80 +461,10 @@ public class FancyTreeTests extends ComponentTest
         return super.getDefaultHeight() * 2;
         }
 
-    private class MockOperationHandler extends FancyTreeOperationHandler
-        {
-        @Override
-        public boolean handleDelete(ObservableList selected_items)
-            {
-            _delete = true;
-            _selected_items = selected_items;
-            return true;
-            }
-
-        @Override
-        public boolean handleCut(ObservableList selected_items)
-            {
-            _cut = true;
-            _selected_items = selected_items;
-            return true;
-            }
-
-        @Override
-        public boolean handleCopy(ObservableList selected_items)
-            {
-            _copy = true;
-            _selected_items = selected_items;
-            return true;
-            }
-
-        @Override
-        public boolean handlePaste(ObservableList selected_items)
-            {
-            _paste = true;
-            _selected_items = selected_items;
-            return true;
-            }
-
-        @Override
-        public StartDragInfo startDrag(List<List<Integer>> selection_paths, ObservableList<TreeItem> selected_items)
-            {
-            StartDragInfo info = new StartDragInfo();
-            info.addContent(DataFormat.PLAIN_TEXT, selected_items.get(0).getValue().toString());
-            _drag_count = selected_items.size();
-            return info;
-            }
-
-        @Override
-        public DragOverInfo dragOver(Dragboard dragboard)
-            {
-            DragOverInfo info = new DragOverInfo();
-            if (!_allow_drag_onto)
-                info._drop_locations = new DropLocation[0];
-            return info;
-            }
-
-        @Override
-        public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard)
-            {
-            _dropped_content = dragboard.getContent(DataFormat.PLAIN_TEXT);
-            return true;
-            }
-
-        ObservableList _selected_items;
-        boolean _delete = false;
-        boolean _cut = false;
-        boolean _copy = false;
-        boolean _paste = false;
-
-        boolean _allow_drag_onto = true;
-        int _drag_count;
-        Object _dropped_content;
-        }
-
     private BorderPane _pane;
     private ExampleDataNode _model;
-    private FancyTreeView _tree;
-    private MockOperationHandler _operations_handler;
+    private FancyTreeView<ExampleTreeNodeFacade> _tree;
+    private ExampleOperationHandler _operations_handler;
     }
 
 

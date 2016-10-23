@@ -7,10 +7,9 @@ import javafx.scene.control.*;
  */
 public class FancyTreeItemBuilder
     {
-    public static TreeItem<FancyTreeItemValueHolder> create(FancyTreeNodeFacade root)
+    public static TreeItem<FancyTreeNodeFacade> create(FancyTreeNodeFacade root)
         {
-        FancyTreeItemValueHolder holder = new FancyTreeItemValueHolder(root);
-        TreeItem root_item = new TreeItem<>(holder);
+        TreeItem<FancyTreeNodeFacade> root_item = new TreeItem<>(root);
         root.setTreeItemFacade(new FancyTreeItemFacade(root_item));
 
         addChildren(root_item, root);
@@ -30,8 +29,7 @@ public class FancyTreeItemBuilder
 
     public static void addChild(TreeItem item, FancyTreeNodeFacade child_node, int index)
         {
-        FancyTreeItemValueHolder holder = new FancyTreeItemValueHolder(child_node);
-        TreeItem child_item = new TreeItem<>(holder);
+        TreeItem child_item = new TreeItem<>(child_node);
         item.getChildren().add(index, child_item);
         addChildren(child_item, child_node);
 

@@ -12,8 +12,8 @@ import java.util.*;
  * of TreeView. This includes asynchronous state changes and complex user interactions.
  *
  * Fancy features:
- * - update view when the model node properties change (not just the entire model node is replaced). This requires the model adapter to notify the FancyTreeItemFacade when these changes happen.
- * - update view from asynchronous events
+ * - update view when the model node properties change (not just when the entire model node is replaced). This requires the model adapter to notify the FancyTreeItemFacade when these changes happen.
+ * - update view from asynchronous events (as above)
  * - smart scroll-to-item behavior
  * - expand tree to make an item visible
  * - cut/copy/paste keystroke support implemented, including common OS key combinations (Windows)
@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-public class FancyTreeView<T> extends TreeView
+public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
     {
     @SuppressWarnings("WeakerAccess") // part of public API
     public FancyTreeView(FancyTreeOperationHandler ops_handler)
@@ -36,39 +36,38 @@ public class FancyTreeView<T> extends TreeView
     @SuppressWarnings("WeakerAccess") // part of public API
     public void expandAll()
         {
-        TreeItem<FancyTreeItemValueHolder> root = getRoot();
+        TreeItem<FancyTreeNodeFacade> root = getRoot();
         expandNodeAndChilren(root);
         }
 
-    private void expandNodeAndChilren(TreeItem<FancyTreeItemValueHolder> root)
+    private void expandNodeAndChilren(TreeItem<FancyTreeNodeFacade> root)
         {
         root.setExpanded(true);
-        for (TreeItem<FancyTreeItemValueHolder> child : root.getChildren())
-            expandNodeAndChilren(child);
+        root.getChildren().forEach(this::expandNodeAndChilren);
         }
 
     @SuppressWarnings("WeakerAccess") // part of public API
     public boolean expandToMakeVisible(Object node)
         {
-        TreeItem<FancyTreeItemValueHolder> item = findItemForModelNode(node);
+        TreeItem<T> item = findItemForModelNode(node);
         if (item == null)
             return false;
         item.setExpanded(true);
         return true;
         }
 
-    private TreeItem<FancyTreeItemValueHolder> findItemForModelNode(Object node)
+    private TreeItem<T> findItemForModelNode(Object node)
         {
         return findItemForModelNode(getRoot(), node);
         }
 
-    private TreeItem<FancyTreeItemValueHolder> findItemForModelNode(TreeItem<FancyTreeItemValueHolder> item, Object node)
+    private TreeItem<T> findItemForModelNode(TreeItem<T> item, Object node)
         {
-        if (item.getValue().getValue().getModelNode() == node)
+        if (item.getValue().getModelNode() == node)
             return item;
-        for (TreeItem<FancyTreeItemValueHolder> child : item.getChildren())
+        for (TreeItem<T> child : item.getChildren())
             {
-            TreeItem<FancyTreeItemValueHolder> found = findItemForModelNode(child, node);
+            TreeItem<T> found = findItemForModelNode(child, node);
             if (found != null)
                 return found;
             }
@@ -79,7 +78,7 @@ public class FancyTreeView<T> extends TreeView
     public int findIndexOfVisibleItem(TreeItem target_item)
         {
         int index = 0;
-        TreeItem<FancyTreeItemValueHolder> item = getTreeItem(index);
+        TreeItem<FancyTreeNodeFacade> item = getTreeItem(index);
         while (item != null)
             {
             if (item == target_item)

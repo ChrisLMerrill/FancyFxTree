@@ -70,9 +70,8 @@ public class FancyTreeExample extends Application
         button.setText("Add a node");
         button.setOnAction(event ->
             {
-            MultipleSelectionModel<TreeItem<FancyTreeItemValueHolder<ExampleTreeNodeFacade>>> selectionModel = _tree.getSelectionModel();
-            TreeItem<FancyTreeItemValueHolder<ExampleTreeNodeFacade>> selection = selectionModel.getSelectedItem();
-            ExampleDataNode node = selection.getValue().getValue().getModelNode();
+            MultipleSelectionModel<TreeItem<ExampleTreeNodeFacade>> selectionModel = _tree.getSelectionModel();
+            ExampleDataNode node = selectionModel.getSelectedItem().getValue().getModelNode();
             ExampleDataNode parent = _model_root.findParentFor(node);
             parent.addChildAfterChild(new ExampleDataNode("after " + node.getName()), node);
             });
@@ -82,7 +81,7 @@ public class FancyTreeExample extends Application
 
     private ExampleDataNode _model_root;
     private Button _add_node_button;
-    private FancyTreeView<FancyTreeItemValueHolder<ExampleTreeNodeFacade>> _tree;
+    private FancyTreeView<ExampleTreeNodeFacade> _tree;
     }
 
 

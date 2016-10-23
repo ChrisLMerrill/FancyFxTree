@@ -3,6 +3,7 @@ package net.christophermerrill.FancyFxTree.example;
 import net.christophermerrill.FancyFxTree.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * The implementation of FancyTreeNodeFacade is intended to wrap your existing
@@ -16,36 +17,19 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
     public ExampleTreeNodeFacade(ExampleDataNode model)
         {
         _model = model;
-        _model.addChangeListener(new ExampleDataNode.ChangeListener()
-            {
-            @Override
-            public void childAdded(ExampleDataNode child, int index)
-                {
-                _item_facade.addChild(new ExampleTreeNodeFacade(child), index);
-                }
+        _model.addChangeListener(_listener);
+        }
 
-            @Override
-            public void childRemoved(ExampleDataNode child, int index)
-                {
-                _item_facade.removeChild(new ExampleTreeNodeFacade(child), index);
-                }
-
-            @Override
-            public void propertyChanged()
-                {
-                if (_item_facade != null)
-                    _item_facade.refreshDisplay();
-                }
-            });
+    private ExampleTreeNodeFacade(ExampleDataNode model, FancyTreeItemFacade facade)
+        {
+        _model = model;
+        _item_facade = facade;
         }
 
     @Override
     public List<FancyTreeNodeFacade<ExampleDataNode>> getChildren()
         {
-        List<FancyTreeNodeFacade<ExampleDataNode>> children = new ArrayList<>();
-        for (ExampleDataNode child : _model.getChildren())
-            children.add(new ExampleTreeNodeFacade(child));
-        return children;
+        return _model.getChildren().stream().map(ExampleTreeNodeFacade::new).collect(Collectors.toList());
         }
 
     @Override
@@ -68,6 +52,39 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         {
         _item_facade = item_facade;
         }
+
+    @Override
+    public FancyTreeNodeFacade<ExampleDataNode> copyAndDestroy()
+        {
+        synchronized (_model)
+            {
+            ExampleTreeNodeFacade copy = new ExampleTreeNodeFacade(_model, _item_facade);
+            _model.replaceChangeListener(_listener, copy._listener);
+            return copy;
+            }
+        }
+
+    private ExampleDataNode.ChangeListener _listener = new ExampleDataNode.ChangeListener()
+        {
+        @Override
+        public void childAdded(ExampleDataNode child, int index)
+            {
+            _item_facade.addChild(new ExampleTreeNodeFacade(child), index);
+            }
+
+        @Override
+        public void childRemoved(ExampleDataNode child, int index)
+            {
+            _item_facade.removeChild(new ExampleTreeNodeFacade(child), index);
+            }
+
+        @Override
+        public void propertyChanged()
+            {
+            if (_item_facade != null)
+                _item_facade.refreshDisplay();
+            }
+        };
 
     private ExampleDataNode _model;
     private FancyTreeItemFacade _item_facade;

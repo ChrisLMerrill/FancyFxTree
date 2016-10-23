@@ -9,15 +9,15 @@ import java.util.*;
 /**
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-public abstract class FancyTreeOperationHandler
+public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
     {
-    public boolean handleDelete(ObservableList selected_items) { return false; }
-    public boolean handleCut(ObservableList selected_items) { return false; }
-    public boolean handleCopy(ObservableList selected_items) { return false; }
-    public boolean handlePaste(ObservableList selected_items) { return false; }
+    public boolean handleDelete(ObservableList<TreeItem<T>> selected_items) { return false; }
+    public boolean handleCut(ObservableList<TreeItem<T>> selected_items) { return false; }
+    public boolean handleCopy(ObservableList<TreeItem<T>> selected_items) { return false; }
+    public boolean handlePaste(ObservableList<TreeItem<T>> selected_items) { return false; }
 
-    public StartDragInfo startDrag(List<List<Integer>> selection_paths, ObservableList<TreeItem> selected_items) { return null; }
-    public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard) { return false; }
+    public StartDragInfo startDrag(List<List<Integer>> selection_paths, ObservableList<TreeItem<T>> selected_items) { return null; }
+    public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, FancyTreeNodeFacade item) { return false; }
 
     public DragOverInfo dragOver(Dragboard dragboard) {return new DragOverInfo();}
 
@@ -40,8 +40,8 @@ public abstract class FancyTreeOperationHandler
             _content.put(format, content);
             }
 
-        Map<DataFormat, Object> _content = new HashMap<>();
-        TransferMode[] _transfer_modes;
+        public Map<DataFormat, Object> _content = new HashMap<>();
+        public TransferMode[] _transfer_modes;
         }
 
     public class DragOverInfo
@@ -52,9 +52,11 @@ public abstract class FancyTreeOperationHandler
             _drop_locations = new DropLocation[] {DropLocation.BEFORE, DropLocation.ON, DropLocation.AFTER};
             }
 
-        TransferMode[] _transfer_modes;
-        DropLocation[] _drop_locations;
+        public TransferMode[] _transfer_modes;
+        public DropLocation[] _drop_locations;
         }
+
+    public static DataFormat JSON_SERIALIZED_OBJECT = new DataFormat("application/x-json-serialized");
     }
 
 

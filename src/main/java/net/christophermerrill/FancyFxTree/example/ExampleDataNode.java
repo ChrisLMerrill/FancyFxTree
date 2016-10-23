@@ -1,5 +1,6 @@
 package net.christophermerrill.FancyFxTree.example;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -8,18 +9,31 @@ import java.util.*;
 
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-public class ExampleDataNode
+public class ExampleDataNode implements Serializable
     {
-    public ExampleDataNode(String name, ExampleDataNode[] children)
-        {
-        _name = name;
-        for (ExampleDataNode child : children)
-            addChild(child);
-        }
-
     public ExampleDataNode(String name)
         {
         _name = name;
+        }
+
+    private ExampleDataNode(ExampleDataNode original)
+        {
+        _name = original.getName();
+        }
+
+    public static ExampleDataNode deepCopy(ExampleDataNode original, boolean annotate_label)
+        {
+        ExampleDataNode copy = new ExampleDataNode(original);
+        if (annotate_label)
+            copy.setName(getCopyName(original));
+        for (ExampleDataNode child : original.getChildren())
+            copy.addChild(deepCopy(child, annotate_label));
+        return copy;
+        }
+
+    public static String getCopyName(ExampleDataNode node)
+        {
+        return node.getName() + " (copy)";
         }
 
     public List<ExampleDataNode> getChildren()
@@ -95,7 +109,7 @@ public class ExampleDataNode
             }
         }
 
-    public ExampleDataNode findParentFor(ExampleDataNode target)
+    ExampleDataNode findParentFor(ExampleDataNode target)
         {
         if (_children.contains(target))
             return this;
@@ -108,17 +122,52 @@ public class ExampleDataNode
         return null;
         }
 
-    public void addChildAfterChild(ExampleDataNode to_add, ExampleDataNode to_follow)
+    void addChildAfterChild(ExampleDataNode to_add, ExampleDataNode to_follow)
         {
         int index = _children.indexOf(to_follow) + 1;
         _children.add(index, to_add);
         fireChildAdded(to_add, index);
         }
 
+    public ExampleDataNode getNodeByName(String name)
+        {
+        if (name.equals(_name))
+            return this;
+        for (ExampleDataNode child : _children)
+            {
+            ExampleDataNode found = child.getNodeByName(name);
+            if (found != null)
+                return found;
+            }
+        return null;
+        }
+
+    public boolean contains(ExampleDataNode target)
+        {
+        for (ExampleDataNode child : _children)
+            {
+            if (child == target || child.contains(target))
+                return true;
+            }
+        return false;
+        }
+
+    public UUID getId()
+        {
+        return _id;
+        }
+
+    @Override
+    public boolean equals(Object obj)
+        {
+        return obj instanceof ExampleDataNode
+            && ((ExampleDataNode)obj).getId().equals(_id);
+        }
 
     private List<ExampleDataNode> _children = new ArrayList<>();
     private String _name;
     private String _extra_data;
+    private UUID _id = UUID.randomUUID();
 
     private transient List<ChangeListener> _change_listeners;
 
@@ -143,7 +192,7 @@ public class ExampleDataNode
                 listener.childRemoved(node, index);
         }
 
-    public void addChangeListener(ChangeListener listener)
+    synchronized void addChangeListener(ChangeListener listener)
         {
         if (_change_listeners == null)
             _change_listeners = new ArrayList<>();
@@ -151,7 +200,22 @@ public class ExampleDataNode
             _change_listeners.add(listener);
         }
 
-    public interface ChangeListener
+    synchronized void removeChangeListener(ChangeListener listener)
+        {
+        if (_change_listeners != null)
+            _change_listeners.remove(listener);
+        }
+
+    synchronized void replaceChangeListener(ChangeListener old_listener, ChangeListener new_listener)
+        {
+        if (_change_listeners != null)
+            {
+            _change_listeners.remove(old_listener);
+            _change_listeners.add(new_listener);
+            }
+        }
+
+    interface ChangeListener
         {
         void childAdded(ExampleDataNode child, int index);
         void childRemoved(ExampleDataNode child, int index);

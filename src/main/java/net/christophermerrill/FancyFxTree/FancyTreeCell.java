@@ -4,13 +4,16 @@ import javafx.event.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 
+import java.util.*;
+
 /**
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-public class FancyTreeCell extends TreeCell
+public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     {
     public FancyTreeCell(FancyTreeOperationHandler handler)
         {
+        addStyle(CELL_STYLE);
         _handler = handler;
 
         setOnDragEntered(e ->
@@ -30,7 +33,8 @@ public class FancyTreeCell extends TreeCell
                 return;
 
             ClipboardContent content = new ClipboardContent();
-            for (DataFormat format : result._content.keySet())
+            Map<DataFormat, Object> content_map = result._content;
+            for (DataFormat format : content_map.keySet())
                 content.put(format, result._content.get(format));
 
             Dragboard dragboard = startDragAndDrop(result._transfer_modes);
@@ -41,7 +45,7 @@ public class FancyTreeCell extends TreeCell
 
         setOnDragDropped(e ->
             {
-            boolean completed = _handler.finishDrag(e.getTransferMode(), e.getDragboard());
+            boolean completed = _handler.finishDrag(e.getTransferMode(), e.getDragboard(), getItem());
             e.setDropCompleted(completed);
             e.consume();
             });
@@ -63,7 +67,7 @@ public class FancyTreeCell extends TreeCell
         }
 
     @Override
-    protected void updateItem(Object item, boolean empty)
+    protected void updateItem(FancyTreeNodeFacade item, boolean empty)
         {
         super.updateItem(item, empty);
 
@@ -71,23 +75,28 @@ public class FancyTreeCell extends TreeCell
             {
             setText(null);
             setGraphic(null);
-//            setupStyle(DEFAULT_STYLE);  // TODO handle styles
             }
         else
             {
-            FancyTreeItemValueHolder holder = (FancyTreeItemValueHolder) item;
-
-            setText(holder.getValue().getLabelText());
+            setText(item.getLabelText());
             setGraphic(null);
             }
         }
 
     private final FancyTreeOperationHandler _handler;
 
+    private void addStyle(String new_style)
+        {
+        for (String style : getStyleClass())
+            if (style.equals(new_style))
+                return;
+        getStyleClass().add(new_style);
+        }
+
     //
     // Styles for the cells
     //
-    private static final String DEFAULT_STYLE = "fancytree-default";
+    public static final String CELL_STYLE = "fancytreecell-default";
     }
 
 

@@ -10,6 +10,13 @@ import java.util.*;
  */
 public interface FancyTreeNodeFacade<T>
     {
+    /**
+     * Due to a design flaw in the TreeView, the only way to force an update to a specific tree node is
+     * to replace it. The FancyTreeNodeFacade allows this to happen without changing the underlying
+     * datamodel. This method is necessary to accomplish that. Implementers should make a copy of this
+     * object, including registering/deregistering any listeners on the underlying data model.
+     */
+    FancyTreeNodeFacade<T> copyAndDestroy();
     List<FancyTreeNodeFacade<T>> getChildren();
     String getLabelText();
     T getModelNode();

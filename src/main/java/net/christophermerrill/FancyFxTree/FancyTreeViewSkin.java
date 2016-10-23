@@ -8,9 +8,9 @@ import javafx.scene.control.*;
  */
 public class FancyTreeViewSkin extends TreeViewSkin
     {
-    public FancyTreeViewSkin(TreeView treeView)
+    public FancyTreeViewSkin(TreeView tree)
         {
-        super(treeView);
+        super(tree);
         }
 
     public boolean isIndexVisible(int index)
