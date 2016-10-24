@@ -13,7 +13,7 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     {
     public FancyTreeCell(FancyTreeOperationHandler handler)
         {
-        addStyle(CELL_STYLE);
+        addStyle(CELL_STYLE_NAME);
         _handler = handler;
 
         setOnDragEntered(e ->
@@ -52,6 +52,7 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 
         setOnDragOver(e ->
             {
+            addStyle(DROP_INTO_STYLE_NAME);
             FancyTreeOperationHandler.DragOverInfo info = _handler.dragOver(e.getDragboard());
             boolean drop_onto_allowed = false;
             for (FancyTreeOperationHandler.DropLocation location : info._drop_locations)
@@ -62,7 +63,11 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             e.consume();
             });
 
-        setOnDragExited(Event::consume);
+        setOnDragExited(event ->
+            {
+            removeStyle(DROP_INTO_STYLE_NAME);
+            event.consume();
+            });
 
         }
 
@@ -87,16 +92,20 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 
     private void addStyle(String new_style)
         {
-        for (String style : getStyleClass())
-            if (style.equals(new_style))
-                return;
-        getStyleClass().add(new_style);
+        if (!getStyleClass().contains(new_style))
+            getStyleClass().add(new_style);
+        }
+
+    private void removeStyle(String remove_style)
+        {
+        getStyleClass().remove(remove_style);
         }
 
     //
     // Styles for the cells
     //
-    public static final String CELL_STYLE = "fancytreecell-default";
+    public static final String CELL_STYLE_NAME = "fancytreecell";
+    public static final String DROP_INTO_STYLE_NAME = "fancytreecell-drop-into";
     }
 
 

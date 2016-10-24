@@ -8,6 +8,8 @@ import javafx.scene.layout.*;
 import javafx.stage.*;
 import net.christophermerrill.FancyFxTree.*;
 
+import java.net.*;
+
 /**
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
@@ -30,8 +32,8 @@ public class FancyTreeExample extends Application
         button_bar.getChildren().add(_add_node_button);
         root.setTop(button_bar);
 
-        _tree = new FancyTreeView(new FancyTreeOperationHandler() {} );
         _model_root = ExampleDataNodeBuilder.create(new int[] {4,1,3,2});
+        _tree = new FancyTreeView(new ExampleOperationHandler(_model_root));
         _tree.setRoot(new ExampleTreeNodeFacade(_model_root));
         _tree.expandAll();
         root.setCenter(_tree);
@@ -44,6 +46,9 @@ public class FancyTreeExample extends Application
                 _add_node_button.setDisable(_tree.getSelectionModel().getSelectedItems().size() != 1);
                 }
             });
+
+        URL resource = getClass().getResource("ExampleTree.css");
+        _tree.getStylesheets().add(resource.toExternalForm());
 
         stage.setScene(new Scene(root, 300, 250));
         stage.show();

@@ -144,6 +144,8 @@ public class ExampleDataNode implements Serializable
 
     public boolean contains(ExampleDataNode target)
         {
+        if (equals(target))
+            return true;
         for (ExampleDataNode child : _children)
             {
             if (child == target || child.contains(target))

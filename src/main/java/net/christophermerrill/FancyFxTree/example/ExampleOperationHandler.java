@@ -76,8 +76,8 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         {
         if (dragboard.getContent(LIST_OF_NODES) != null)
             {
-            List<ExampleDataNode> nodes = (List<ExampleDataNode>) dragboard.getContent(LIST_OF_NODES);
-            for (ExampleDataNode node : nodes)
+            _dropped_nodes = (List<ExampleDataNode>) dragboard.getContent(LIST_OF_NODES);
+            for (ExampleDataNode node : _dropped_nodes)
                 {
                 ExampleDataNode node_to_drop;
                 if (transfer_mode.equals(TransferMode.COPY))
@@ -105,6 +105,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
     public boolean _allow_drag_onto = true;
     public int _drag_count;
     public ObservableList<TreeItem<ExampleTreeNodeFacade>> _dragged_items;
+    public List<ExampleDataNode> _dropped_nodes;
     public Object _dropped_content;
 
     private ExampleDataNode _root;

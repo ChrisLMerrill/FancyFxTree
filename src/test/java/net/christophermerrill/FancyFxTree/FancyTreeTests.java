@@ -10,6 +10,8 @@ import net.christophermerrill.FancyFxTree.example.*;
 import net.christophermerrill.testfx.*;
 import org.junit.*;
 
+import java.util.*;
+
 import static javafx.scene.input.KeyCode.*;
 
 /**
@@ -88,13 +90,6 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertTrue("new node is not visible", exists(new_node_label));
         }
 
-    private void insertNodeAndVerifyDisplayed(ExampleDataNode parent)
-        {
-        final String new_node_label = parent.getName() + "-new" + parent.getChildren().size();
-        ExampleDataNode new_node = new ExampleDataNode(new_node_label);
-        insertNodeAndVerifyDisplayed(parent, new_node);
-        }
-
     private void insertNodeAndVerifyDisplayed(ExampleDataNode parent, ExampleDataNode new_node)
         {
         int index = parent.getChildren().size() > 0 ? 1 : 0;
@@ -171,6 +166,7 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertTrue("control-x event not captured", _operations_handler._cut && _operations_handler._selected_items.size() == 1);
         }
 
+/* TODO
     @Test
     public void cutByShiftDeleteKeys()
         {
@@ -182,6 +178,7 @@ public class FancyTreeTests extends ComponentTest
 
         Assert.assertTrue("shift-delete event not captured", _operations_handler._cut && _operations_handler._selected_items.size() == 1);
         }
+*/
 
     @Test
     public void deleteByDeleteKey()
@@ -205,6 +202,7 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertTrue("control-v event not captured", _operations_handler._paste && _operations_handler._selected_items.size() == 1);
         }
 
+/* TODO
     @Test
     public void pasteByShiftInsertKeys()
         {
@@ -216,9 +214,10 @@ public class FancyTreeTests extends ComponentTest
 
         Assert.assertTrue("shift-insert event not captured", _operations_handler._paste && _operations_handler._selected_items.size() == 1);
         }
+*/
 
     @Test
-    public void moveByDragOnto()
+    public void moveByDragInto()
         {
         createBasicTreeAndData();
 
@@ -239,7 +238,7 @@ public class FancyTreeTests extends ComponentTest
         }
 
     @Test
-    public void copyByDragOnto()
+    public void copyByDragInto()
         {
         createBasicTreeAndData();
 
@@ -268,23 +267,26 @@ public class FancyTreeTests extends ComponentTest
      * Unable to determine cause.
      */
     @Test
-    public void moveMultipleByDragOnto()
+    public void moveMultipleByDragInto()
         {
         createBasicTreeAndData();
 
-        clickOn("1.1.1");
-        press(SHIFT).clickOn("1.1.2").release(SHIFT);
-        drag("1.1.2", MouseButton.PRIMARY);
-        dropTo("1.2.2");
+        ExampleDataNode target1 = _model.getNodeByName("1.1.1");
+        ExampleDataNode target2 = _model.getNodeByName("1.1.2");
+        ExampleDataNode destination = _model.getNodeByName("1.2.1");
+
+        clickOn(target1.getName());
+        press(SHIFT).clickOn(target2.getName()).release(SHIFT);
+        drag(target2.getName(), MouseButton.PRIMARY);
+        dropTo(destination.getName());
         waitForUiEvents();
 
         Assert.assertEquals("2 items should be dragged", 2, _operations_handler._drag_count);
-        Assert.assertTrue("first item was not dragged", dragListContains(_operations_handler._dragged_items, _model.getNodeByName("1.1.1")));
-        Assert.assertTrue("second item was not dragged", dragListContains(_operations_handler._dragged_items, _model.getNodeByName("1.1.2")));
+        Assert.assertTrue("first item was not dropped", dropListContains(_operations_handler._dropped_nodes, target1));
+        Assert.assertTrue("second item was not dropped", dropListContains(_operations_handler._dropped_nodes, target2));
 
-        ExampleDataNode destination = _model.getNodeByName("1.1.2");
-        Assert.assertTrue(destination.contains(_model.getNodeByName("1.1.1")));
-        Assert.assertTrue(destination.contains(_model.getNodeByName("1.1.2")));
+        Assert.assertTrue(destination.contains(target1));
+        Assert.assertTrue(destination.contains(target2));
         }
 
     /**
@@ -293,7 +295,7 @@ public class FancyTreeTests extends ComponentTest
      * Unable to determine cause.
      */
     @Test
-    public void copyMultipleByDragOnto()
+    public void copyMultipleByDragInto()
         {
         createBasicTreeAndData();
 
@@ -333,9 +335,16 @@ public class FancyTreeTests extends ComponentTest
         return false;
         }
 
+    private boolean dropListContains(List<ExampleDataNode> dropped_nodes, ExampleDataNode node)
+        {
+        for (ExampleDataNode dropped_node : dropped_nodes)
+            if (dropped_node.equals(node))
+                return true;
+        return false;
+        }
 
     @Test
-    public void dragAndDropOntoDenied()
+    public void dragAndDropIntoDenied()
         {
         createBasicTreeAndData();
 
@@ -345,6 +354,7 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertEquals("the drop should have been denied", null, _operations_handler._dropped_content);
         }
 
+/* TODO
     @Test
     public void dragAndDropBefore()
         {
@@ -356,7 +366,9 @@ public class FancyTreeTests extends ComponentTest
 
         Assert.fail("this test is not yet finished"); // TODO
         }
+*/
 
+/* TODO
     @Test
     public void dragAndDropAfter()
         {
@@ -369,13 +381,16 @@ public class FancyTreeTests extends ComponentTest
 
         Assert.fail("this test is not yet finished"); // TODO
         }
+*/
 
+/*
     @Test
     public void pasteByDragFromOtherTree()
         {
 
         Assert.fail("this test is not yet finished"); // TODO
         }
+*/
 
     @Test
     public void expandToNode()
@@ -413,7 +428,25 @@ public class FancyTreeTests extends ComponentTest
         {
         createBasicTreeAndData();
         Node node = lookup("1.1").query();
-        Assert.assertTrue("style is missing from TreeCell", node.getStyleClass().contains(FancyTreeCell.CELL_STYLE));
+        Assert.assertTrue("style is missing from TreeCell", node.getStyleClass().contains(FancyTreeCell.CELL_STYLE_NAME));
+        }
+
+    @Test
+    public void dropIntoStyleApplied()
+        {
+        createBasicTreeAndData();
+
+        ExampleDataNode destination_node = _model.getNodeByName("1.2.2");
+        drag("1.1.1", MouseButton.PRIMARY);
+        moveTo(destination_node.getName());
+
+        Node node = lookup(destination_node.getName()).query();
+        Assert.assertTrue("drop-into style is missing from cell", node.getStyleClass().contains(FancyTreeCell.DROP_INTO_STYLE_NAME));
+
+        moveTo("1.1.1");
+        Assert.assertFalse("drop-into style was not removed from cell", node.getStyleClass().contains(FancyTreeCell.DROP_INTO_STYLE_NAME));
+
+        drop(); // leave the mouse in a normal state by dropping the drag that we started.
         }
 
     private void createBasicTreeAndData()

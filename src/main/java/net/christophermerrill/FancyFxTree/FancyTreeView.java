@@ -1,5 +1,6 @@
 package net.christophermerrill.FancyFxTree;
 
+import javafx.application.*;
 import javafx.collections.*;
 import javafx.scene.control.*;
 import net.christophermerrill.FancyFxTree.example.*;
@@ -98,7 +99,7 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
 
         int index = findIndexOfVisibleItem(item);
         if (!((FancyTreeViewSkin)getSkin()).isIndexVisible(index))  // don't scroll if it is already visible on screen
-            scrollTo(index);
+            Platform.runLater(() -> scrollTo(index));
         }
 
     @SuppressWarnings("WeakerAccess") // part of public API

@@ -86,6 +86,12 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
             }
         };
 
+    @Override
+    public String toString()
+        {
+        return _model.getName();
+        }
+
     private ExampleDataNode _model;
     private FancyTreeItemFacade _item_facade;
     }

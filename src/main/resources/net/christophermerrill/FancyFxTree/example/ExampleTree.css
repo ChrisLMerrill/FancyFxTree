@@ -1,0 +1,18 @@
+.fancytreecell:selected {
+    -fx-text-fill: black;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-border-color: darkgray;
+    -fx-background: #F0F8FF;
+    -fx-padding: 0;
+}
+
+.fancytreecell-drop-into {
+    -fx-background: linear-gradient(to top, rgba(240,240,255,0) 0%, rgba(205,205,220,1) 50%, rgba(205,205,220,1) 51%, rgba(240,240,255,0) 100%);
+}
+.fancytreecell-drop-before {
+    -fx-background: linear-gradient(to bottom, rgba(205,205,220,1) 0%, rgba(240,240,255,0) 50%);
+}
+.fancytreecell-drop-after {
+    -fx-background: linear-gradient(to top, rgba(205,205,220,1) 0%, rgba(240,240,255,0) 50%);
+}
