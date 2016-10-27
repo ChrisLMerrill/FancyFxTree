@@ -17,9 +17,14 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
     public boolean handlePaste(ObservableList<TreeItem<T>> selected_items) { return false; }
 
     public StartDragInfo startDrag(List<List<Integer>> selection_paths, ObservableList<TreeItem<T>> selected_items) { return null; }
-    public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, FancyTreeNodeFacade item) { return false; }
+    public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, FancyTreeNodeFacade item, DropLocation location) { return false; }
 
-    public DragOverInfo dragOver(Dragboard dragboard) {return new DragOverInfo();}
+    public DragOverInfo dragOver(Dragboard dragboard)
+        {
+        DragOverInfo info = new DragOverInfo();
+        info.addAllModesAndLocations();
+        return info;
+        }
 
     public enum DropLocation
         {
@@ -46,14 +51,37 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
 
     public class DragOverInfo
         {
-        public DragOverInfo()
+        public void addAllModesAndLocations()
             {
-            _transfer_modes = new TransferMode[] {TransferMode.COPY, TransferMode.MOVE};
-            _drop_locations = new DropLocation[] {DropLocation.BEFORE, DropLocation.ON, DropLocation.AFTER};
+            addTransferMode(TransferMode.COPY);
+            addTransferMode(TransferMode.MOVE);
+            addDropLocation(DropLocation.BEFORE);
+            addDropLocation(DropLocation.ON);
+            addDropLocation(DropLocation.AFTER);
             }
 
-        public TransferMode[] _transfer_modes;
-        public DropLocation[] _drop_locations;
+        public void addTransferMode(TransferMode mode)
+            {
+            _transfer_modes.add(mode);
+            }
+
+        public void removeTransferMode(TransferMode mode)
+            {
+            _transfer_modes.remove(mode);
+            }
+
+        public void addDropLocation(DropLocation location)
+            {
+            _drop_locations.add(location);
+            }
+
+        public void removeDropLocation(DropLocation location)
+            {
+            _drop_locations.remove(location);
+            }
+
+        public List<TransferMode> _transfer_modes = new ArrayList<>();
+        public List<DropLocation> _drop_locations = new ArrayList<>();
         }
 
     public static DataFormat JSON_SERIALIZED_OBJECT = new DataFormat("application/x-json-serialized");

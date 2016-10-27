@@ -1,6 +1,7 @@
 package net.christophermerrill.FancyFxTree;
 
 import javafx.event.*;
+import javafx.geometry.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 
@@ -9,9 +10,9 @@ import java.util.*;
 /**
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
+class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     {
-    public FancyTreeCell(FancyTreeOperationHandler handler)
+    FancyTreeCell(FancyTreeOperationHandler handler)
         {
         addStyle(CELL_STYLE_NAME);
         _handler = handler;
@@ -45,27 +46,38 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 
         setOnDragDropped(e ->
             {
-            boolean completed = _handler.finishDrag(e.getTransferMode(), e.getDragboard(), getItem());
+            boolean completed = _handler.finishDrag(e.getTransferMode(), e.getDragboard(), getItem(), _drop_location);
             e.setDropCompleted(completed);
             e.consume();
             });
 
         setOnDragOver(e ->
             {
-            addStyle(DROP_INTO_STYLE_NAME);
+            removeStyle(DROP_BEFORE_STYLE_NAME);
+            removeStyle(DROP_ON_STYLE_NAME);
+            removeStyle(DROP_AFTER_STYLE_NAME);
+
+            Point2D sceneCoordinates = localToScene(0d, 0d);
+            double cell_height = getHeight();
+            double mouse_y = e.getSceneY() - (sceneCoordinates.getY());  // this will be the y-coord within the cell
             FancyTreeOperationHandler.DragOverInfo info = _handler.dragOver(e.getDragboard());
-            boolean drop_onto_allowed = false;
-            for (FancyTreeOperationHandler.DropLocation location : info._drop_locations)
-                if (location == FancyTreeOperationHandler.DropLocation.ON)
-                    drop_onto_allowed = true;
-            if (drop_onto_allowed)
-                e.acceptTransferModes(info._transfer_modes);
+            DropLocationCalculator calculator = new DropLocationCalculator(cell_height, mouse_y, info);
+            _drop_location = calculator.getDropLocation();
+            if (_drop_location != null)
+                {
+                addStyle(DROP_LOCATION_TO_STYLE_MAP.get(_drop_location));
+                TransferMode[] modes = new TransferMode[info._transfer_modes.size()];
+                info._transfer_modes.toArray(modes);
+                e.acceptTransferModes(modes);
+                }
             e.consume();
             });
 
         setOnDragExited(event ->
             {
-            removeStyle(DROP_INTO_STYLE_NAME);
+            removeStyle(DROP_BEFORE_STYLE_NAME);
+            removeStyle(DROP_ON_STYLE_NAME);
+            removeStyle(DROP_AFTER_STYLE_NAME);
             event.consume();
             });
 
@@ -101,11 +113,75 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
         getStyleClass().remove(remove_style);
         }
 
+    private FancyTreeOperationHandler.DropLocation _drop_location;
+
     //
     // Styles for the cells
     //
-    public static final String CELL_STYLE_NAME = "fancytreecell";
-    public static final String DROP_INTO_STYLE_NAME = "fancytreecell-drop-into";
+    static final String CELL_STYLE_NAME = "fancytreecell";
+    static final String DROP_BEFORE_STYLE_NAME = "fancytreecell-drop-before";
+    static final String DROP_ON_STYLE_NAME = "fancytreecell-drop-on";
+    static final String DROP_AFTER_STYLE_NAME = "fancytreecell-drop-after";
+
+    static final Map<FancyTreeOperationHandler.DropLocation, String> DROP_LOCATION_TO_STYLE_MAP = new HashMap<>();
+    static
+        {
+        DROP_LOCATION_TO_STYLE_MAP.put(FancyTreeOperationHandler.DropLocation.BEFORE, DROP_BEFORE_STYLE_NAME);
+        DROP_LOCATION_TO_STYLE_MAP.put(FancyTreeOperationHandler.DropLocation.ON, DROP_ON_STYLE_NAME);
+        DROP_LOCATION_TO_STYLE_MAP.put(FancyTreeOperationHandler.DropLocation.AFTER, DROP_AFTER_STYLE_NAME);
+        }
+
+    class DropLocationCalculator
+        {
+        DropLocationCalculator(double cell_height, double mouse_y, FancyTreeOperationHandler.DragOverInfo info)
+            {
+            _cell_height = cell_height;
+            _mouse_y = mouse_y;
+            _info = info;
+            calculate();
+            }
+
+        private void calculate()
+            {
+            // re-order and count the locations
+            List<FancyTreeOperationHandler.DropLocation> _allowed_locations = new ArrayList<>();
+            if (_info._drop_locations.contains(FancyTreeOperationHandler.DropLocation.BEFORE))
+                _allowed_locations.add(FancyTreeOperationHandler.DropLocation.BEFORE);
+            if (_info._drop_locations.contains(FancyTreeOperationHandler.DropLocation.ON))
+                _allowed_locations.add(FancyTreeOperationHandler.DropLocation.ON);
+            if (_info._drop_locations.contains(FancyTreeOperationHandler.DropLocation.AFTER))
+                _allowed_locations.add(FancyTreeOperationHandler.DropLocation.AFTER);
+
+            if (_allowed_locations.size() == 1)
+                _drop_location = _allowed_locations.get(0);
+            else if (_allowed_locations.size() == 2)
+                {
+                if (_mouse_y < (_cell_height * 0.5d))
+                    _drop_location = _allowed_locations.get(0);
+                else
+                    _drop_location = _allowed_locations.get(1);
+                }
+            else if (_allowed_locations.size() == 3)
+                {
+                if (_mouse_y < (_cell_height * 0.25d))
+                    _drop_location = _allowed_locations.get(0);
+                else if (_mouse_y > (_cell_height * 0.75d))
+                    _drop_location = _allowed_locations.get(2);
+                else
+                    _drop_location = _allowed_locations.get(1);
+                }
+            }
+
+        FancyTreeOperationHandler.DropLocation getDropLocation()
+            {
+            return _drop_location;
+            }
+
+        double _cell_height;
+        double _mouse_y;
+        FancyTreeOperationHandler.DragOverInfo _info;
+        FancyTreeOperationHandler.DropLocation _drop_location;
+        }
     }
 
 

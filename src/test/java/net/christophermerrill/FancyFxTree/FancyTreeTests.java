@@ -166,8 +166,8 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertTrue("control-x event not captured", _operations_handler._cut && _operations_handler._selected_items.size() == 1);
         }
 
-/* TODO
-    @Test
+/* Test test fails due to a bug in TestFX: https://github.com/TestFX/TestFX/issues/310
+   This function works when tested manually.
     public void cutByShiftDeleteKeys()
         {
         createBasicTreeAndData();
@@ -202,7 +202,8 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertTrue("control-v event not captured", _operations_handler._paste && _operations_handler._selected_items.size() == 1);
         }
 
-/* TODO
+/* Test test fails due to a bug in TestFX: https://github.com/TestFX/TestFX/issues/310
+   This function works when tested manually.
     @Test
     public void pasteByShiftInsertKeys()
         {
@@ -354,49 +355,61 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertEquals("the drop should have been denied", null, _operations_handler._dropped_content);
         }
 
-/* TODO
     @Test
-    public void dragAndDropBefore()
+    public void moveByDragBefore()
         {
         createBasicTreeAndData();
 
-        drag("1.1", MouseButton.PRIMARY).dropTo("1.2");
+        ExampleDataNode target_node = _model.getNodeByName("1.1.1");
+        ExampleDataNode target_parent = _model.getNodeByName("1.1");
+        ExampleDataNode destination_node = _model.getNodeByName("1.2.2");
+        ExampleDataNode destination_parent = _model.getNodeByName("1.2");
 
-        // how to detect?
+        Node destination_area = lookup(destination_node.getName()).query();
+        drag(target_node.getName(), MouseButton.PRIMARY);
+        moveTo(destination_area);
+        moveBy(0, - destination_area.getBoundsInParent().getHeight() * 0.4d);
+        drop();
 
-        Assert.fail("this test is not yet finished"); // TODO
+        Assert.assertFalse("The target node was not removed from its parent", target_parent.contains(target_node));
+        Assert.assertTrue("The target node was not moved into the destination", destination_parent.contains(target_node));
+        Assert.assertTrue("The target node is not in the right place in the destination", destination_parent.getChildren().get(1).equals(target_node));
         }
-*/
 
-/* TODO
     @Test
-    public void dragAndDropAfter()
+    public void moveByDragAfter()
         {
         createBasicTreeAndData();
 
-        clickOn("1.1");
-        drag("1.1", MouseButton.PRIMARY).dropTo("1.2");
+        ExampleDataNode target_node = _model.getNodeByName("1.1.1");
+        ExampleDataNode target_parent = _model.getNodeByName("1.1");
+        ExampleDataNode destination_node = _model.getNodeByName("1.2.1");
+        ExampleDataNode destination_parent = _model.getNodeByName("1.2");
 
-        // how to detect?
+        Node destination_area = lookup(destination_node.getName()).query();
+        drag(target_node.getName(), MouseButton.PRIMARY);
+        moveTo(destination_area);
+        moveBy(0, destination_area.getBoundsInParent().getHeight() * 0.4d);
+        drop();
 
-        Assert.fail("this test is not yet finished"); // TODO
+        Assert.assertFalse("The target node was not removed from its parent", target_parent.contains(target_node));
+        Assert.assertTrue("The target node was not moved into the destination", destination_parent.contains(target_node));
+        Assert.assertTrue("The target node is not in the right place in the destination", destination_parent.getChildren().get(1).equals(target_node));
         }
-*/
 
-/*
     @Test
-    public void pasteByDragFromOtherTree()
+    public void expandOnHover()
         {
+        // hover over a collapsed tree item to expand it
 
         Assert.fail("this test is not yet finished"); // TODO
         }
-*/
 
     @Test
     public void expandToNode()
         {
-        // this is tested indirectly by the node addition tests, since they must make the node visible
-        // in order to check that it displayed in the tree. This no-op test remains for clarity and documentation.
+        // This capability is tested indirectly by the node addition tests, since they must make the node visible
+        // in order to check that it displayed in the tree. This no-op test remains as documententation of such.
         }
 
     @Test
@@ -441,10 +454,10 @@ public class FancyTreeTests extends ComponentTest
         moveTo(destination_node.getName());
 
         Node node = lookup(destination_node.getName()).query();
-        Assert.assertTrue("drop-into style is missing from cell", node.getStyleClass().contains(FancyTreeCell.DROP_INTO_STYLE_NAME));
+        Assert.assertTrue("drop-into style is missing from cell", node.getStyleClass().contains(FancyTreeCell.DROP_ON_STYLE_NAME));
 
         moveTo("1.1.1");
-        Assert.assertFalse("drop-into style was not removed from cell", node.getStyleClass().contains(FancyTreeCell.DROP_INTO_STYLE_NAME));
+        Assert.assertFalse("drop-into style was not removed from cell", node.getStyleClass().contains(FancyTreeCell.DROP_ON_STYLE_NAME));
 
         drop(); // leave the mouse in a normal state by dropping the drag that we started.
         }

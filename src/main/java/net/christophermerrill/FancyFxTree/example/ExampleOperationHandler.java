@@ -66,17 +66,36 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
     public DragOverInfo dragOver(Dragboard dragboard)
         {
         DragOverInfo info = new DragOverInfo();
-        if (!_allow_drag_onto)
-            info._drop_locations = new DropLocation[0];
+        info.addAllModesAndLocations();
         return info;
         }
 
     @Override
-    public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, FancyTreeNodeFacade item)
+    public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, FancyTreeNodeFacade item, DropLocation location)
         {
         if (dragboard.getContent(LIST_OF_NODES) != null)
             {
             _dropped_nodes = (List<ExampleDataNode>) dragboard.getContent(LIST_OF_NODES);
+            ExampleDataNode parent;
+            int add_index;
+            switch (location)
+                {
+                case BEFORE:
+                    parent = _root.findParentFor((ExampleDataNode) item.getModelNode());
+                    add_index = parent.getChildren().indexOf(item.getModelNode());
+                    break;
+                case ON:
+                    parent = (ExampleDataNode) item.getModelNode();
+                    add_index = ((ExampleDataNode) item.getModelNode()).getChildren().size();
+                    break;
+                case AFTER:
+                    parent = _root.findParentFor((ExampleDataNode) item.getModelNode());
+                    add_index = parent.getChildren().indexOf(item.getModelNode()) + 1;
+                    break;
+                default:
+                    return false;
+                }
+
             for (ExampleDataNode node : _dropped_nodes)
                 {
                 ExampleDataNode node_to_drop;
@@ -85,10 +104,11 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
                 else
                     {
                     node_to_drop = node;
-                    ExampleDataNode parent = _root.findParentFor(node);
-                    parent.removeChild(node_to_drop);
+                    _root.findParentFor(node).removeChild(node_to_drop);
                     }
-                ((ExampleDataNode) item.getModelNode()).addChild(node_to_drop);
+
+                parent.addChild(add_index, node_to_drop);
+                add_index++;
                 }
             return true;
             }
@@ -102,7 +122,6 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
     public boolean _copy = false;
     public boolean _paste = false;
 
-    public boolean _allow_drag_onto = true;
     public int _drag_count;
     public ObservableList<TreeItem<ExampleTreeNodeFacade>> _dragged_items;
     public List<ExampleDataNode> _dropped_nodes;

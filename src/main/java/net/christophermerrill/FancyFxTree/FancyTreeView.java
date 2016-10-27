@@ -9,16 +9,17 @@ import java.util.*;
 
 /**
  * A tree with lots of fancy features already implemented...so you don't have to. It is intended to help
- * implement a tree on a complex data model without forcing the model to comply with the expectations
- * of TreeView. This includes asynchronous state changes and complex user interactions.
+ * implement a tree on a complex hierarchical data model without forcing the model to comply with the expectations
+ * of TreeView. This includes asynchronous state changes and complex user interactions, such as drag-and-drop.
  *
- * Fancy features:
+ * Fancy features include:
  * - update view when the model node properties change (not just when the entire model node is replaced). This requires the model adapter to notify the FancyTreeItemFacade when these changes happen.
  * - update view from asynchronous events (as above)
  * - smart scroll-to-item behavior
  * - expand tree to make an item visible
  * - cut/copy/paste keystroke support implemented, including common OS key combinations (Windows)
- * - drag and drop support implemented, including tree-aware drop targets (before, onto, after) and auto-expansion of tree nodes while hovering
+ * - drag and drop support implemented, including tree-aware drop targets (drop before, into, or after)
+ * - hover cursor over a tree item to expand it
  *
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */

@@ -47,6 +47,12 @@ public class ExampleDataNode implements Serializable
         fireChildAdded(child, _children.size() - 1);
         }
 
+    public void addChild(int index, ExampleDataNode child)
+        {
+        _children.add(index, child);
+        fireChildAdded(child, index);
+        }
+
     public void removeChild(ExampleDataNode child)
         {
         int index = _children.indexOf(child);
@@ -122,9 +128,16 @@ public class ExampleDataNode implements Serializable
         return null;
         }
 
-    void addChildAfterChild(ExampleDataNode to_add, ExampleDataNode to_follow)
+    void addAfter(ExampleDataNode to_add, ExampleDataNode to_follow)
         {
         int index = _children.indexOf(to_follow) + 1;
+        _children.add(index, to_add);
+        fireChildAdded(to_add, index);
+        }
+
+    void addBefore(ExampleDataNode to_add, ExampleDataNode to_preceed)
+        {
+        int index = _children.indexOf(to_preceed);
         _children.add(index, to_add);
         fireChildAdded(to_add, index);
         }

@@ -7,7 +7,7 @@
     -fx-padding: 0;
 }
 
-.fancytreecell-drop-into {
+.fancytreecell-drop-on {
     -fx-background: linear-gradient(to top, rgba(240,240,255,0) 0%, rgba(205,205,220,1) 50%, rgba(205,205,220,1) 51%, rgba(240,240,255,0) 100%);
 }
 .fancytreecell-drop-before {
