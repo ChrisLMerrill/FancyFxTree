@@ -134,88 +134,79 @@ public class FancyTreeTests extends ComponentTest
         }
 
     @Test
-    public void copyByControlCKeys()
+    public void copyPasteByAlphaControlKeys()
         {
         createBasicTreeAndData();
 
-        clickOn("1.1");
-        push(CONTROL, C);
+        ExampleDataNode original_node = _model.getNodeByName("1.1.1");
+        ExampleDataNode original_node_parent = _model.findParentFor(original_node);
+        ExampleDataNode node_to_copy_after = _model.getNodeByName("1.2.2");
+        ExampleDataNode node_to_copy_into = _model.getNodeByName("1.2");
+        String copy_name = ExampleDataNode.getCopyName(original_node);
 
-        Assert.assertTrue("control-C event not captured", _operations_handler._copy && _operations_handler._selected_items.size() == 1);
+        clickOn(original_node.getName());
+        push(CONTROL, C); // copy
+        clickOn(node_to_copy_after.getName());
+        push(CONTROL, V); // paste
+
+        ExampleDataNode copied_node = _model.getNodeByName(copy_name);
+        Assert.assertNotNull("copy not found in tree", copied_node);
+        Assert.assertTrue("copy not in right parent", node_to_copy_into.contains(copied_node, true));
+        Assert.assertTrue("original not found in parent", original_node_parent.contains(original_node, true));
         }
 
     @Test
-    public void copyByControlInsertKeys()
+    public void cutPasteByAlphaControlKeys()
         {
         createBasicTreeAndData();
 
-        clickOn("1.1");
-        push(CONTROL, INSERT);
+        ExampleDataNode original_node = _model.getNodeByName("1.1.1");
+        ExampleDataNode original_node_parent = _model.findParentFor(original_node);
+        ExampleDataNode node_to_paste_after = _model.getNodeByName("1.2.2");
+        ExampleDataNode node_to_paste_into = _model.getNodeByName("1.2");
 
-        Assert.assertTrue("control-insert event not captured", _operations_handler._copy && _operations_handler._selected_items.size() == 1);
+        clickOn(original_node.getName());
+        push(CONTROL, X); // cut
+        clickOn(node_to_paste_after.getName());
+        push(CONTROL, V); // paste
+
+        Assert.assertNotNull("cut node not found in tree", _model.getNodeByName(original_node.getName()));
+        Assert.assertTrue("not pasted into right parent", node_to_paste_into.contains(original_node, true));
+        Assert.assertFalse("original is still in parent", original_node_parent.contains(original_node, true));
         }
 
     @Test
-    public void cutByControlXKeys()
+    public void copyPasteBySpecialKeys()
         {
-        createBasicTreeAndData();
-
-        clickOn("1.1");
-        push(CONTROL, X);
-
-        Assert.assertTrue("control-x event not captured", _operations_handler._cut && _operations_handler._selected_items.size() == 1);
+//        TODO just like copy by control keys, but with different keys
+//        Assert.assertTrue("control-insert event not captured", _operations_handler._copy && _operations_handler._selected_items.size() == 1);
         }
 
-/* Test test fails due to a bug in TestFX: https://github.com/TestFX/TestFX/issues/310
-   This function works when tested manually.
-    public void cutByShiftDeleteKeys()
+    @Test
+    public void cutPasteBySpecialKeys()
         {
-        createBasicTreeAndData();
-
-        clickOn("1.1");
-        press(SHIFT).push(DELETE).release(SHIFT);
-//        push(SHIFT, DELETE);
-
-        Assert.assertTrue("shift-delete event not captured", _operations_handler._cut && _operations_handler._selected_items.size() == 1);
+//        TODO just like cut by control keys, but with different keys
+//        Assert.assertTrue("control-x event not captured", _operations_handler._cut && _operations_handler._selected_items.size() == 1);
         }
-*/
+
+    @Test
+    public void rejectCopyIntoMultipleSelection()
+        {
+        Assert.fail("this test is not yet finished"); // TODO
+        }
 
     @Test
     public void deleteByDeleteKey()
         {
         createBasicTreeAndData();
 
-        clickOn("1.1");
+        ExampleDataNode node_to_delete = _model.getNodeByName("1.1.1");
+
+        clickOn(node_to_delete.getName());
         push(DELETE);
 
-        Assert.assertTrue("delete event not captured", _operations_handler._delete && _operations_handler._selected_items.size() == 1);
+        Assert.assertFalse("node was not removed from model", _model.contains(node_to_delete));
         }
-
-    @Test
-    public void pasteByControlVKeys()
-        {
-        createBasicTreeAndData();
-
-        clickOn("1.1");
-        press(CONTROL).push(V).release(CONTROL);
-
-        Assert.assertTrue("control-v event not captured", _operations_handler._paste && _operations_handler._selected_items.size() == 1);
-        }
-
-/* Test test fails due to a bug in TestFX: https://github.com/TestFX/TestFX/issues/310
-   This function works when tested manually.
-    @Test
-    public void pasteByShiftInsertKeys()
-        {
-        createBasicTreeAndData();
-
-        clickOn("1.1");
-        press(SHIFT).push(INSERT).release(SHIFT);
-//        push(SHIFT, INSERT);
-
-        Assert.assertTrue("shift-insert event not captured", _operations_handler._paste && _operations_handler._selected_items.size() == 1);
-        }
-*/
 
     @Test
     public void moveByDragInto()

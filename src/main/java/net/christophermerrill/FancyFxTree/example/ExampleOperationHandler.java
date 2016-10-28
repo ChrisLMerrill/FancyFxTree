@@ -18,34 +18,71 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean handleDelete(ObservableList selected_items)
+    public boolean handleDelete(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
-        _delete = true;
-        _selected_items = selected_items;
+        for (TreeItem<ExampleTreeNodeFacade> item : selected_items)
+            {
+            ExampleDataNode node_to_remove = item.getValue().getModelNode();
+            ExampleDataNode parent = _root.findParentFor(node_to_remove);
+            if (parent != null)
+                parent.removeChild(node_to_remove);
+            }
         return true;
         }
 
     @Override
-    public boolean handleCut(ObservableList selected_items)
+    public boolean handleCut(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         _cut = true;
-        _selected_items = selected_items;
+        _copy = false;
+        rememberSelection(selected_items);
         return true;
         }
 
     @Override
-    public boolean handleCopy(ObservableList selected_items)
+    public boolean handleCopy(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         _copy = true;
-        _selected_items = selected_items;
+        _cut = false;
+        rememberSelection(selected_items);
         return true;
         }
 
-    @Override
-    public boolean handlePaste(ObservableList selected_items)
+    private void rememberSelection(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
-        _paste = true;
-        _selected_items = selected_items;
+        _selected_nodes = new ArrayList<>();
+        for (TreeItem<ExampleTreeNodeFacade> item : selected_items)
+            _selected_nodes.add(item.getValue().getModelNode());
+        }
+
+    @Override
+    public boolean handlePaste(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+        {
+        ExampleDataNode target = selected_items.get(0).getValue().getModelNode();
+        ExampleDataNode parent = _root.findParentFor(target);
+
+        for (ExampleDataNode selected_node : _selected_nodes)
+            {
+            ExampleDataNode node_to_paste;
+            if (_copy)
+                node_to_paste = ExampleDataNode.deepCopy(selected_node, true);
+            else if (_cut)
+                {
+                ExampleDataNode parent_to_cut_from = _root.findParentFor(selected_node);
+                parent_to_cut_from.removeChild(selected_node);
+                node_to_paste = selected_node;
+                }
+            else
+                {
+                System.out.println("Expected either copy or paste. Neither...fail!");
+                continue;
+                }
+            parent.addAfter(node_to_paste, target);
+            }
+
+        _copy = false;
+        _cut = false;
+        _selected_nodes = null;
         return true;
         }
 
@@ -116,11 +153,9 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         return false;
         }
 
-    public ObservableList _selected_items;
-    public boolean _delete = false;
-    public boolean _cut = false;
-    public boolean _copy = false;
-    public boolean _paste = false;
+    private List<ExampleDataNode> _selected_nodes;
+    private boolean _cut = false;
+    private boolean _copy = false;
 
     public int _drag_count;
     public ObservableList<TreeItem<ExampleTreeNodeFacade>> _dragged_items;

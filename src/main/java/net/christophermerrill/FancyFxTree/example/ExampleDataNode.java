@@ -115,7 +115,7 @@ public class ExampleDataNode implements Serializable
             }
         }
 
-    ExampleDataNode findParentFor(ExampleDataNode target)
+    public ExampleDataNode findParentFor(ExampleDataNode target)
         {
         if (_children.contains(target))
             return this;
@@ -157,11 +157,18 @@ public class ExampleDataNode implements Serializable
 
     public boolean contains(ExampleDataNode target)
         {
+        return contains(target, false);
+        }
+
+    public boolean contains(ExampleDataNode target, boolean direct_children_only)
+        {
         if (equals(target))
             return true;
         for (ExampleDataNode child : _children)
             {
-            if (child == target || child.contains(target))
+            if (child == target)
+                return true;
+            if (!direct_children_only && child.contains(target))
                 return true;
             }
         return false;
