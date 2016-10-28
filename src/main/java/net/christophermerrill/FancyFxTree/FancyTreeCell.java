@@ -19,7 +19,7 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 
         setOnDragEntered(e ->
             {
-//            resetCursorPosition();
+            resetCursorPosition();
             e.consume();
             });
 
@@ -56,6 +56,11 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             removeStyle(DROP_BEFORE_STYLE_NAME);
             removeStyle(DROP_ON_STYLE_NAME);
             removeStyle(DROP_AFTER_STYLE_NAME);
+
+            updateCursorPositionAndHoverTime(e);
+
+            if (getItem().getChildren().size() > 0 && !(getTreeItem().isExpanded()) && isWaitingForTreeExpand())
+                getTreeItem().setExpanded(true);
 
             Point2D sceneCoordinates = localToScene(0d, 0d);
             double cell_height = getHeight();
@@ -113,7 +118,35 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
         getStyleClass().remove(remove_style);
         }
 
+    // for hover-to-expand feature
+    private void updateCursorPositionAndHoverTime(DragEvent e)
+        {
+        if (e.getSceneX() == _cursor_x && e.getSceneY() == _cursor_y)
+            return;
+
+        _cursor_x = (int) e.getSceneX();
+        _cursor_y = (int) e.getSceneY();
+        _cursor_hover_since = System.currentTimeMillis();
+        }
+
+    // for hover-to-expand feature
+    private boolean isWaitingForTreeExpand()
+        {
+        return System.currentTimeMillis() - _cursor_hover_since > 2000;
+        }
+
+    // for hover-to-expand feature
+    private void resetCursorPosition()
+        {
+        _cursor_x = 0;
+        _cursor_y = 0;
+        _cursor_hover_since = 0;
+        }
+
     private FancyTreeOperationHandler.DropLocation _drop_location;
+    private int _cursor_x;
+    private int _cursor_y;
+    private double _cursor_hover_since;
 
     //
     // Styles for the cells

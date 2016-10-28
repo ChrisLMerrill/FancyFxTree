@@ -391,9 +391,22 @@ public class FancyTreeTests extends ComponentTest
     @Test
     public void expandOnHover()
         {
-        // hover over a collapsed tree item to expand it
+        createBasicTreeAndData();
 
-        Assert.fail("this test is not yet finished"); // TODO
+        TreeItem item = _tree.getTreeItem(1);
+        item.setExpanded(false);
+        waitForUiEvents();
+
+        Node collapsed = lookup("1.1").query();
+        Assert.assertNull(lookup("1.1.1").query()); // make sure it is hidden
+
+        drag("1.2.2");
+        moveTo(collapsed);
+        sleep(2100);
+        waitForUiEvents();
+        release(MouseButton.PRIMARY);
+
+        Assert.assertNotNull(lookup("1.1.1").query());
         }
 
     @Test
