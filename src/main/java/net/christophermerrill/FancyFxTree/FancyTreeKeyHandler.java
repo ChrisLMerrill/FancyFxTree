@@ -22,7 +22,7 @@ public class FancyTreeKeyHandler
 
             ObservableList selected_items = _tree.getSelectionModel().getSelectedItems();
             boolean handled = false;
-            if (event.getCode().equals(KeyCode.DELETE))
+            if (event.getCode().equals(KeyCode.DELETE) && !event.isShiftDown())
                 handled = _handler.handleDelete(selected_items);
             else if ((event.isControlDown() && event.getCode().equals(KeyCode.C))
                 || (event.isControlDown() && event.getCode().equals(KeyCode.INSERT)))

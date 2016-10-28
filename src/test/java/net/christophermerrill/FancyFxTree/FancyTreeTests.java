@@ -136,6 +136,18 @@ public class FancyTreeTests extends ComponentTest
     @Test
     public void copyPasteByAlphaControlKeys()
         {
+        tryCopyPaste(CONTROL, C, CONTROL, V);
+        }
+
+    @Test
+    public void copyPasteBySpecialKeys()
+        {
+//        Test fails due to: https://github.com/TestFX/TestFX/issues/310
+//        tryCopyPaste(CONTROL, INSERT, SHIFT, INSERT);
+        }
+
+    private void tryCopyPaste(KeyCode copy_modifier, KeyCode copy_key, KeyCode paste_modifier, KeyCode paste_key)
+        {
         createBasicTreeAndData();
 
         ExampleDataNode original_node = _model.getNodeByName("1.1.1");
@@ -145,9 +157,9 @@ public class FancyTreeTests extends ComponentTest
         String copy_name = ExampleDataNode.getCopyName(original_node);
 
         clickOn(original_node.getName());
-        push(CONTROL, C); // copy
+        push(copy_modifier, copy_key); // copy
         clickOn(node_to_copy_after.getName());
-        push(CONTROL, V); // paste
+        push(paste_modifier, paste_key); // paste
 
         ExampleDataNode copied_node = _model.getNodeByName(copy_name);
         Assert.assertNotNull("copy not found in tree", copied_node);
@@ -158,6 +170,18 @@ public class FancyTreeTests extends ComponentTest
     @Test
     public void cutPasteByAlphaControlKeys()
         {
+        tryCutPaste(CONTROL, X, CONTROL, V);
+        }
+
+    @Test
+    public void cutPasteBySpecialKeys()
+        {
+//        Test fails due to: https://github.com/TestFX/TestFX/issues/310
+//        tryCutPaste(SHIFT, DELETE, CONTROL, INSERT);
+        }
+
+    private void tryCutPaste(KeyCode copy_modifier, KeyCode copy_key, KeyCode paste_modifier, KeyCode paste_key)
+        {
         createBasicTreeAndData();
 
         ExampleDataNode original_node = _model.getNodeByName("1.1.1");
@@ -166,33 +190,13 @@ public class FancyTreeTests extends ComponentTest
         ExampleDataNode node_to_paste_into = _model.getNodeByName("1.2");
 
         clickOn(original_node.getName());
-        push(CONTROL, X); // cut
+        push(copy_modifier, copy_key); // copy
         clickOn(node_to_paste_after.getName());
-        push(CONTROL, V); // paste
+        push(paste_modifier, paste_key); // paste
 
         Assert.assertNotNull("cut node not found in tree", _model.getNodeByName(original_node.getName()));
         Assert.assertTrue("not pasted into right parent", node_to_paste_into.contains(original_node, true));
         Assert.assertFalse("original is still in parent", original_node_parent.contains(original_node, true));
-        }
-
-    @Test
-    public void copyPasteBySpecialKeys()
-        {
-//        TODO just like copy by control keys, but with different keys
-//        Assert.assertTrue("control-insert event not captured", _operations_handler._copy && _operations_handler._selected_items.size() == 1);
-        }
-
-    @Test
-    public void cutPasteBySpecialKeys()
-        {
-//        TODO just like cut by control keys, but with different keys
-//        Assert.assertTrue("control-x event not captured", _operations_handler._cut && _operations_handler._selected_items.size() == 1);
-        }
-
-    @Test
-    public void rejectCopyIntoMultipleSelection()
-        {
-        Assert.fail("this test is not yet finished"); // TODO
         }
 
     @Test
