@@ -1,5 +1,6 @@
 package net.christophermerrill.FancyFxTree.example;
 
+import javafx.application.*;
 import javafx.collections.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
@@ -144,7 +145,8 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
                     _root.findParentFor(node).removeChild(node_to_drop);
                     }
 
-                parent.addChild(add_index, node_to_drop);
+                final int index_to_add_at = add_index;
+                Platform.runLater(() -> parent.addChild(index_to_add_at, node_to_drop)); // updates to tree should be done on the UI thread when possible?
                 add_index++;
                 }
             return true;
