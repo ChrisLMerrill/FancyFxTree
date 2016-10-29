@@ -127,7 +127,7 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
             }
         }
 
-    public void setRoot(ExampleTreeNodeFacade root_facade)
+    public void setRoot(FancyTreeNodeFacade root_facade)
         {
         setRoot(FancyTreeItemBuilder.create(root_facade));
         }
