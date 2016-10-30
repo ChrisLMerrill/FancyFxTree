@@ -30,6 +30,7 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
         return info;
         }
 
+    @SuppressWarnings("WeakerAccess") // part of public API
     public enum DropLocation
         {
         BEFORE,
@@ -49,7 +50,10 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
             _content.put(format, content);
             }
 
+        @SuppressWarnings("WeakerAccess")  // part of public API
         public Map<DataFormat, Object> _content = new HashMap<>();
+
+        @SuppressWarnings("WeakerAccess")  // part of public API
         public TransferMode[] _transfer_modes;
         }
 
@@ -64,31 +68,33 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
             addDropLocation(DropLocation.AFTER);
             }
 
+        @SuppressWarnings("WeakerAccess")  // part of public API
         public void addTransferMode(TransferMode mode)
             {
             _transfer_modes.add(mode);
             }
 
+        @SuppressWarnings("WeakerAccess,unused")  // part of public API
         public void removeTransferMode(TransferMode mode)
             {
             _transfer_modes.remove(mode);
             }
 
+        @SuppressWarnings("WeakerAccess")  // part of public API
         public void addDropLocation(DropLocation location)
             {
             _drop_locations.add(location);
             }
 
+        @SuppressWarnings("WeakerAccess,unused")  // part of public API
         public void removeDropLocation(DropLocation location)
             {
             _drop_locations.remove(location);
             }
 
-        public List<TransferMode> _transfer_modes = new ArrayList<>();
-        public List<DropLocation> _drop_locations = new ArrayList<>();
+        List<TransferMode> _transfer_modes = new ArrayList<>();
+        List<DropLocation> _drop_locations = new ArrayList<>();
         }
-
-    public static DataFormat JSON_SERIALIZED_OBJECT = new DataFormat("application/x-json-serialized");
     }
 
 

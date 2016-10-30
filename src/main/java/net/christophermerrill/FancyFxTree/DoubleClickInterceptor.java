@@ -11,9 +11,9 @@ import javafx.scene.input.*;
  *
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-public class DoubleClickInterceptor implements EventDispatcher
+class DoubleClickInterceptor implements EventDispatcher
     {
-    public DoubleClickInterceptor(TreeCell cell, EventHandler<MouseEvent> double_click_listener)
+    DoubleClickInterceptor(TreeCell cell, EventHandler<MouseEvent> double_click_listener)
         {
         _original_dispatcher = cell.getEventDispatcher();
         cell.setEventDispatcher(this);

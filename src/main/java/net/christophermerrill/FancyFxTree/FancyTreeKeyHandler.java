@@ -7,19 +7,15 @@ import javafx.scene.input.*;
 /**
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-public class FancyTreeKeyHandler
+class FancyTreeKeyHandler
     {
-    public FancyTreeKeyHandler(TreeView tree_view, FancyTreeOperationHandler handler)
+    FancyTreeKeyHandler(TreeView tree_view, FancyTreeOperationHandler handler)
         {
         _tree = tree_view;
         _handler = handler;
 
         _tree.setOnKeyPressed(event ->
             {
-//System.out.println("control down = " + event.isControlDown());
-//System.out.println("shift down = " + event.isShiftDown());
-//System.out.println("key code = " + event.getCode());
-
             ObservableList selected_items = _tree.getSelectionModel().getSelectedItems();
             boolean handled = false;
             if (event.getCode().equals(KeyCode.DELETE) && !event.isShiftDown())

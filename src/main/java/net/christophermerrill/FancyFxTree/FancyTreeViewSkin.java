@@ -6,14 +6,14 @@ import javafx.scene.control.*;
 /**
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-public class FancyTreeViewSkin extends TreeViewSkin
+class FancyTreeViewSkin extends TreeViewSkin
     {
-    public FancyTreeViewSkin(TreeView tree)
+    FancyTreeViewSkin(TreeView tree)
         {
         super(tree);
         }
 
-    public boolean isIndexVisible(int index)
+    boolean isIndexVisible(int index)
         {
         if (flow.getFirstVisibleCell() != null &&
             flow.getLastVisibleCell() != null &&

@@ -145,6 +145,7 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         setRoot(FancyTreeItemBuilder.create(root_facade));
         }
 
+    @SuppressWarnings("WeakerAccess")  // part of public API
     public void setHoverExpandDuration(long hover_expand_duration)
         {
         _hover_expand_duration = hover_expand_duration;

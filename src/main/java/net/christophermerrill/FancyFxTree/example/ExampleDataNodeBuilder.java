@@ -21,7 +21,7 @@ public class ExampleDataNodeBuilder
      * the depth of the hierarchy. The values of the array indicates the number of
      * descendants at each depth.
      */
-    public static void addDecendents(ExampleDataNode parent, int[] num_descendents)
+    private static void addDecendents(ExampleDataNode parent, int[] num_descendents)
         {
         if (num_descendents.length < 1)
             return;

@@ -167,7 +167,7 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     static final String DROP_ON_STYLE_NAME = "fancytreecell-drop-on";
     static final String DROP_AFTER_STYLE_NAME = "fancytreecell-drop-after";
 
-    static final Map<FancyTreeOperationHandler.DropLocation, String> DROP_LOCATION_TO_STYLE_MAP = new HashMap<>();
+    private static final Map<FancyTreeOperationHandler.DropLocation, String> DROP_LOCATION_TO_STYLE_MAP = new HashMap<>();
     static
         {
         DROP_LOCATION_TO_STYLE_MAP.put(FancyTreeOperationHandler.DropLocation.BEFORE, DROP_BEFORE_STYLE_NAME);
@@ -175,7 +175,7 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
         DROP_LOCATION_TO_STYLE_MAP.put(FancyTreeOperationHandler.DropLocation.AFTER, DROP_AFTER_STYLE_NAME);
         }
 
-    class DropLocationCalculator
+    private class DropLocationCalculator
         {
         DropLocationCalculator(double cell_height, double mouse_y, FancyTreeOperationHandler.DragOverInfo info)
             {

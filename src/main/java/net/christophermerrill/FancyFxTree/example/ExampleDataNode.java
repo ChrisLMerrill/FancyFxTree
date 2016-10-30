@@ -21,7 +21,7 @@ public class ExampleDataNode implements Serializable
         _name = original.getName();
         }
 
-    public static ExampleDataNode deepCopy(ExampleDataNode original, boolean annotate_label)
+    static ExampleDataNode deepCopy(ExampleDataNode original, boolean annotate_label)
         {
         ExampleDataNode copy = new ExampleDataNode(original);
         if (annotate_label)
@@ -47,7 +47,7 @@ public class ExampleDataNode implements Serializable
         fireChildAdded(child, _children.size() - 1);
         }
 
-    public void addChild(int index, ExampleDataNode child)
+    void addChild(int index, ExampleDataNode child)
         {
         _children.add(index, child);
         fireChildAdded(child, index);
@@ -71,12 +71,12 @@ public class ExampleDataNode implements Serializable
         firePropertyChange();
         }
 
-    public String getExtraData()
+    String getExtraData()
         {
         return _extra_data;
         }
 
-    public void setExtraData(String extra_data)
+    void setExtraData(String extra_data)
         {
         _extra_data = extra_data;
         firePropertyChange();
@@ -91,14 +91,14 @@ public class ExampleDataNode implements Serializable
     /**
      * Picks a random node in the hierarchy.
      */
-    public ExampleDataNode pickRandom()
+    ExampleDataNode pickRandom()
         {
         List<ExampleDataNode> all = toList();
         int random_index = new Random().nextInt(all.size());
         return all.get(random_index);
         }
 
-    public List<ExampleDataNode> toList()
+    private List<ExampleDataNode> toList()
         {
         List<ExampleDataNode> all = new ArrayList<>();
         all.add(this);
@@ -135,13 +135,6 @@ public class ExampleDataNode implements Serializable
         fireChildAdded(to_add, index);
         }
 
-    void addBefore(ExampleDataNode to_add, ExampleDataNode to_preceed)
-        {
-        int index = _children.indexOf(to_preceed);
-        _children.add(index, to_add);
-        fireChildAdded(to_add, index);
-        }
-
     public ExampleDataNode getNodeByName(String name)
         {
         if (name.equals(_name))
@@ -174,7 +167,7 @@ public class ExampleDataNode implements Serializable
         return false;
         }
 
-    public UUID getId()
+    private UUID getId()
         {
         return _id;
         }
@@ -196,6 +189,7 @@ public class ExampleDataNode implements Serializable
     private void firePropertyChange()
         {
         if (_change_listeners != null)
+            //noinspection Convert2streamapi   (causes a ConcurrentModificationException)
             for (ChangeListener listener : _change_listeners)
                 listener.propertyChanged();
         }

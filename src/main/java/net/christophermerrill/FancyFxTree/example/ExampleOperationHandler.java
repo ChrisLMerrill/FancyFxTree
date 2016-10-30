@@ -164,7 +164,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         return _selected_nodes;
         }
 
-    public ExampleDataNode getSelectedNode()
+    ExampleDataNode getSelectedNode()
         {
         if (_selected_nodes.size() == 1)
             return _selected_nodes.get(0);

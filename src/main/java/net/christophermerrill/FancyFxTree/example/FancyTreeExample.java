@@ -1,6 +1,5 @@
 package net.christophermerrill.FancyFxTree.example;
 
-import com.sun.deploy.uitoolkit.impl.fx.ui.*;
 import javafx.application.*;
 import javafx.collections.*;
 import javafx.scene.*;
