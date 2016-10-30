@@ -7,6 +7,7 @@ import javafx.scene.input.*;
 import net.christophermerrill.FancyFxTree.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * @author Christopher L Merrill (see LICENSE.txt for license details)
@@ -51,36 +52,34 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
 
     private List<ExampleDataNode> captureSelection(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
-        List<ExampleDataNode> selected_nodes = new ArrayList<>();
-        for (TreeItem<ExampleTreeNodeFacade> item : selected_items)
-            if (item != null && item.getValue() != null)
-                selected_nodes.add(item.getValue().getModelNode());
-        return selected_nodes;
+        return selected_items.stream().filter(item -> item != null && item.getValue() != null).map(item -> item.getValue().getModelNode()).collect(Collectors.toList());
         }
 
     @Override
     public boolean handlePasteKeystroke(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
+        if (!_copy && !_cut)
+            {
+            System.out.println("Expected either copy or paste. Neither...fail!");
+            return false;
+            }
+
         ExampleDataNode target = selected_items.get(0).getValue().getModelNode();
         ExampleDataNode parent = _root.findParentFor(target);
 
         for (ExampleDataNode selected_node : _cut_or_copied_nodes)
             {
-            ExampleDataNode node_to_paste;
             if (_copy)
-                node_to_paste = ExampleDataNode.deepCopy(selected_node, true);
-            else if (_cut)
+                {
+                ExampleDataNode node_to_paste = ExampleDataNode.deepCopy(selected_node, true);
+                parent.addAfter(node_to_paste, target);
+                }
+            if (_cut)
                 {
                 ExampleDataNode parent_to_cut_from = _root.findParentFor(selected_node);
                 parent_to_cut_from.removeChild(selected_node);
-                node_to_paste = selected_node;
+                parent.addAfter(selected_node, target);
                 }
-            else
-                {
-                System.out.println("Expected either copy or paste. Neither...fail!");
-                continue;
-                }
-            parent.addAfter(node_to_paste, target);
             }
 
         _copy = false;
@@ -94,9 +93,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         {
         StartDragInfo info = new StartDragInfo();
         _dragged_items = selected_items;
-        List<ExampleDataNode> selections = new ArrayList<>();
-        for (TreeItem<ExampleTreeNodeFacade> item : selected_items)
-            selections.add(item.getValue().getModelNode());
+        List<ExampleDataNode> selections = selected_items.stream().map(item -> item.getValue().getModelNode()).collect(Collectors.toList());
         info.addContent(LIST_OF_NODES, selections);
         _drag_count = selected_items.size();
         return info;

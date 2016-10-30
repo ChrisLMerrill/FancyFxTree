@@ -17,6 +17,7 @@ public interface FancyTreeNodeFacade<T>
      * object, including registering/deregistering any listeners on the underlying data model.
      */
     FancyTreeNodeFacade<T> copyAndDestroy();
+    void destroy();
     List<FancyTreeNodeFacade<T>> getChildren();
     String getLabelText();
     T getModelNode();

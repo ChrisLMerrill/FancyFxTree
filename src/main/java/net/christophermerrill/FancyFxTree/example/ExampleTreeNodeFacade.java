@@ -18,18 +18,20 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         {
         _model = model;
         _model.addChangeListener(_listener);
+        _children.addAll(_model.getChildren().stream().map(ExampleTreeNodeFacade::new).collect(Collectors.toList()));
         }
 
-    private ExampleTreeNodeFacade(ExampleDataNode model, FancyTreeItemFacade facade)
+    private ExampleTreeNodeFacade(ExampleDataNode model, FancyTreeItemFacade facade, List<FancyTreeNodeFacade<ExampleDataNode>> children)
         {
         _model = model;
         _item_facade = facade;
+        _children = children;
         }
 
     @Override
     public List<FancyTreeNodeFacade<ExampleDataNode>> getChildren()
         {
-        return _model.getChildren().stream().map(ExampleTreeNodeFacade::new).collect(Collectors.toList());
+        return _children;
         }
 
     @Override
@@ -58,10 +60,17 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         {
         synchronized (_model)
             {
-            ExampleTreeNodeFacade copy = new ExampleTreeNodeFacade(_model, _item_facade);
+            ExampleTreeNodeFacade copy = new ExampleTreeNodeFacade(_model, _item_facade, _children);
             _model.replaceChangeListener(_listener, copy._listener);
             return copy;
             }
+        }
+
+    @Override
+    public void destroy()
+        {
+        _model.removeChangeListener(_listener);
+        _item_facade = null;
         }
 
     private ExampleDataNode.ChangeListener _listener = new ExampleDataNode.ChangeListener()
@@ -69,13 +78,18 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         @Override
         public void childAdded(ExampleDataNode child, int index)
             {
-            _item_facade.addChild(new ExampleTreeNodeFacade(child), index);
+            if (_item_facade == null)
+                System.out.println("why don't I have a facade?");
+            ExampleTreeNodeFacade child_facade = new ExampleTreeNodeFacade(child);
+            _children.add(index, child_facade);
+            _item_facade.addChild(child_facade, index);
             }
 
         @Override
         public void childRemoved(ExampleDataNode child, int index)
             {
             _item_facade.removeChild(new ExampleTreeNodeFacade(child), index);
+            _children.remove(index);
             }
 
         @Override
@@ -94,6 +108,7 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
 
     private ExampleDataNode _model;
     private FancyTreeItemFacade _item_facade;
+    private List<FancyTreeNodeFacade<ExampleDataNode>> _children = new ArrayList<>();
     }
 
 

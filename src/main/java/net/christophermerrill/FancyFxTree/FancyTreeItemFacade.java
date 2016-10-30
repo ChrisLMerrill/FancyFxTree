@@ -35,7 +35,10 @@ public class FancyTreeItemFacade
             {
             FancyTreeNodeFacade node = _item.getChildren().get(index).getValue();
             if (node.getModelNode().equals(child.getModelNode()))
+                {
                 _item.getChildren().remove(index);
+                child.destroy();
+                }
             else
                 throw new IllegalArgumentException(String.format("The indexed sub-item (%d) didn't match the node selected for removal: %s", index, child.getModelNode().toString()));
             }
