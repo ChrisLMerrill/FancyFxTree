@@ -245,7 +245,8 @@ public class FancyTreeTests extends ComponentTest
         drag(target_node.getName(), MouseButton.PRIMARY).dropTo(destination_node.getName());
         waitForUiEvents();
 
-        Assert.assertNotNull("node not found in tree", _model.getNodeByName("1.1.1"));
+        Assert.assertNotNull("node not found in tree", _model.getNodeByName(target_node.getName()));
+        Assert.assertNotNull("the target node is not displayed", exists(target_node.getName()));
 
         Assert.assertTrue("node was not removed from root", target_parent.getChildren().size() == 1);
         Assert.assertTrue("node was not added to destination", destination_node.getChildren().size() == 1);
@@ -387,6 +388,7 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertFalse("The target node was not removed from its parent", target_parent.contains(target_node));
         Assert.assertTrue("The target node was not moved into the destination", destination_parent.contains(target_node));
         Assert.assertTrue("The target node is not in the right place in the destination", destination_parent.getChildren().get(1).equals(target_node));
+        Assert.assertNotNull("the target node is not displayed", exists(target_node.getName()));
         }
 
     @Test
@@ -408,6 +410,7 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertFalse("The target node was not removed from its parent", target_parent.contains(target_node));
         Assert.assertTrue("The target node was not moved into the destination", destination_parent.contains(target_node));
         Assert.assertTrue("The target node is not in the right place in the destination", destination_parent.getChildren().get(1).equals(target_node));
+        Assert.assertNotNull("the target node is not displayed", exists(target_node.getName()));
         }
 
     @Test

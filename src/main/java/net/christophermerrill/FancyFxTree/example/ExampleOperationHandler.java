@@ -144,7 +144,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
                 else
                     {
                     node_to_drop = node;
-                    _root.findParentFor(node).removeChild(node_to_drop);
+                    Platform.runLater(() -> _root.findParentFor(node).removeChild(node_to_drop));
                     }
 
                 final int index_to_add_at = add_index;
