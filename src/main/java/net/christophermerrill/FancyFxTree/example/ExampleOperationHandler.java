@@ -36,7 +36,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         {
         _cut = true;
         _copy = false;
-        rememberSelection(selected_items);
+        _cut_or_copied_nodes = captureSelection(selected_items);
         return true;
         }
 
@@ -45,15 +45,17 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         {
         _copy = true;
         _cut = false;
-        rememberSelection(selected_items);
+        _cut_or_copied_nodes = captureSelection(selected_items);
         return true;
         }
 
-    private void rememberSelection(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+    private List<ExampleDataNode> captureSelection(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
-        _selected_nodes = new ArrayList<>();
+        List<ExampleDataNode> selected_nodes = new ArrayList<>();
         for (TreeItem<ExampleTreeNodeFacade> item : selected_items)
-            _selected_nodes.add(item.getValue().getModelNode());
+            if (item != null && item.getValue() != null)
+                selected_nodes.add(item.getValue().getModelNode());
+        return selected_nodes;
         }
 
     @Override
@@ -62,7 +64,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         ExampleDataNode target = selected_items.get(0).getValue().getModelNode();
         ExampleDataNode parent = _root.findParentFor(target);
 
-        for (ExampleDataNode selected_node : _selected_nodes)
+        for (ExampleDataNode selected_node : _cut_or_copied_nodes)
             {
             ExampleDataNode node_to_paste;
             if (_copy)
@@ -83,7 +85,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
 
         _copy = false;
         _cut = false;
-        _selected_nodes = null;
+        _selected_nodes = Collections.emptyList();
         return true;
         }
 
@@ -155,7 +157,18 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         return false;
         }
 
-    private List<ExampleDataNode> _selected_nodes;
+    public void selectionChanged(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+        {
+        _selected_nodes = captureSelection(selected_items);
+        }
+
+    public List<ExampleDataNode> getSelectedNodes()
+        {
+        return _selected_nodes;
+        }
+
+    private List<ExampleDataNode> _selected_nodes = Collections.emptyList();
+    private List<ExampleDataNode> _cut_or_copied_nodes = Collections.emptyList();
     private boolean _cut = false;
     private boolean _copy = false;
 

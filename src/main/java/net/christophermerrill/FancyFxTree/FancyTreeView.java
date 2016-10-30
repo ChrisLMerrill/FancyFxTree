@@ -1,6 +1,7 @@
 package net.christophermerrill.FancyFxTree;
 
 import javafx.application.*;
+import javafx.beans.value.*;
 import javafx.collections.*;
 import javafx.scene.control.*;
 import net.christophermerrill.FancyFxTree.example.*;
@@ -33,6 +34,10 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         setCellFactory(p -> new FancyTreeCell(_ops_handler));
         setSkin(new FancyTreeViewSkin(this));
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+            {
+            _ops_handler.selectionChanged(getSelectionModel().getSelectedItems());
+            });
         }
 
     @SuppressWarnings("WeakerAccess") // part of public API

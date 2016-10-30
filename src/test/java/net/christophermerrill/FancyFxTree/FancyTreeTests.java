@@ -29,6 +29,24 @@ public class FancyTreeTests extends ComponentTest
         }
 
     @Test
+    public void singleNodeSelected()
+        {
+        createBasicTreeAndData();
+
+        ExampleDataNode selected_node = _model.getNodeByName("1.1.1");
+        clickOn(selected_node.getName());
+
+        Assert.assertEquals("wrong number of items was selected", 1, _operations_handler.getSelectedNodes().size());
+        Assert.assertTrue("wrong item was selected", selected_node == _operations_handler.getSelectedNodes().get(0));
+        }
+
+    @Test
+    public void multipleNodesSelected()
+        {
+
+        }
+
+    @Test
     public void modelValueChanged()
         {
         createBasicTreeAndData();

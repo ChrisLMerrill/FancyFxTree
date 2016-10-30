@@ -3,6 +3,7 @@ package net.christophermerrill.FancyFxTree;
 import javafx.collections.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
+import net.christophermerrill.FancyFxTree.example.*;
 
 import java.util.*;
 
@@ -11,6 +12,8 @@ import java.util.*;
  */
 public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
     {
+    public void selectionChanged(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items) { }
+
     public boolean handleDeleteKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
     public boolean handleCutKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
     public boolean handleCopyKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
