@@ -19,7 +19,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean handleDelete(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+    public boolean handleDeleteKeystroke(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         for (TreeItem<ExampleTreeNodeFacade> item : selected_items)
             {
@@ -32,7 +32,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean handleCut(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+    public boolean handleCutKeystroke(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         _cut = true;
         _copy = false;
@@ -41,7 +41,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean handleCopy(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+    public boolean handleCopyKeystroke(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         _copy = true;
         _cut = false;
@@ -57,7 +57,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean handlePaste(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+    public boolean handlePasteKeystroke(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         ExampleDataNode target = selected_items.get(0).getValue().getModelNode();
         ExampleDataNode parent = _root.findParentFor(target);
