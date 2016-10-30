@@ -1,10 +1,9 @@
 package net.christophermerrill.FancyFxTree;
 
 import javafx.application.*;
-import javafx.beans.value.*;
 import javafx.collections.*;
 import javafx.scene.control.*;
-import net.christophermerrill.FancyFxTree.example.*;
+import javafx.util.*;
 
 import java.util.*;
 
@@ -31,7 +30,16 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         {
         _ops_handler = ops_handler;
         new FancyTreeKeyHandler(this, _ops_handler);
-        setCellFactory(p -> new FancyTreeCell(_ops_handler));
+        setCellFactory(new Callback<TreeView, TreeCell>()
+            {
+            @Override
+            public TreeCell call(TreeView param)
+                {
+                FancyTreeCell cell = new FancyTreeCell(_ops_handler);
+                cell.setHoverExpandDuration(_hover_expand_duration);
+                return cell;
+                }
+            });
         setSkin(new FancyTreeViewSkin(this));
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
@@ -137,7 +145,14 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         setRoot(FancyTreeItemBuilder.create(root_facade));
         }
 
+    public void setHoverExpandDuration(long hover_expand_duration)
+        {
+        _hover_expand_duration = hover_expand_duration;
+        }
+
     private final FancyTreeOperationHandler _ops_handler;
+    private long _hover_expand_duration = DEFAULT_HOVER_EXPAND_DURATION;
+    static final long DEFAULT_HOVER_EXPAND_DURATION = 2000;
     }
 
 

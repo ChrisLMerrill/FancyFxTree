@@ -413,6 +413,7 @@ public class FancyTreeTests extends ComponentTest
     @Test
     public void expandOnHover()
         {
+        _hover_duration = 50;
         createBasicTreeAndData();
 
         TreeItem item = _tree.getTreeItem(1);
@@ -424,7 +425,7 @@ public class FancyTreeTests extends ComponentTest
 
         drag("1.2.2");
         moveTo(collapsed);
-        sleep(2100);
+        sleep(75);
         waitForUiEvents();
         release(MouseButton.PRIMARY);
 
@@ -502,6 +503,7 @@ public class FancyTreeTests extends ComponentTest
 
         _operations_handler = new ExampleOperationHandler(_model);
         _tree = new FancyTreeView(_operations_handler);
+        _tree.setHoverExpandDuration(_hover_duration);
         _tree.setRoot(root_item);
         _tree.expandAll();
 
@@ -537,6 +539,7 @@ public class FancyTreeTests extends ComponentTest
     private ExampleDataNode _model;
     private FancyTreeView<ExampleTreeNodeFacade> _tree;
     private ExampleOperationHandler _operations_handler;
+    private long _hover_duration = FancyTreeView.DEFAULT_HOVER_EXPAND_DURATION;
     }
 
 

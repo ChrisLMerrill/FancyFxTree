@@ -132,7 +132,7 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     // for hover-to-expand feature
     private boolean isWaitingForTreeExpand()
         {
-        return System.currentTimeMillis() - _cursor_hover_since > 2000;
+        return System.currentTimeMillis() - _cursor_hover_since > _hover_expand_duration;
         }
 
     // for hover-to-expand feature
@@ -143,10 +143,16 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
         _cursor_hover_since = 0;
         }
 
+    void setHoverExpandDuration(long hover_expand_duration)
+        {
+        _hover_expand_duration = hover_expand_duration;
+        }
+
     private FancyTreeOperationHandler.DropLocation _drop_location;
     private int _cursor_x;
     private int _cursor_y;
-    private double _cursor_hover_since;
+    private long _cursor_hover_since;
+    private long _hover_expand_duration = FancyTreeView.DEFAULT_HOVER_EXPAND_DURATION;
 
     //
     // Styles for the cells
