@@ -475,7 +475,7 @@ public class FancyTreeTests extends ComponentTest
         }
 
     @Test
-    public void dropIntoStyleApplied()
+    public void dropOntoStyleApplied()
         {
         createBasicTreeAndData();
 
@@ -489,7 +489,53 @@ public class FancyTreeTests extends ComponentTest
         moveTo("1.1.1");
         Assert.assertFalse("drop-into style was not removed from cell", node.getStyleClass().contains(FancyTreeCell.DROP_ON_STYLE_NAME));
 
-        drop(); // leave the mouse in a normal state by dropping the drag that we started.
+        // leave the mouse in a normal state by dropping the drag that we started. If this doesn't happen, it can affect the next test
+        drop();
+        clickOn("1.1");
+        }
+
+    @Test
+    public void dropBeforeStyleApplied()
+        {
+        createBasicTreeAndData();
+
+        ExampleDataNode destination_node = _model.getNodeByName("1.2.2");
+        Node destination_area = lookup(destination_node.getName()).query();
+        drag("1.1.1", MouseButton.PRIMARY);
+        moveTo(destination_node.getName());
+        moveBy(0, - destination_area.getBoundsInParent().getHeight() * 0.4d);
+
+        Node node = lookup(destination_node.getName()).query();
+        Assert.assertTrue("drop-before style is missing from cell", node.getStyleClass().contains(FancyTreeCell.DROP_BEFORE_STYLE_NAME));
+
+        moveTo("1.1.1");
+        Assert.assertFalse("drop-before style was not removed from cell", node.getStyleClass().contains(FancyTreeCell.DROP_BEFORE_STYLE_NAME));
+
+        // leave the mouse in a normal state by dropping the drag that we started. If this doesn't happen, it can affect the next test
+        drop();
+        clickOn("1.1");
+        }
+
+    @Test
+    public void dropAfterStyleApplied()
+        {
+        createBasicTreeAndData();
+
+        ExampleDataNode destination_node = _model.getNodeByName("1.2.2");
+        Node destination_area = lookup(destination_node.getName()).query();
+        drag("1.1.1", MouseButton.PRIMARY);
+        moveTo(destination_node.getName());
+        moveBy(0, destination_area.getBoundsInParent().getHeight() * 0.4d);
+
+        Node node = lookup(destination_node.getName()).query();
+        Assert.assertTrue("drop-after style is missing from cell", node.getStyleClass().contains(FancyTreeCell.DROP_AFTER_STYLE_NAME));
+
+        moveTo("1.1.1");
+        Assert.assertFalse("drop-after style was not removed from cell", node.getStyleClass().contains(FancyTreeCell.DROP_AFTER_STYLE_NAME));
+
+        // leave the mouse in a normal state by dropping the drag that we started. If this doesn't happen, it can affect the next test
+        drop();
+        clickOn("1.1");
         }
 
     @Test
