@@ -164,6 +164,26 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         return _selected_nodes;
         }
 
+    public ExampleDataNode getSelectedNode()
+        {
+        if (_selected_nodes.size() == 1)
+            return _selected_nodes.get(0);
+        return null;
+        }
+
+    @Override
+    public void handleDoubleClick(boolean control_down, boolean shift_down, boolean alt_down)
+        {
+        if (_selected_nodes.size() < 1)
+            return;
+        _double_clicked_node_name = _selected_nodes.get(0).getName();
+        }
+
+    public String getDoubleClickedNodeName()
+        {
+        return _double_clicked_node_name;
+        }
+
     private List<ExampleDataNode> _selected_nodes = Collections.emptyList();
     private List<ExampleDataNode> _cut_or_copied_nodes = Collections.emptyList();
     private boolean _cut = false;
@@ -173,6 +193,8 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
     public ObservableList<TreeItem<ExampleTreeNodeFacade>> _dragged_items;
     public List<ExampleDataNode> _dropped_nodes;
     public Object _dropped_content;
+
+    private String _double_clicked_node_name;
 
     private ExampleDataNode _root;
 

@@ -492,6 +492,16 @@ public class FancyTreeTests extends ComponentTest
         drop(); // leave the mouse in a normal state by dropping the drag that we started.
         }
 
+    @Test
+    public void doubleClick()
+        {
+        createBasicTreeAndData();
+        ExampleDataNode target_node = _model.getNodeByName("1.2.1");
+        doubleClickOn(target_node.getName());
+
+        Assert.assertEquals("double-click detected on wrong node", target_node.getName(), _operations_handler.getDoubleClickedNodeName());
+        }
+
     private void createBasicTreeAndData()
         {
         ExampleDataNode root = ExampleDataNodeBuilder.create(new int[] {2,2});

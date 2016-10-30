@@ -86,6 +86,11 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             event.consume();
             });
 
+        new DoubleClickInterceptor(this, event ->
+            {
+            if (event.getClickCount() == 2)
+                _handler.handleDoubleClick(event.isControlDown(), event.isShiftDown(), event.isAltDown());
+            });
         }
 
     @Override
