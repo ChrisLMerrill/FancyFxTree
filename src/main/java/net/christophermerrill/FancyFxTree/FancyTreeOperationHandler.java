@@ -3,7 +3,6 @@ package net.christophermerrill.FancyFxTree;
 import javafx.collections.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
-import net.christophermerrill.FancyFxTree.example.*;
 
 import java.util.*;
 
@@ -12,7 +11,7 @@ import java.util.*;
  */
 public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
     {
-    public void selectionChanged(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items) { }
+    public void selectionChanged(ObservableList<TreeItem<T>> selected_items) { }
 
     public boolean handleDeleteKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
     public boolean handleCutKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
@@ -20,7 +19,7 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
     public boolean handlePasteKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
 
     public StartDragInfo startDrag(List<List<Integer>> selection_paths, ObservableList<TreeItem<T>> selected_items) { return null; }
-    public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, FancyTreeNodeFacade item, DropLocation location) { return false; }
+    public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, T item, DropLocation location) { return false; }
     public void handleDoubleClick(boolean control_down, boolean shift_down, boolean alt_down) { }
 
     public DragOverInfo dragOver(Dragboard dragboard)

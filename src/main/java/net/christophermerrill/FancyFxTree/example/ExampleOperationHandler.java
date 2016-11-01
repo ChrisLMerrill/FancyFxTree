@@ -108,7 +108,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, FancyTreeNodeFacade item, DropLocation location)
+    public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, ExampleTreeNodeFacade item, DropLocation location)
         {
         if (dragboard.getContent(LIST_OF_NODES) != null)
             {
@@ -118,15 +118,15 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
             switch (location)
                 {
                 case BEFORE:
-                    parent = _root.findParentFor((ExampleDataNode) item.getModelNode());
+                    parent = _root.findParentFor(item.getModelNode());
                     add_index = parent.getChildren().indexOf(item.getModelNode());
                     break;
                 case ON:
-                    parent = (ExampleDataNode) item.getModelNode();
-                    add_index = ((ExampleDataNode) item.getModelNode()).getChildren().size();
+                    parent = item.getModelNode();
+                    add_index = (item.getModelNode()).getChildren().size();
                     break;
                 case AFTER:
-                    parent = _root.findParentFor((ExampleDataNode) item.getModelNode());
+                    parent = _root.findParentFor(item.getModelNode());
                     add_index = parent.getChildren().indexOf(item.getModelNode()) + 1;
                     break;
                 default:
