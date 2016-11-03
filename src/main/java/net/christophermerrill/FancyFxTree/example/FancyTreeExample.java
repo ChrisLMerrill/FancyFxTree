@@ -62,7 +62,7 @@ public class FancyTreeExample extends Application
         _status = new Label();
         root.setBottom(_status);
 
-        URL resource = getClass().getResource("ExampleTree.css");
+        URL resource = getClass().getResource("FancyTreeExample.css");
         _tree.getStylesheets().add(resource.toExternalForm());
 
         stage.setScene(new Scene(root, 300, 250));

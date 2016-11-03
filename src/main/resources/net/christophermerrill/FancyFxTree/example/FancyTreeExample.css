@@ -1,3 +1,7 @@
+.fancytreecell {
+    -fx-padding: 1;
+}
+
 .fancytreecell:selected {
     -fx-text-fill: black;
     -fx-border-radius: 5;
