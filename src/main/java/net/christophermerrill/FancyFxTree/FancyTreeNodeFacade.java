@@ -1,5 +1,7 @@
 package net.christophermerrill.FancyFxTree;
 
+import javafx.scene.*;
+
 import java.util.*;
 
 /**
@@ -17,10 +19,21 @@ public interface FancyTreeNodeFacade<T>
      * object, including registering/deregistering any listeners on the underlying data model.
      */
     FancyTreeNodeFacade<T> copyAndDestroy();
+
+    /**
+     * This node facade will no longer be used. Implementers should deregister listeners and should
+     * no longer make calls to the item facade.
+     */
     void destroy();
+
     List<FancyTreeNodeFacade<T>> getChildren();
     String getLabelText();
     T getModelNode();
+
+    /**
+     * Return an icon for the tree item or null if none.
+     */
+    Node getIcon();
 
     void setTreeItemFacade(FancyTreeItemFacade item_facade);
     }

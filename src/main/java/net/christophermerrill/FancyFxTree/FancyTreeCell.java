@@ -106,7 +106,7 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
         else
             {
             setText(item.getLabelText());
-            setGraphic(null);
+            setGraphic(item.getIcon());
             }
         }
 

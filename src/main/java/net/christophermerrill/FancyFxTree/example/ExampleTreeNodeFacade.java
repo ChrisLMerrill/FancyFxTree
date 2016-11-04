@@ -1,5 +1,6 @@
 package net.christophermerrill.FancyFxTree.example;
 
+import javafx.scene.*;
 import net.christophermerrill.FancyFxTree.*;
 
 import java.util.*;
@@ -41,6 +42,12 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
             return _model.getName();
         else
             return String.format("%s (%s)", _model.getName(), _model.getExtraData());
+        }
+
+    @Override
+    public Node getIcon()
+        {
+        return null;
         }
 
     @Override
