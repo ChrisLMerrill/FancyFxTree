@@ -43,7 +43,7 @@ public class FancyTreeTests extends ComponentTest
     @Test
     public void multipleNodesSelected()
         {
-
+        // TODO
         }
 
     @Test
@@ -359,6 +359,20 @@ public class FancyTreeTests extends ComponentTest
         }
 
     @Test
+    public void disableDragAndDrop()
+        {
+        _enable_dnd = false;
+        createBasicTreeAndData();
+
+        ExampleDataNode target = _model.getNodeByName("1.1");
+        ExampleDataNode destination = _model.getNodeByName("1.2");
+        drag(target.getName(), MouseButton.PRIMARY);
+        dropTo(destination.getName());
+
+        Assert.assertNull("something was dragged", _operations_handler._dragged_items);
+        }
+
+    @Test
     public void dragAndDropIntoDenied()
         {
         createBasicTreeAndData();
@@ -561,7 +575,7 @@ public class FancyTreeTests extends ComponentTest
         TreeItem<FancyTreeNodeFacade> root_item = FancyTreeItemBuilder.create(root_facade);
 
         _operations_handler = new ExampleOperationHandler(_model);
-        _tree = new FancyTreeView(_operations_handler);
+        _tree = new FancyTreeView(_operations_handler, _enable_dnd);
         _tree.setHoverExpandDuration(_hover_duration);
         _tree.setRoot(root_item);
         _tree.expandAll();
@@ -598,6 +612,7 @@ public class FancyTreeTests extends ComponentTest
     private ExampleDataNode _model;
     private FancyTreeView<ExampleTreeNodeFacade> _tree;
     private ExampleOperationHandler _operations_handler;
+    private boolean _enable_dnd = true;
     private long _hover_duration = FancyTreeView.DEFAULT_HOVER_EXPAND_DURATION;
     }
 

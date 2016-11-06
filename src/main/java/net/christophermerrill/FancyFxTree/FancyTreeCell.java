@@ -12,11 +12,23 @@ import java.util.*;
  */
 class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     {
-    FancyTreeCell(FancyTreeOperationHandler handler)
+    FancyTreeCell(FancyTreeOperationHandler handler, boolean enable_dnd)
         {
         addStyle(CELL_STYLE_NAME);
         _handler = handler;
 
+        if (enable_dnd)
+            setupDragAndDrop();
+
+        new DoubleClickInterceptor(this, event ->
+            {
+            if (event.getClickCount() == 2)
+                _handler.handleDoubleClick(event.isControlDown(), event.isShiftDown(), event.isAltDown());
+            });
+        }
+
+    private void setupDragAndDrop()
+        {
         setOnDragEntered(e ->
             {
             resetCursorPosition();
@@ -84,12 +96,6 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             removeStyle(DROP_ON_STYLE_NAME);
             removeStyle(DROP_AFTER_STYLE_NAME);
             event.consume();
-            });
-
-        new DoubleClickInterceptor(this, event ->
-            {
-            if (event.getClickCount() == 2)
-                _handler.handleDoubleClick(event.isControlDown(), event.isShiftDown(), event.isAltDown());
             });
         }
 

@@ -28,14 +28,20 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
     @SuppressWarnings("WeakerAccess") // part of public API
     public FancyTreeView(FancyTreeOperationHandler ops_handler)
         {
+        this(ops_handler, true);
+        }
+
+    public FancyTreeView(FancyTreeOperationHandler ops_handler, boolean enable_dnd)
+        {
         _ops_handler = ops_handler;
+        _enable_dnd = enable_dnd;
         new FancyTreeKeyHandler(this, _ops_handler);
         setCellFactory(new Callback<TreeView, TreeCell>()
             {
             @Override
             public TreeCell call(TreeView param)
                 {
-                FancyTreeCell cell = new FancyTreeCell(_ops_handler);
+                FancyTreeCell cell = new FancyTreeCell(_ops_handler, _enable_dnd);
                 cell.setHoverExpandDuration(_hover_expand_duration);
                 return cell;
                 }
@@ -152,6 +158,8 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         }
 
     private final FancyTreeOperationHandler _ops_handler;
+    private final boolean _enable_dnd;
+
     private long _hover_expand_duration = DEFAULT_HOVER_EXPAND_DURATION;
     static final long DEFAULT_HOVER_EXPAND_DURATION = 2000;
     }
