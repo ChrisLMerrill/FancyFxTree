@@ -13,7 +13,7 @@ import java.util.*;
  * of TreeView. This includes asynchronous state changes and complex user interactions, such as drag-and-drop.
  *
  * Fancy features include:
- * - update view when the model node properties change (not just when the entire model node is replaced). This requires the model adapter to notify the FancyTreeItemFacade when these changes happen.
+ * - update view when the model node properties change (not just when the entire model node is replaced). This requires the custom FancyTreeNode extension to notify the FancyTreeItemFacade when these changes happen.
  * - update view from asynchronous events (as above)
  * - smart scroll-to-item behavior
  * - expand tree to make an item visible
@@ -31,6 +31,9 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         this(ops_handler, true);
         }
 
+    /**
+     * @param enable_dnd False to disable drag-and-drop support.
+     */
     public FancyTreeView(FancyTreeOperationHandler ops_handler, boolean enable_dnd)
         {
         _ops_handler = ops_handler;
