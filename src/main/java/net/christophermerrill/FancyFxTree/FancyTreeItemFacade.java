@@ -29,23 +29,26 @@ public class FancyTreeItemFacade
         FancyTreeItemBuilder.addChild(_item, child, index);
         }
 
-    public void removeChild(FancyTreeNodeFacade child, int index)
+    public void removeChild(int index, FancyTreeNodeFacade child)
         {
         try
             {
             FancyTreeNodeFacade node = _item.getChildren().get(index).getValue();
-            if (node.getModelNode().equals(child.getModelNode()))
+            if (child == null || node.getModelNode().equals(child.getModelNode()))
                 {
-                _item.getChildren().remove(index);
-                child.destroy();
+                TreeItem<FancyTreeNodeFacade> remove_item = _item.getChildren().remove(index);
+                remove_item.getValue().destroy();
                 }
             else
                 throw new IllegalArgumentException(String.format("The indexed sub-item (%d) didn't match the node selected for removal: %s", index, child.getModelNode().toString()));
             }
         catch (Exception e)
             {
-         // index doesn't exist
-            throw new IllegalArgumentException(String.format("Unable to locate the indexed sub-item (%d) for removal: %s", index, child.getModelNode().toString()));
+            // index doesn't exist
+            String child_description = "(unknown)";
+            if (child != null)
+                child_description = child.getModelNode().toString();
+            throw new IllegalArgumentException(String.format("Unable to locate the indexed sub-item (%d) for removal: %s", index, child_description));
             }
         }
 

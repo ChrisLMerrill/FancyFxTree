@@ -95,7 +95,7 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         @Override
         public void childRemoved(ExampleDataNode child, int index)
             {
-            _item_facade.removeChild(new ExampleTreeNodeFacade(child), index);
+            _item_facade.removeChild(index, new ExampleTreeNodeFacade(child));
             _children.remove(index);
             }
 

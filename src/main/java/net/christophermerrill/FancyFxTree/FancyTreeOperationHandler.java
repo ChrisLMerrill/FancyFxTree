@@ -17,6 +17,7 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
     public boolean handleCutKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
     public boolean handleCopyKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
     public boolean handlePasteKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
+    public boolean handleUndoKeystroke() { return false; }
 
     public StartDragInfo startDrag(List<List<Integer>> selection_paths, ObservableList<TreeItem<T>> selected_items) { return null; }
     public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, T item, DropLocation location) { return false; }

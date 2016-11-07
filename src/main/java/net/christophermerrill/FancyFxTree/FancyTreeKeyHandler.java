@@ -29,6 +29,8 @@ class FancyTreeKeyHandler
             else if ((event.isControlDown() && event.getCode().equals(KeyCode.V))
                 || (event.isShiftDown() && event.getCode().equals(KeyCode.INSERT)))
                 handled = _handler.handlePasteKeystroke(selected_items);
+            else if (event.getCode().equals(KeyCode.Z) && event.isControlDown())
+                handled = _handler.handleUndoKeystroke();
             else
                 return;
 

@@ -89,6 +89,13 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
+    public boolean handleUndoKeystroke()
+        {
+        System.out.println("Undo is not implemented for this example");
+        return false;
+        }
+
+    @Override
     public StartDragInfo startDrag(List<List<Integer>> selection_paths, ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         StartDragInfo info = new StartDragInfo();
