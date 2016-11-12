@@ -186,6 +186,15 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         _double_clicked_node_name = _selected_nodes.get(0).getName();
         }
 
+    @Override
+    public ContextMenu getContextMenu(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+        {
+        ContextMenu menu = new ContextMenu();
+        menu.getItems().add(new MenuItem(MENU_ITEM_1));
+        menu.getItems().add(new MenuItem(MENU_ITEM_2));
+        return menu;
+        }
+
     public String getDoubleClickedNodeName()
         {
         return _double_clicked_node_name;
@@ -206,6 +215,9 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
     private ExampleDataNode _root;
 
     private final static DataFormat LIST_OF_NODES = new DataFormat("application/x-ListOfExampleDataNodes");
+
+    public final static String MENU_ITEM_1 = "click me";
+    public final static String MENU_ITEM_2 = "click me 2";
     }
 
 

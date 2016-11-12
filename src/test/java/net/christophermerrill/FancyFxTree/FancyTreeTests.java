@@ -562,6 +562,16 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertEquals("double-click detected on wrong node", target_node.getName(), _operations_handler.getDoubleClickedNodeName());
         }
 
+    @Test
+    public void showContextMenu()
+        {
+        createBasicTreeAndData();
+        ExampleDataNode target_node = _model.getNodeByName("1.1");
+        clickOn(target_node.getName(), MouseButton.SECONDARY);
+
+        Assert.assertTrue("context menu not visible", exists(ExampleOperationHandler.MENU_ITEM_1));
+        }
+
     private void createBasicTreeAndData()
         {
         ExampleDataNode root = ExampleDataNodeBuilder.create(new int[] {2,2});

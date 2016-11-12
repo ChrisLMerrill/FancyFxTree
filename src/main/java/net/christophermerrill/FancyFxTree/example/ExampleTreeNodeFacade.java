@@ -1,6 +1,6 @@
 package net.christophermerrill.FancyFxTree.example;
 
-import javafx.scene.*;
+import javafx.scene.Node;
 import net.christophermerrill.FancyFxTree.*;
 
 import java.util.*;

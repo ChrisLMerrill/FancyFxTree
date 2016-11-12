@@ -3,6 +3,7 @@ package net.christophermerrill.FancyFxTree;
 import javafx.application.*;
 import javafx.collections.*;
 import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.util.*;
 
 import java.util.*;
@@ -54,6 +55,22 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
             {
             _ops_handler.selectionChanged(getSelectionModel().getSelectedItems());
+            });
+
+        addEventFilter(MouseEvent.MOUSE_RELEASED, e->
+            {
+            if (_context_menu != null)
+                {
+                _context_menu.hide();
+                _context_menu = null;
+                }
+            if (e.getButton() == MouseButton.SECONDARY)
+                {
+                ObservableList selections = getSelectionModel().getSelectedItems();
+                _context_menu = _ops_handler.getContextMenu(selections);
+                if (_context_menu != null)
+                    _context_menu.show(this, e.getScreenX(), e.getScreenY());
+                }
             });
         }
 
@@ -162,6 +179,7 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
 
     private final FancyTreeOperationHandler _ops_handler;
     private final boolean _enable_dnd;
+    private ContextMenu _context_menu = null;
 
     private long _hover_expand_duration = DEFAULT_HOVER_EXPAND_DURATION;
     static final long DEFAULT_HOVER_EXPAND_DURATION = 2000;
