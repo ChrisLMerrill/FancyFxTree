@@ -1,7 +1,6 @@
 package net.christophermerrill.FancyFxTree;
 
 import javafx.scene.*;
-import javafx.scene.control.*;
 
 import java.util.*;
 
@@ -28,6 +27,7 @@ public interface FancyTreeNodeFacade<T>
     void destroy();
 
     List<FancyTreeNodeFacade<T>> getChildren();
+    Node getCustomCellUI();
     String getLabelText();
     T getModelNode();
 
