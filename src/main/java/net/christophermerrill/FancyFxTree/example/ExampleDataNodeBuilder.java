@@ -39,6 +39,21 @@ public class ExampleDataNodeBuilder
             }
         }
 
+    public static ExampleDataNode createRandomLeaf(ExampleDataNode root)
+        {
+        ExampleDataNode node = root;
+        List<ExampleDataNode> children = node.getChildren();
+        while (children.size() > 0)
+            {
+            node = children.get(new Random().nextInt(children.size()));
+            children = node.getChildren();
+            }
+
+        ExampleDataNode new_node = new ExampleDataNode(node.getName() + " - new leaf ");
+        node.addChild(new_node);
+        System.out.println("added new random leaf: " + new_node.getName());
+        return new_node;
+        }
     }
 
 

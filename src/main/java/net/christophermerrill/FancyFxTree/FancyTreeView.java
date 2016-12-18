@@ -35,6 +35,7 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
     /**
      * @param enable_dnd False to disable drag-and-drop support.
      */
+    @SuppressWarnings("unused,WeakerAccess")  // public API
     public FancyTreeView(FancyTreeOperationHandler ops_handler, boolean enable_dnd)
         {
         _ops_handler = ops_handler;
@@ -81,10 +82,22 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         expandNodeAndChilren(root);
         }
 
-    private void expandNodeAndChilren(TreeItem<FancyTreeNodeFacade> root)
+    private void expandNodeAndChilren(TreeItem<FancyTreeNodeFacade> node)
         {
-        root.setExpanded(true);
-        root.getChildren().forEach(this::expandNodeAndChilren);
+        node.setExpanded(true);
+        node.getChildren().forEach(this::expandNodeAndChilren);
+        }
+
+    public void collapseAll()
+        {
+        TreeItem<FancyTreeNodeFacade> root = getRoot();
+        collapseNodeAndChildren(root);
+        }
+
+    private void collapseNodeAndChildren(TreeItem<FancyTreeNodeFacade> node)
+        {
+        node.getChildren().forEach(this::collapseNodeAndChildren);
+        node.setExpanded(false);
         }
 
     @SuppressWarnings("WeakerAccess") // part of public API
@@ -93,7 +106,35 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         TreeItem<T> item = findItemForModelNode(node);
         if (item == null)
             return false;
-        item.setExpanded(true);
+        while (item != null)
+            {
+            item.setExpanded(true);
+            item = item.getParent();
+            }
+        return true;
+        }
+
+    @SuppressWarnings("unused")  // public API
+    public boolean expandAndScrollTo(Object node)
+        {
+        if (!expandToMakeVisible(node))
+            return false;
+        scrollToVisibleItem(node);
+        return true;
+        }
+
+    @SuppressWarnings("unused")  // public API
+    public boolean expandScrollToAndSelect(Object node)
+        {
+        if (!expandToMakeVisible(node))
+            return false;
+        scrollToVisibleItem(node);
+
+        TreeItem item = findItemForModelNode(node);
+        if (item == null)
+            return false;
+
+        getSelectionModel().select(item);
         return true;
         }
 
@@ -132,12 +173,24 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         }
 
     @SuppressWarnings("WeakerAccess") // part of public API
-    public void scrollToAndMakeVisible(Object last_node)
+    public void scrollToAndMakeVisible(Object node)
         {
-        TreeItem item = findItemForModelNode(last_node);
+        TreeItem item = findItemForModelNode(node);
         if (item == null)
             return;
-        expandNodeAndChilren(item); // do this first - can't scoll to an item if it is hidden (any ancestor is not expanded)
+        expandToMakeVisible(item); // do this first - can't scoll to an item if it is hidden (any ancestor is not expanded)
+
+        int index = findIndexOfVisibleItem(item);
+        if (!((FancyTreeViewSkin)getSkin()).isIndexVisible(index))  // don't scroll if it is already visible on screen
+            Platform.runLater(() -> scrollTo(index));
+        }
+
+    @SuppressWarnings("unused,WeakerAccess")  // public API
+    public void scrollToVisibleItem(Object node)
+        {
+        TreeItem item = findItemForModelNode(node);
+        if (item == null)
+            return;
 
         int index = findIndexOfVisibleItem(item);
         if (!((FancyTreeViewSkin)getSkin()).isIndexVisible(index))  // don't scroll if it is already visible on screen

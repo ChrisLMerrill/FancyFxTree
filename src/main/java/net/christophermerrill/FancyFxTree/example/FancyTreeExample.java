@@ -30,6 +30,9 @@ public class FancyTreeExample extends Application
         button_bar.getChildren().add(createNodeChangeButton());
         _add_node_button = createAddNodeButton();
         button_bar.getChildren().add(_add_node_button);
+        button_bar.getChildren().add(createAddLeafNodeButton());
+        button_bar.getChildren().add(createExpandAllButton());
+        button_bar.getChildren().add(createCollapseAllButton());
         root.setTop(button_bar);
 
         _model_root = ExampleDataNodeBuilder.create(new int[] {4,1,3,2});
@@ -96,6 +99,34 @@ public class FancyTreeExample extends Application
             parent.addAfter(new ExampleDataNode("after " + node.getName()), node);
             });
         button.setDisable(true);
+        return button;
+        }
+
+    private Button createAddLeafNodeButton()
+        {
+        Button button = new Button();
+        button.setText("Add a leaf");
+        button.setOnAction(event ->
+            {
+            ExampleDataNode leaf = ExampleDataNodeBuilder.createRandomLeaf(_model_root);
+            _tree.expandScrollToAndSelect(leaf);
+            });
+        return button;
+        }
+
+    private Button createExpandAllButton()
+        {
+        Button button = new Button();
+        button.setText("Expand All");
+        button.setOnAction(event -> _tree.expandAll());
+        return button;
+        }
+
+    private Button createCollapseAllButton()
+        {
+        Button button = new Button();
+        button.setText("Collapse All");
+        button.setOnAction(event -> _tree.collapseAll());
         return button;
         }
 

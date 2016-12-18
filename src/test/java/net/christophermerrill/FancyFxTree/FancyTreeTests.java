@@ -46,6 +46,7 @@ public class FancyTreeTests extends ComponentTest
         // TODO
         }
 
+
     @Test
     public void modelValueChanged()
         {
@@ -478,6 +479,28 @@ public class FancyTreeTests extends ComponentTest
         // To test manually, set a breakpoint on the next line and visually verify
         // that the view is scrolled to the bottom of the tree (1.2.2.2.2.2)
         System.out.println("is node 1.2.2.2.2.2 visible?");
+        }
+
+    @Test
+    public void expandScrollToAndSelectNewItem()
+        {
+        ExampleDataNode root = ExampleDataNodeBuilder.create(new int[] {3,3,3,3,3});
+        setupTree(root);
+        _tree.collapseAll();
+        waitForUiEvents();
+
+        ExampleDataNode leaf = ExampleDataNodeBuilder.createRandomLeaf(root);
+        waitForUiEvents();
+
+        // can't actually verify if it is visible (see above)...we can only check if it is in the node graph, which doesn't help here
+        //Assert.assertFalse(isVisible(leaf.getName()));
+
+        _tree.expandScrollToAndSelect(leaf);
+        waitForUiEvents();
+
+        // as with previous test, can't test this automated. Add breakpoint below and check manually
+        //Assert.assertTrue(isVisible(leaf.getName()));
+        //System.out.println(String.format("is node '%s' visible?", leaf.getName()));
         }
 
     @Test
