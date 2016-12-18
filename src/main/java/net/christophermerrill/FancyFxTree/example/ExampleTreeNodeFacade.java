@@ -51,6 +51,12 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         }
 
     @Override
+    public Node getCustomCellUI()
+        {
+        return null;
+        }
+
+    @Override
     public ExampleDataNode getModelNode()
         {
         return _model;

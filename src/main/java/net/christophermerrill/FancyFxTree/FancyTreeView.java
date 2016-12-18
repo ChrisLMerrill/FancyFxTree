@@ -135,6 +135,8 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
     public void scrollToAndMakeVisible(Object last_node)
         {
         TreeItem item = findItemForModelNode(last_node);
+        if (item == null)
+            return;
         expandNodeAndChilren(item); // do this first - can't scoll to an item if it is hidden (any ancestor is not expanded)
 
         int index = findIndexOfVisibleItem(item);

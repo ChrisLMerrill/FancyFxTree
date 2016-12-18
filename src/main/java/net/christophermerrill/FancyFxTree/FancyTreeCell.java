@@ -2,6 +2,7 @@ package net.christophermerrill.FancyFxTree;
 
 import javafx.event.*;
 import javafx.geometry.*;
+import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 
@@ -111,8 +112,17 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             }
         else
             {
-            setText(item.getLabelText());
-            setGraphic(item.getIcon());
+            Node node = item.getCustomCellUI();
+            if (node == null)
+                {
+                setText(item.getLabelText());
+                setGraphic(item.getIcon());
+                }
+            else
+                {
+                setText(null);
+                setGraphic(node);
+                }
             }
         }
 
