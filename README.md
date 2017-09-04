@@ -36,12 +36,14 @@ Additional features:
 * Hovering over a node during drag will expand it (hover duration is customizable)
 * Clicking nodes does not expand/collapse them...it merely selects them. The user 
 must click the chevron (expander) icon to expand/collapsed (like most other tree 
-implementations that are not solely for navigating a hierarchy)  
+implementations that are not solely for navigating a hierarchy)
+* Supply your own CSS for the look of a selected tree cell and the visual effects
+for drop before/on/after indicators.  
 
 ## Example
 
 The included example demonstrates many of the capabilities described above.
 
-![Example Screenshot](https://github.com/ChrisLMerrill/FancyFxTree/example-screenshot.png)
+![Example Screenshot](https://github.com/ChrisLMerrill/FancyFxTree/raw/master/example-screenshot.png)
 
 
