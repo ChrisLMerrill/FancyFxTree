@@ -20,7 +20,7 @@ import java.util.*;
  * - expand tree to make an item visible
  * - cut/copy/paste keystroke support implemented, including common OS key combinations (Windows)
  * - drag and drop support implemented, including tree-aware drop targets (drop before, into, or after)
- * - hover cursor over a tree item to expand it
+ * - hover cursor over a tree item to expand it during drag
  *
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */

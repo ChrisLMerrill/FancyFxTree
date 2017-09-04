@@ -17,7 +17,7 @@ class FancyTreeKeyHandler
         _tree.setOnKeyPressed(event ->
             {
             ObservableList selected_items = _tree.getSelectionModel().getSelectedItems();
-            boolean handled = false;
+            boolean handled;
             if (event.getCode().equals(KeyCode.DELETE) && !event.isShiftDown())
                 handled = _handler.handleDeleteKeystroke(selected_items);
             else if ((event.isControlDown() && event.getCode().equals(KeyCode.C))
