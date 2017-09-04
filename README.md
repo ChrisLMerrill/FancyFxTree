@@ -3,12 +3,12 @@ An extension of JavaFX TreeView with many advanced features already implemented.
 learning the intracacies of the TreeView APIs, simply extend a few base classes and override
 the behaviors you need.  
 
-Notably, it provides separation (through a facade implementation that you provide) between the 
-TreeView expectations of the model classes and the implementation of your data tree - so you 
-don't have to design your data model around the expectations of the TreeView authors. Included 
+Notably, it provides separation between the TreeView expectations of the model classes and the implementation 
+of your data tree - so you don't have to design your data model around the expectations of the TreeView authors
+(through a facade interface that you must implement). Included 
 is the ability to change how a tree item is rendered based on dynamic changes in your application
-that are not indicated in your tree data model. The JavaFX TreeView assumes that this could only 
-happen if the model object changes identity.  This is designed to allow updates to the appearance 
+that are not necessarily a reflection of the nodes in your tree. The JavaFX TreeView assumes that this could 
+only happen if the model object changes identity.  This is designed to allow updates to the appearance 
 of a cell based on external changes (possibly asynchronous).   
 
 Enable these capabilities by implementing the FancyTreeOperationHandler:
