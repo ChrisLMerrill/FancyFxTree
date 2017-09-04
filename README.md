@@ -46,4 +46,8 @@ The included example demonstrates many of the capabilities described above.
 
 ![Example Screenshot](https://github.com/ChrisLMerrill/FancyFxTree/raw/master/example-screenshot.png)
 
+## Usages
 
+The FancyFxTree is used by the navigation view in the [MuseIDE](http://ide4selenium.com), an
+IDE for web test automation using Selenium. Most of the implementation was taken from MuseIDE's
+test editor...which will soon be converted to use it as well.
