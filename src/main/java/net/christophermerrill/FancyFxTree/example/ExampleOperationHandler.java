@@ -9,6 +9,8 @@ import net.christophermerrill.FancyFxTree.*;
 import java.util.*;
 import java.util.stream.*;
 
+import static net.christophermerrill.FancyFxTree.FancyTreeOperationHandler.EditType.*;
+
 /**
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
@@ -20,7 +22,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean handleDeleteKeystroke(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+    public boolean handleDelete(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         for (TreeItem<ExampleTreeNodeFacade> item : selected_items)
             {
@@ -33,7 +35,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean handleCutKeystroke(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+    public boolean handleCut(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         _cut = true;
         _copy = false;
@@ -42,7 +44,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean handleCopyKeystroke(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+    public boolean handleCopy(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         _copy = true;
         _cut = false;
@@ -56,11 +58,11 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean handlePasteKeystroke(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
+    public boolean handlePaste(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
         {
         if (!_copy && !_cut)
             {
-            System.out.println("Expected either copy or paste. Neither...fail!");
+            System.out.println("Expected either copy or cut. Neither...fail!");
             return false;
             }
 
@@ -89,7 +91,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public boolean handleUndoKeystroke()
+    public boolean handleUndo()
         {
         System.out.println("Undo is not implemented for this example");
         return false;
@@ -192,6 +194,8 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         ContextMenu menu = new ContextMenu();
         menu.getItems().add(new MenuItem(MENU_ITEM_1));
         menu.getItems().add(new MenuItem(MENU_ITEM_2));
+        menu.getItems().add(new SeparatorMenuItem());
+        menu.getItems().addAll(createEditMenuItems(selected_items, Cut, Copy, Paste, Delete));
         return menu;
         }
 
@@ -201,7 +205,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     private List<ExampleDataNode> _selected_nodes = Collections.emptyList();
-    private List<ExampleDataNode> _cut_or_copied_nodes = Collections.emptyList();
+    public List<ExampleDataNode> _cut_or_copied_nodes = Collections.emptyList();
     private boolean _cut = false;
     private boolean _copy = false;
 

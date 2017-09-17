@@ -19,18 +19,18 @@ class FancyTreeKeyHandler
             ObservableList selected_items = _tree.getSelectionModel().getSelectedItems();
             boolean handled;
             if (event.getCode().equals(KeyCode.DELETE) && !event.isShiftDown())
-                handled = _handler.handleDeleteKeystroke(selected_items);
+                handled = _handler.handleDelete(selected_items);
             else if ((event.isControlDown() && event.getCode().equals(KeyCode.C))
                 || (event.isControlDown() && event.getCode().equals(KeyCode.INSERT)))
-                handled = _handler.handleCopyKeystroke(selected_items);
+                handled = _handler.handleCopy(selected_items);
             else if ((event.isControlDown() && event.getCode().equals(KeyCode.X))
                 || (event.isShiftDown() && event.getCode().equals(KeyCode.DELETE)))
-                handled = _handler.handleCutKeystroke(selected_items);
+                handled = _handler.handleCut(selected_items);
             else if ((event.isControlDown() && event.getCode().equals(KeyCode.V))
                 || (event.isShiftDown() && event.getCode().equals(KeyCode.INSERT)))
-                handled = _handler.handlePasteKeystroke(selected_items);
+                handled = _handler.handlePaste(selected_items);
             else if (event.getCode().equals(KeyCode.Z) && event.isControlDown())
-                handled = _handler.handleUndoKeystroke();
+                handled = _handler.handleUndo();
             else
                 return;
 

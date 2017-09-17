@@ -13,11 +13,11 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
     {
     public void selectionChanged(ObservableList<TreeItem<T>> selected_items) { }
 
-    public boolean handleDeleteKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
-    public boolean handleCutKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
-    public boolean handleCopyKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
-    public boolean handlePasteKeystroke(ObservableList<TreeItem<T>> selected_items) { return false; }
-    public boolean handleUndoKeystroke() { return false; }
+    public boolean handleDelete(ObservableList<TreeItem<T>> selected_items) { return false; }
+    public boolean handleCut(ObservableList<TreeItem<T>> selected_items) { return false; }
+    public boolean handleCopy(ObservableList<TreeItem<T>> selected_items) { return false; }
+    public boolean handlePaste(ObservableList<TreeItem<T>> selected_items) { return false; }
+    public boolean handleUndo() { return false; }
 
     public StartDragInfo startDrag(List<List<Integer>> selection_paths, ObservableList<TreeItem<T>> selected_items) { return null; }
     public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, T item, DropLocation location) { return false; }
@@ -95,6 +95,58 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
 
         List<TransferMode> _transfer_modes = new ArrayList<>();
         List<DropLocation> _drop_locations = new ArrayList<>();
+        }
+
+    /**
+     * Creates context menu items for the EditTypes provided. Call this from the
+     * #getContextMenu() method to easily add them to the menu.
+     */
+    protected MenuItem[] createEditMenuItems(ObservableList<TreeItem<T>> selected_items, EditType... types)
+        {
+        MenuItem[] items = new MenuItem[types.length];
+        int index = 0;
+        for (EditType type : types)
+            {
+            MenuItem item = new MenuItem(type.name());
+            item.setId(type.getMenuId());
+            items[index++] = item;
+            switch (type)
+                {
+                case Cut:
+                    item.setOnAction(event -> handleCut(selected_items));
+                    break;
+                case Copy:
+                    item.setOnAction(event -> handleCopy(selected_items));
+                    break;
+                case Delete:
+                    item.setOnAction(event -> handleDelete(selected_items));
+                    break;
+                case Paste:
+                    item.setOnAction(event -> handlePaste(selected_items));
+                    break;
+                }
+            }
+        return items;
+        }
+
+    public enum EditType
+        {
+        Cut("ftoh-et-cut"),
+        Copy("ftoh-et-copy"),
+        Paste("ftoh-et-paste"),
+        Delete("ftoh-et-delete");
+
+        EditType(String id)
+            {
+            _id = id;
+            }
+
+        public String getMenuId()
+            {
+            return _id;
+            }
+
+        private String _id;
         }
     }
 

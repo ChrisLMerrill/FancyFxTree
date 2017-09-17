@@ -610,6 +610,57 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertTrue("context menu not visible", exists(ExampleOperationHandler.MENU_ITEM_1));
         }
 
+    @Test
+    public void cutByContextMenu()
+        {
+        createBasicTreeAndData();
+        ExampleDataNode target_node = _model.getNodeByName("1.1");
+        Assert.assertNotNull(target_node);
+        clickOn(target_node.getName(), MouseButton.SECONDARY);
+
+        Assert.assertTrue(exists(id(FancyTreeOperationHandler.EditType.Cut.getMenuId())));
+        clickOn(id(FancyTreeOperationHandler.EditType.Cut.getMenuId()));
+
+        Assert.assertEquals(1, _operations_handler._cut_or_copied_nodes.size());
+        Assert.assertEquals(_model.getNodeByName("1.1"), _operations_handler._cut_or_copied_nodes.get(0));
+        }
+
+    @Test
+    public void copyAndPasteByContextMenu()
+        {
+        createBasicTreeAndData();
+        ExampleDataNode target_node = _model.getNodeByName("1.2.1");
+        Assert.assertNotNull(target_node);
+        clickOn(target_node.getName(), MouseButton.SECONDARY);
+
+        Assert.assertTrue(exists(id(FancyTreeOperationHandler.EditType.Copy.getMenuId())));
+        clickOn(id(FancyTreeOperationHandler.EditType.Copy.getMenuId()));
+
+        Assert.assertEquals(1, _operations_handler._cut_or_copied_nodes.size());
+        Assert.assertEquals(_model.getNodeByName("1.2.1"), _operations_handler._cut_or_copied_nodes.get(0));
+
+        String copy_name = ExampleDataNode.getCopyName(target_node);
+        Assert.assertFalse(exists(copy_name));
+
+        clickOn(target_node.getName(), MouseButton.SECONDARY);
+        clickOn(id(FancyTreeOperationHandler.EditType.Paste.getMenuId()));
+        Assert.assertTrue(exists(copy_name));
+        }
+
+    @Test
+    public void deleteByContextMenu()
+        {
+        createBasicTreeAndData();
+        ExampleDataNode target_node = _model.getNodeByName("1.1");
+        Assert.assertNotNull(target_node);
+        clickOn(target_node.getName(), MouseButton.SECONDARY);
+
+        Assert.assertTrue(exists(id(FancyTreeOperationHandler.EditType.Delete.getMenuId())));
+        clickOn(id(FancyTreeOperationHandler.EditType.Delete.getMenuId()));
+
+        Assert.assertNull(_model.getNodeByName("1.1"));
+        }
+
     private void createBasicTreeAndData()
         {
         ExampleDataNode root = ExampleDataNodeBuilder.create(new int[] {2,2});
