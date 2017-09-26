@@ -47,6 +47,10 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
   }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2'
+}
+
 install {
     repositories.mavenInstaller {
     pom.project {
