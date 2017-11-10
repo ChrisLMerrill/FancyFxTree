@@ -17,11 +17,12 @@ repositories
 
 dependencies
     {
-    testCompile 'net.christophermerrill:TestFxUtils:1.0'
-    testCompile 'org.testfx:testfx-core:4.0.4-alpha'
-    testCompile 'org.testfx:testfx-junit:4.0.4-alpha'
-    testCompile 'org.testfx:testfx-legacy:4.0.4-alpha'
     testCompile 'junit:junit:4.12'
+    testCompile 'net.christophermerrill:TestFxUtils:1.0'
+    testCompile 'org.testfx:testfx-core:4.0.8-alpha'
+    testCompile 'org.testfx:testfx-junit:4.0.8-alpha'
+    testCompile 'org.testfx:testfx-legacy:4.0.8-alpha'
+    testCompile 'org.jfxtras:openjfx-monocle:1.8.0_20'
     }
 
 task sourcesJar(type: Jar) {
