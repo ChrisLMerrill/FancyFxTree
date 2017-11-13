@@ -11,34 +11,22 @@ import javafx.scene.input.*;
  *
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-class DoubleClickInterceptor implements EventDispatcher
+class DoubleClickInterceptor
     {
     DoubleClickInterceptor(TreeCell cell, EventHandler<MouseEvent> double_click_listener)
         {
-        _original_dispatcher = cell.getEventDispatcher();
-        cell.setEventDispatcher(this);
         _double_click_listener = double_click_listener;
+        cell.addEventHandler(MouseEvent.ANY, event ->
+	        {
+	        if (event.getClickCount() == 2 && event.getButton().equals(MouseButton.PRIMARY))
+		        {
+		        if (event.getEventType().equals(MouseEvent.MOUSE_CLICKED))
+		        	_double_click_listener.handle(event);
+	            event.consume();
+		        }
+	        });
         }
 
-    @Override
-    public Event dispatchEvent(Event event, EventDispatchChain tail)
-        {
-        if (event instanceof MouseEvent)
-            {
-            MouseEvent mouse_event = (MouseEvent) event;
-            if (mouse_event.getEventType().equals(MouseEvent.MOUSE_PRESSED)
-                && mouse_event.getButton() == MouseButton.PRIMARY
-                && mouse_event.getClickCount() >= 2
-                && !event.isConsumed())
-                {
-                _double_click_listener.handle(mouse_event);
-                event.consume();
-                }
-            }
-        return _original_dispatcher.dispatchEvent(event, tail);
-        }
-
-    private final EventDispatcher _original_dispatcher;
     private final EventHandler<MouseEvent> _double_click_listener;
     }
 
