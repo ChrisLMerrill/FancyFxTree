@@ -4,7 +4,6 @@ import javafx.application.*;
 import javafx.collections.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
-import javafx.util.*;
 
 import java.util.*;
 
@@ -41,22 +40,16 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         _ops_handler = ops_handler;
         _enable_dnd = enable_dnd;
         new FancyTreeKeyHandler(this, _ops_handler);
-        setCellFactory(new Callback<TreeView, TreeCell>()
-            {
-            @Override
-            public TreeCell call(TreeView param)
-                {
-                FancyTreeCell cell = new FancyTreeCell(_ops_handler, _enable_dnd);
-                cell.setHoverExpandDuration(_hover_expand_duration);
-                return cell;
-                }
-            });
+        setCellFactory(param ->
+	        {
+	        FancyTreeCell cell = new FancyTreeCell(_ops_handler, _enable_dnd);
+	        cell.setHoverExpandDuration(_hover_expand_duration);
+	        return cell;
+	        });
         setSkin(new FancyTreeViewSkin(this));
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-            {
-            _ops_handler.selectionChanged(getSelectionModel().getSelectedItems());
-            });
+	        _ops_handler.selectionChanged(getSelectionModel().getSelectedItems()));
 
         addEventFilter(MouseEvent.MOUSE_RELEASED, e->
             {
@@ -123,7 +116,7 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         return true;
         }
 
-    @SuppressWarnings("unused")  // public API
+    @SuppressWarnings({"unused", "UnusedReturnValue"})  // public API
     public boolean expandScrollToAndSelect(Object node)
         {
         if (!expandToMakeVisible(node))
@@ -232,6 +225,8 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         _hover_expand_duration = hover_expand_duration;
         }
 
+
+
     private final FancyTreeOperationHandler _ops_handler;
     private final boolean _enable_dnd;
     private ContextMenu _context_menu = null;
@@ -239,5 +234,3 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
     private long _hover_expand_duration = DEFAULT_HOVER_EXPAND_DURATION;
     static final long DEFAULT_HOVER_EXPAND_DURATION = 2000;
     }
-
-

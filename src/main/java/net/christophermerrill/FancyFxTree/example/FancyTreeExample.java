@@ -45,21 +45,10 @@ public class FancyTreeExample extends Application
                 _status.setText(String.format("%d items selected", selected_items.size()));
                 _add_node_button.setDisable(selected_items.size() != 1);
                 }
-
-            @Override
-            public void handleDoubleClick(boolean control_down, boolean shift_down, boolean alt_down)
-                {
-                super.handleDoubleClick(control_down, shift_down, alt_down);
-                ExampleDataNode node = getSelectedNode();
-                if (node == null)
-                    return;
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText(node.getName() + " was double-clicked.");
-                alert.show();
-                }
             });
         _tree.setRoot(new ExampleTreeNodeFacade(_model_root));
         _tree.expandAll();
+        _tree.setEditable(true);
         root.setCenter(_tree);
 
         _status = new Label();

@@ -173,6 +173,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         return _selected_nodes;
         }
 
+    @SuppressWarnings("unused")  // public API
     ExampleDataNode getSelectedNode()
         {
         if (_selected_nodes.size() == 1)
@@ -181,12 +182,12 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public void handleDoubleClick(boolean control_down, boolean shift_down, boolean alt_down)
-        {
-        if (_selected_nodes.size() < 1)
-            return;
-        _double_clicked_node_name = _selected_nodes.get(0).getName();
-        }
+    public void handleDoubleClick(TreeCell<ExampleTreeNodeFacade> cell, boolean control_down, boolean shift_down, boolean alt_down)
+	    {
+        _double_clicked_node_name = cell.getTreeItem().getValue().getModelNode().getName();
+        if (cell.getTreeView().isEditable())
+            cell.startEdit();
+	    }
 
     @Override
     public ContextMenu getContextMenu(ObservableList<TreeItem<ExampleTreeNodeFacade>> selected_items)
@@ -221,7 +222,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
     private final static DataFormat LIST_OF_NODES = new DataFormat("application/x-ListOfExampleDataNodes");
 
     public final static String MENU_ITEM_1 = "click me";
-    public final static String MENU_ITEM_2 = "click me 2";
+    private final static String MENU_ITEM_2 = "click me 2";
     }
 
 

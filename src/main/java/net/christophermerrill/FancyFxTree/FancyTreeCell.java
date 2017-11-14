@@ -22,10 +22,10 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             setupDragAndDrop();
 
         new DoubleClickInterceptor(this, event ->
-            {
-            if (event.getClickCount() == 2)
-                _handler.handleDoubleClick(event.isControlDown(), event.isShiftDown(), event.isAltDown());
-            });
+	        {
+	        if (event.getClickCount() == 2)
+		        _handler.handleDoubleClick(FancyTreeCell.this, event.isControlDown(), event.isShiftDown(), event.isAltDown());
+	        });
         }
 
     private void setupDragAndDrop()
@@ -112,21 +112,24 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             }
         else
             {
-            Node node = item.getCustomCellUI();
-            if (node == null)
-                {
-                setText(item.getLabelText());
-                setGraphic(item.getIcon());
-                }
-            else
-                {
-                setText(null);
-                setGraphic(node);
-                }
+            updateCellUI(item);
             }
         }
 
-    private final FancyTreeOperationHandler _handler;
+    private void updateCellUI(FancyTreeNodeFacade item)
+	    {
+	    Node node = item.getCustomCellUI();
+	    if (node == null)
+	        {
+	        setText(item.getLabelText());
+	        setGraphic(item.getIcon());
+	        }
+	    else
+	        {
+	        setText(null);
+	        setGraphic(node);
+	        }
+	    }
 
     private void addStyle(String new_style)
         {
@@ -164,11 +167,45 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
         _cursor_hover_since = 0;
         }
 
+    @Override
+    public void startEdit()
+	    {
+	    super.startEdit();
+	    if (getTreeView() != null
+		    && getTreeView().isEditable()
+		    && isEditable()
+		    && !_is_editing)
+		    {
+		    setText(null);
+		    final FancyTreeCellEditor editor = getCellEditor();
+		    setGraphic(editor.getNode());
+		    editor.getNode().requestFocus();
+		    _is_editing = true;
+		    }
+	    }
+
+    private boolean _is_editing = false;
+
+    @Override
+    public void cancelEdit()
+	    {
+	    updateCellUI(getItem());
+	    _is_editing = false;
+	    }
+
+    private FancyTreeCellEditor getCellEditor()
+	    {
+	    final TextCellEditor editor = new TextCellEditor();
+	    editor.setCell(this);
+	    return editor;
+	    }
+
     void setHoverExpandDuration(long hover_expand_duration)
         {
         _hover_expand_duration = hover_expand_duration;
         }
 
+    private final FancyTreeOperationHandler _handler;
     private FancyTreeOperationHandler.DropLocation _drop_location;
     private int _cursor_x;
     private int _cursor_y;

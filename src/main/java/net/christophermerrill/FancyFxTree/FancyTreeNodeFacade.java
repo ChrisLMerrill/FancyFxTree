@@ -37,5 +37,7 @@ public interface FancyTreeNodeFacade<T>
     Node getIcon();
 
     void setTreeItemFacade(FancyTreeItemFacade item_facade);
+
+    void textEdited(String new_value);
     }
 

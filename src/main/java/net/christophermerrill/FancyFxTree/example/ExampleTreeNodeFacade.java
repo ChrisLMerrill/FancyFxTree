@@ -63,6 +63,12 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         }
 
     @Override
+    public void textEdited(String new_value)
+	    {
+	    _model.setName(new_value);
+	    }
+
+    @Override
     public void setTreeItemFacade(FancyTreeItemFacade item_facade)
         {
         _item_facade = item_facade;
