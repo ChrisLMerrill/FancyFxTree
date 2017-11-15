@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
-class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
+public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     {
     FancyTreeCell(FancyTreeOperationHandler handler, boolean enable_dnd)
         {
@@ -170,7 +170,6 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     @Override
     public void startEdit()
 	    {
-	    super.startEdit();
 	    if (getTreeView() != null
 		    && getTreeView().isEditable()
 		    && isEditable()
@@ -189,13 +188,23 @@ class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     @Override
     public void cancelEdit()
 	    {
-	    updateCellUI(getItem());
 	    _is_editing = false;
+	    updateCellUI(getItem());
+	    }
+
+    @Override
+    public void commitEdit(FancyTreeNodeFacade facade)
+	    {
+	    if (_is_editing)
+		    _is_editing = false;
+	    updateCellUI(getItem());
 	    }
 
     private FancyTreeCellEditor getCellEditor()
 	    {
-	    final TextCellEditor editor = new TextCellEditor();
+	    FancyTreeCellEditor editor = getItem().getCustomCellEditor();
+	    if (editor == null)
+	        editor = new TextCellEditor();
 	    editor.setCell(this);
 	    return editor;
 	    }

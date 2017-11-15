@@ -487,7 +487,7 @@ public class FancyTreeTests extends ComponentTest
 		_tree.scrollToAndMakeVisible(last_node);
 		waitForUiEvents();
 
-		// there is currently no way to visibly determine if the item is visible on-screen.
+		// there is currently no way to positively determine if the item is visible on-screen.
 		// https://groups.google.com/forum/#!topic/testfx-discuss/R0WM_TaloDI
 		//
 		// This test is left here for manual use and documentation of the issue.
@@ -671,22 +671,29 @@ public class FancyTreeTests extends ComponentTest
 	@Test
 	public void editTextCompletedByTab()
 		{
-		testTextCompletion(KeyCode.TAB, true);
+		testTextEditCompletion(KeyCode.TAB, true);
 		}
 
 	@Test
 	public void cancelTextEdit()
 		{
-		testTextCompletion(KeyCode.ESCAPE, false);
+		testTextEditCompletion(KeyCode.ESCAPE, false);
 		}
 
 	@Test
 	public void editTextCompletedByEnter()
 		{
-		testTextCompletion(KeyCode.ENTER, true);
+		testTextEditCompletion(KeyCode.ENTER, true);
 		}
 
-	private void testTextCompletion(KeyCode final_keystroke, boolean changed)
+	@Test
+	public void editTwice()
+		{
+		testTextEditCompletion(KeyCode.ENTER, true);
+		testTextEditCompletion(KeyCode.ESCAPE, false);
+		}
+
+	private void testTextEditCompletion(KeyCode final_keystroke, boolean changed)
 		{
 		createBasicTreeAndData();
 		ExampleDataNode target_node = _model.getNodeByName("1.2.1");
@@ -696,19 +703,22 @@ public class FancyTreeTests extends ComponentTest
 		clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(KeyCode.CONTROL, KeyCode.A).write("newname").push(final_keystroke);
 		waitForUiEvents();
 
-		if (changed)
-			{
-			Assert.assertFalse(exists("1.2.1"));
-			Assert.assertTrue(exists("newname"));
-			Assert.assertEquals("newname", target_node.getName());
-			}
-		else
-			{
-			Assert.assertTrue(exists("1.2.1"));
-			Assert.assertFalse(exists("newname"));
-			Assert.assertEquals("1.2.1", target_node.getName());
-			}
+		Assert.assertEquals(!changed, exists("1.2.1"));
+		Assert.assertEquals(changed, exists("newname"));
+		Assert.assertEquals(changed ? "newname": "1.2.1", target_node.getName());
 		}
+
+	@Test
+	public void showCustomEditor()
+	    {
+	    createBasicTreeAndData();
+
+	    ExampleDataNode target_node = _model.getNodeByName("1.1.2");
+	    target_node._use_custom_editor = true;
+	    Assert.assertNull(lookup("." + ExampleCustomCellEditor.NODE_STYLE).query());
+	    doubleClickOn(target_node.getName());
+        Assert.assertNotNull(lookup("." + ExampleCustomCellEditor.NODE_STYLE).query());
+	    }
 
 	@Test
 	public void deleteByContextMenu()

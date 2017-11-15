@@ -184,6 +184,8 @@ public class ExampleDataNode implements Serializable
     private String _extra_data;
     private UUID _id = UUID.randomUUID();
 
+    public boolean _use_custom_editor = false;
+
     private transient List<ChangeListener> _change_listeners;
 
     private void firePropertyChange()

@@ -1,5 +1,6 @@
 package net.christophermerrill.FancyFxTree;
 
+import javafx.beans.value.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
@@ -13,22 +14,29 @@ public class TextCellEditor implements FancyTreeCellEditor
 		{
 		_field = new TextField("value1");
 		_field.getStyleClass().add(NODE_STYLE);
+
 		_field.focusedProperty().addListener((observable, oldValue, newValue) ->
 			{
-			if (!newValue && !_cancelled) // focus lost
-				_cell.getItem().textEdited(_field.getText());
+			if (!newValue && !_done) // focus lost
+				{
+				_done = true;
+				_cell.getItem().setLabelText(_field.getText());
+				}
 			});
 		_field.setOnKeyPressed(event ->
 			{
 			if (event.getCode().equals(KeyCode.ENTER))
 				{
-				_cell.getItem().textEdited(_field.getText());
+				_cell.getItem().setLabelText(_field.getText());
+				_done = true;
+				_cell.commitEdit(_cell.getItem());
 				event.consume();
 				}
 			else if (event.getCode().equals(KeyCode.ESCAPE))
 				{
-				_cancelled = true;
+				_done = true;
 				_cell.cancelEdit();
+				_done = true;
 				event.consume();
 				}
 			});
@@ -44,11 +52,16 @@ public class TextCellEditor implements FancyTreeCellEditor
 	public void setCell(FancyTreeCell cell)
 		{
 		_cell = cell;
+		_field.setText(cell.getItem().getLabelText());
 		}
 
 	private TextField _field;
 	private FancyTreeCell _cell;
-	private boolean _cancelled = false;
 
-	final static String NODE_STYLE = "fancyfxtree-example-editor";
+	/**
+	 * False until an edit has been completed. Then true to prevent further events from duplicating the commit.
+	 */
+	private boolean _done = false;
+
+	final static String NODE_STYLE = "fancyfxtree-default-cell-editor";
 	}

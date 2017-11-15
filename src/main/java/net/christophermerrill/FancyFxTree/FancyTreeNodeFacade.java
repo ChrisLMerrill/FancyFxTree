@@ -28,6 +28,7 @@ public interface FancyTreeNodeFacade<T>
 
     List<FancyTreeNodeFacade<T>> getChildren();
     Node getCustomCellUI();
+    FancyTreeCellEditor getCustomCellEditor();
     String getLabelText();
     T getModelNode();
 
@@ -36,8 +37,16 @@ public interface FancyTreeNodeFacade<T>
      */
     Node getIcon();
 
+    /**
+     * Sets the correspnding FancyTreeItemFacade for this tree node. This is needed for adding and
+     * removing tree nodes dynamically and refreshing the display due to other changes to the node.
+     */
     void setTreeItemFacade(FancyTreeItemFacade item_facade);
 
-    void textEdited(String new_value);
+    /**
+     * Called by the default FancyTreeCellEditor (TextCellEditor) when the node text has changed.
+     * May or may not be used by a custom FancyTreeCellEditor.
+     */
+    void setLabelText(String new_value);
     }
 

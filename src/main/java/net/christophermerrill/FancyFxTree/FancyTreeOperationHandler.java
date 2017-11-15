@@ -21,7 +21,7 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
 
     public StartDragInfo startDrag(List<List<Integer>> selection_paths, ObservableList<TreeItem<T>> selected_items) { return null; }
     public boolean finishDrag(TransferMode transfer_mode, Dragboard dragboard, T item, DropLocation location) { return false; }
-    public void handleDoubleClick(TreeCell<T> item, boolean control_down, boolean shift_down, boolean alt_down) { }
+    public void handleDoubleClick(TreeCell<T> cell, boolean control_down, boolean shift_down, boolean alt_down) { }
     public ContextMenu getContextMenu(ObservableList<TreeItem<T>> selected_items) { return null; }
 
     public DragOverInfo dragOver(Dragboard dragboard)

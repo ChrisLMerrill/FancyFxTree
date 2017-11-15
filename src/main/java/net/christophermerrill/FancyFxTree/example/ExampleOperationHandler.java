@@ -76,7 +76,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
                 ExampleDataNode node_to_paste = ExampleDataNode.deepCopy(selected_node, true);
                 parent.addAfter(node_to_paste, target);
                 }
-            if (_cut)
+            else if (_cut)
                 {
                 ExampleDataNode parent_to_cut_from = _root.findParentFor(selected_node);
                 parent_to_cut_from.removeChild(selected_node);
@@ -205,6 +205,8 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         return _double_clicked_node_name;
         }
 
+    private ExampleDataNode _root;
+
     private List<ExampleDataNode> _selected_nodes = Collections.emptyList();
     public List<ExampleDataNode> _cut_or_copied_nodes = Collections.emptyList();
     private boolean _cut = false;
@@ -217,7 +219,6 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
 
     private String _double_clicked_node_name;
 
-    private ExampleDataNode _root;
 
     private final static DataFormat LIST_OF_NODES = new DataFormat("application/x-ListOfExampleDataNodes");
 

@@ -57,13 +57,21 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         }
 
     @Override
+    public FancyTreeCellEditor getCustomCellEditor()
+	    {
+	    if (_model._use_custom_editor)
+		    return new ExampleCustomCellEditor();
+        return null;
+	    }
+
+    @Override
     public ExampleDataNode getModelNode()
         {
         return _model;
         }
 
     @Override
-    public void textEdited(String new_value)
+    public void setLabelText(String new_value)
 	    {
 	    _model.setName(new_value);
 	    }
