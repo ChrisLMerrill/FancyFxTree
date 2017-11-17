@@ -1,5 +1,6 @@
 package net.christophermerrill.FancyFxTree;
 
+import javafx.css.*;
 import javafx.event.*;
 import javafx.geometry.*;
 import javafx.scene.*;
@@ -129,6 +130,7 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 	        setText(null);
 	        setGraphic(node);
 	        }
+        pseudoClassStateChanged(EDITING_CLASS, _is_editing);
 	    }
 
     private void addStyle(String new_style)
@@ -228,6 +230,11 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     static final String DROP_BEFORE_STYLE_NAME = "fancytreecell-drop-before";
     static final String DROP_ON_STYLE_NAME = "fancytreecell-drop-on";
     static final String DROP_AFTER_STYLE_NAME = "fancytreecell-drop-after";
+
+    //
+    // Pseudo-styles for the cell
+    //
+    private static PseudoClass EDITING_CLASS = PseudoClass.getPseudoClass("editing");
 
     private static final Map<FancyTreeOperationHandler.DropLocation, String> DROP_LOCATION_TO_STYLE_MAP = new HashMap<>();
     static
