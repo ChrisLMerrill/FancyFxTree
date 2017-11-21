@@ -199,6 +199,9 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 	    return editor;
 	    }
 
+    /**
+     * Set how long the user must hover (during drag) before a collapsed parent node will expand.
+     */
     void setHoverExpandDuration(long hover_expand_duration)
         {
         _hover_expand_duration = hover_expand_duration;
