@@ -21,12 +21,6 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 
         if (enable_dnd)
             setupDragAndDrop();
-
-        new DoubleClickInterceptor(this, event ->
-	        {
-	        if (event.getClickCount() == 2)
-		        _handler.handleDoubleClick(FancyTreeCell.this, event.isControlDown(), event.isShiftDown(), event.isAltDown());
-	        });
         }
 
     private void setupDragAndDrop()
@@ -130,7 +124,7 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 	        setText(null);
 	        setGraphic(node);
 	        }
-        pseudoClassStateChanged(EDITING_CLASS, _is_editing);
+        pseudoClassStateChanged(EDITING_CLASS, isEditing());
 	    }
 
     private void addStyle(String new_style)
@@ -174,31 +168,25 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 	    {
 	    if (getTreeView() != null
 		    && getTreeView().isEditable()
-		    && isEditable()
-		    && !_is_editing)
+		    && isEditable())
 		    {
 		    setText(null);
 		    final FancyTreeCellEditor editor = getCellEditor();
 		    setGraphic(editor.getNode());
 		    editor.getNode().requestFocus();
-		    _is_editing = true;
 		    }
 	    }
 
-    private boolean _is_editing = false;
 
     @Override
     public void cancelEdit()
 	    {
-	    _is_editing = false;
 	    updateCellUI(getItem());
 	    }
 
     @Override
     public void commitEdit(FancyTreeNodeFacade facade)
 	    {
-	    if (_is_editing)
-		    _is_editing = false;
 	    updateCellUI(getItem());
 	    }
 

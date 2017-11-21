@@ -693,6 +693,17 @@ public class FancyTreeTests extends ComponentTest
 		testTextEditCompletion(KeyCode.ESCAPE, false);
 		}
 
+	@Test
+	public void editNodeWithChildren()  // ensure it doesn't expand the node instead of editing
+		{
+		createBasicTreeAndData();
+		ExampleDataNode target_node = _model.getNodeByName("1.2");
+
+		Assert.assertNull(lookup("." + TextCellEditor.NODE_STYLE).query());
+		doubleClickOn(target_node.getName());
+		Assert.assertNotNull(lookup("." + TextCellEditor.NODE_STYLE).query());
+		}
+
 	private void testTextEditCompletion(KeyCode final_keystroke, boolean changed)
 		{
 		createBasicTreeAndData();
@@ -705,20 +716,20 @@ public class FancyTreeTests extends ComponentTest
 
 		Assert.assertEquals(!changed, exists("1.2.1"));
 		Assert.assertEquals(changed, exists("newname"));
-		Assert.assertEquals(changed ? "newname": "1.2.1", target_node.getName());
+		Assert.assertEquals(changed ? "newname" : "1.2.1", target_node.getName());
 		}
 
 	@Test
 	public void showCustomEditor()
-	    {
-	    createBasicTreeAndData();
+		{
+		createBasicTreeAndData();
 
-	    ExampleDataNode target_node = _model.getNodeByName("1.1.2");
-	    target_node._use_custom_editor = true;
-	    Assert.assertNull(lookup("." + ExampleCustomCellEditor.NODE_STYLE).query());
-	    doubleClickOn(target_node.getName());
-        Assert.assertNotNull(lookup("." + ExampleCustomCellEditor.NODE_STYLE).query());
-	    }
+		ExampleDataNode target_node = _model.getNodeByName("1.1.2");
+		target_node._use_custom_editor = true;
+		Assert.assertNull(lookup("." + ExampleCustomCellEditor.NODE_STYLE).query());
+		doubleClickOn(target_node.getName());
+		Assert.assertNotNull(lookup("." + ExampleCustomCellEditor.NODE_STYLE).query());
+		}
 
 	@Test
 	public void deleteByContextMenu()
