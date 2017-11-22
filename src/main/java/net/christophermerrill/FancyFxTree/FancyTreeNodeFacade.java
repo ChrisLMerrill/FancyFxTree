@@ -31,6 +31,7 @@ public interface FancyTreeNodeFacade<T>
     FancyTreeCellEditor getCustomCellEditor();
     String getLabelText();
     T getModelNode();
+    List<String> getStyles();
 
     /**
      * Return an icon for the tree item or null if none.

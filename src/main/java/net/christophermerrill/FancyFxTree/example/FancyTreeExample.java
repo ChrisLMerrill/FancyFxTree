@@ -31,6 +31,7 @@ public class FancyTreeExample extends Application
         _add_node_button = createAddNodeButton();
         button_bar.getChildren().add(_add_node_button);
         button_bar.getChildren().add(createAddLeafNodeButton());
+        button_bar.getChildren().add(createStyleNodeButton());
         button_bar.getChildren().add(createExpandAllButton());
         button_bar.getChildren().add(createCollapseAllButton());
         root.setTop(button_bar);
@@ -103,6 +104,39 @@ public class FancyTreeExample extends Application
         return button;
         }
 
+    private Button createStyleNodeButton()
+        {
+        Button button = new Button();
+        button.setText("Style the node");
+        button.setOnAction(event ->
+	        Platform.runLater(() ->
+		        {
+		        final ObservableList items = _tree.getSelectionModel().getSelectedItems();
+		        for (Object item : items)
+			        {
+			        ExampleTreeNodeFacade node = ((TreeItem<ExampleTreeNodeFacade>) item).getValue();
+			        ExampleDataNode data = node.getModelNode();
+			        if (data.getStyles().isEmpty())
+				        data.addStyle(STYLE1);
+			        else
+				        {
+				        String current_style = data.getStyles().get(0);
+				        switch (current_style)
+					        {
+					        case STYLE1:
+						        data.addStyle(STYLE2);
+						        break;
+					        case STYLE2:
+						        data.addStyle(STYLE3);
+						        break;
+					        }
+				        data.removeStyle(current_style);
+				        }
+			        }
+		        }));
+        return button;
+        }
+
     private Button createExpandAllButton()
         {
         Button button = new Button();
@@ -123,6 +157,8 @@ public class FancyTreeExample extends Application
     private Button _add_node_button;
     private FancyTreeView<ExampleTreeNodeFacade> _tree;
     private Label _status;
+
+    private final static String STYLE1 = "customstyle1";
+    private final static String STYLE2 = "customstyle2";
+    private final static String STYLE3 = "customstyle3";
     }
-
-

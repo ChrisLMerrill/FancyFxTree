@@ -500,22 +500,39 @@ public class FancyTreeTests extends ComponentTest
 	public void expandScrollToAndSelectNewItem()
 		{
 		ExampleDataNode root = ExampleDataNodeBuilder.create(new int[]{3, 3, 3, 3, 3});
-		setupTree(root);
-		_tree.collapseAll();
+		setupTree(root, false);
 		waitForUiEvents();
 
 		ExampleDataNode leaf = ExampleDataNodeBuilder.createRandomLeaf(root);
 		waitForUiEvents();
 
-		// can't actually verify if it is visible (see above)...we can only check if it is in the node graph, which doesn't help here
-		//Assert.assertFalse(isVisible(leaf.getName()));
+		// won't exist in tree if it wasn't shown initially
+		Assert.assertFalse(exists(leaf.getName()));
 
 		_tree.expandScrollToAndSelect(leaf);
 		waitForUiEvents();
 
-		// as with previous test, can't test this automated. Add breakpoint below and check manually
-		//Assert.assertTrue(isVisible(leaf.getName()));
-		//System.out.println(String.format("is node '%s' visible?", leaf.getName()));
+		// technically, checking for exists does not verify it is visible, but at least
+		// we know it was added to the node graph, which implies it was expanded and visible
+		Assert.assertTrue(exists(leaf.getName()));
+		}
+
+	@Test
+	public void expandScrollToAndMakeVisible()
+		{
+		ExampleDataNode root = ExampleDataNodeBuilder.create(new int[]{3, 3, 3, 3, 3});
+		setupTree(root, false);
+
+		final ExampleDataNode node = _model.getNodeByName("1.3.3.3.1");
+		Assert.assertFalse(exists(node.getName())); // not in tree yet because it hasn't been shown
+
+		_tree.expandAndScrollTo(node);
+		waitForUiEvents();
+
+		Assert.assertTrue(exists(node.getName()));
+
+		final ExampleDataNode still_hidden_node = _model.getNodeByName("1.3.3.3.1.2");
+		Assert.assertFalse("expanded 1 level too far", exists(still_hidden_node.getName()));
 		}
 
 	@Test
@@ -745,6 +762,29 @@ public class FancyTreeTests extends ComponentTest
 		Assert.assertNull(_model.getNodeByName("1.1"));
 		}
 
+	@Test
+	public void applyCellStyles()
+	    {
+	    createBasicTreeAndData();
+	    final String node_to_style = "1.2.1";
+	    final String style_name = "style1";
+
+	    Node styled_node = lookup(node_to_style).query();
+	    Assert.assertFalse(styled_node.getStyleClass().contains(style_name));
+	    final int num_default_styles = styled_node.getStyleClass().size();
+	    Assert.assertTrue("should be at least 4 styles to start with", num_default_styles >= 4);
+
+        ExampleDataNode styled_data = _model.getNodeByName(node_to_style);
+	    styled_data.addStyle(style_name);
+	    waitForUiEvents();
+	    Assert.assertTrue("style was not added", styled_node.getStyleClass().contains(style_name));
+
+	    styled_data.removeStyle(style_name);
+	    waitForUiEvents();
+	    Assert.assertFalse("style was not removed", styled_node.getStyleClass().contains(style_name));
+	    Assert.assertEquals("all initial styles not present", num_default_styles, styled_node.getStyleClass().size());
+	    }
+
 	private void createBasicTreeAndData()
 		{
 		ExampleDataNode root = ExampleDataNodeBuilder.create(new int[]{2, 2});
@@ -752,6 +792,11 @@ public class FancyTreeTests extends ComponentTest
 		}
 
 	private void setupTree(ExampleDataNode root)
+		{
+		setupTree(root, true);
+		}
+
+	private void setupTree(ExampleDataNode root, boolean expand_all)
 		{
 		_model = root;
 		ExampleTreeNodeFacade root_facade = new ExampleTreeNodeFacade(_model);
@@ -762,7 +807,8 @@ public class FancyTreeTests extends ComponentTest
 		_tree.setHoverExpandDuration(_hover_duration);
 		_tree.setRoot(root_item);
 		_tree.setEditable(true);
-		_tree.expandAll();
+		if (expand_all)
+			_tree.expandAll();
 
 		Platform.runLater(() -> _pane.setCenter(_tree));
 		waitForUiEvents();

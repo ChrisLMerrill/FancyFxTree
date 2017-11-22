@@ -11,6 +11,18 @@
     -fx-padding: 0;
 }
 
+.customstyle1 {
+    -fx-background-color: #a58282;
+}
+
+.customstyle2 {
+    -fx-background-color: #a5936b;
+}
+
+.customstyle3 {
+    -fx-background-color: #b0fcbe;
+}
+
 .fancytreecell-drop-on {
     -fx-background: linear-gradient(to top, rgba(240,240,255,0) 0%, rgba(205,205,220,1) 50%, rgba(205,205,220,1) 51%, rgba(240,240,255,0) 100%);
 }

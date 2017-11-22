@@ -1,5 +1,6 @@
 package net.christophermerrill.FancyFxTree;
 
+import javafx.collections.*;
 import javafx.css.*;
 import javafx.event.*;
 import javafx.geometry.*;
@@ -104,6 +105,7 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             {
             setText(null);
             setGraphic(null);
+            clearStyles();
             }
         else
             {
@@ -124,7 +126,37 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 	        setText(null);
 	        setGraphic(node);
 	        }
-        pseudoClassStateChanged(EDITING_CLASS, isEditing());
+	    pseudoClassStateChanged(EDITING_CLASS, isEditing());
+	    updateStyles(item);
+	    }
+
+    private void updateStyles(FancyTreeNodeFacade item)
+	    {
+	    final ObservableList<String> applied_styles = getStyleClass();
+	    final List<String> on_demand_styles = new ArrayList(item.getStyles());
+	    final List<String> styles_to_remove = new ArrayList();
+	    for (String style : applied_styles)
+		    {
+		    if (!DEFAULT_STYLES.contains(style)
+			    && !DRAG_STYLES.contains(style))
+			    {
+			    if (!on_demand_styles.remove(style))
+		    	    styles_to_remove.add(style);
+			    }
+		    }
+	    if (styles_to_remove.size() > 0)
+	        applied_styles.removeAll(styles_to_remove);
+	    if (on_demand_styles.size() > 0)
+            applied_styles.addAll(on_demand_styles);
+	    }
+
+    private void clearStyles()
+	    {
+	    final ObservableList<String> applied_styles = getStyleClass();
+	    final List<String> styles_to_remove = new ArrayList(applied_styles);
+	    styles_to_remove.removeAll(DEFAULT_STYLES);
+	    styles_to_remove.removeAll(DRAG_STYLES);
+        applied_styles.removeAll(styles_to_remove);
 	    }
 
     private void addStyle(String new_style)
@@ -218,14 +250,33 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     // Styles for the cells
     //
     static final String CELL_STYLE_NAME = "fancytreecell";
+    static final String DROP_AFTER_STYLE_NAME = "fancytreecell-drop-after";
     static final String DROP_BEFORE_STYLE_NAME = "fancytreecell-drop-before";
     static final String DROP_ON_STYLE_NAME = "fancytreecell-drop-on";
-    static final String DROP_AFTER_STYLE_NAME = "fancytreecell-drop-after";
+    private static final List<String> DRAG_STYLES = new ArrayList<>();
+    static
+	    {
+	    DRAG_STYLES.add(DROP_AFTER_STYLE_NAME);
+	    DRAG_STYLES.add(DROP_BEFORE_STYLE_NAME);
+	    DRAG_STYLES.add(DROP_ON_STYLE_NAME);
+	    }
 
     //
     // Pseudo-styles for the cell
     //
     private static PseudoClass EDITING_CLASS = PseudoClass.getPseudoClass("editing");
+
+    //
+    // Default styles for the cell (should never be removed)
+    //
+    private static final List<String> DEFAULT_STYLES = new ArrayList<>();
+    static
+	    {
+	    DEFAULT_STYLES.add(CELL_STYLE_NAME);
+	    DEFAULT_STYLES.add("cell");
+	    DEFAULT_STYLES.add("indexed-cell");
+	    DEFAULT_STYLES.add("tree-cell");
+	    }
 
     private static final Map<FancyTreeOperationHandler.DropLocation, String> DROP_LOCATION_TO_STYLE_MAP = new HashMap<>();
     static

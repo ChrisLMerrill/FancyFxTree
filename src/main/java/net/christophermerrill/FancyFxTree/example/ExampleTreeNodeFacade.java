@@ -100,6 +100,12 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         _item_facade = null;
         }
 
+    @Override
+    public List<String> getStyles()
+	    {
+	    return _model.getStyles();
+	    }
+
     private ExampleDataNode.ChangeListener _listener = new ExampleDataNode.ChangeListener()
         {
         @Override

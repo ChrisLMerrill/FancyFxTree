@@ -23,6 +23,7 @@ import java.util.*;
  *
  * @author Christopher L Merrill (see LICENSE.txt for license details)
  */
+@SuppressWarnings("ALL")
 public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
     {
     @SuppressWarnings("WeakerAccess") // part of public API
@@ -109,6 +110,7 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         TreeItem<T> item = findItemForModelNode(node);
         if (item == null)
             return false;
+        item = item.getParent();
         while (item != null)
             {
             item.setExpanded(true);
@@ -117,7 +119,7 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         return true;
         }
 
-    @SuppressWarnings("unused")  // public API
+    @SuppressWarnings({"unused", "WeakerAccess"})  // public API
     public boolean expandAndScrollTo(Object node)
         {
         if (!expandToMakeVisible(node))

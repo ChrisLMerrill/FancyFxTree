@@ -172,6 +172,23 @@ public class ExampleDataNode implements Serializable
         return _id;
         }
 
+    public void addStyle(String style)
+	    {
+	    _styles.add(style);
+	    firePropertyChange();
+	    }
+
+    public void removeStyle(String style)
+	    {
+	    _styles.remove(style);
+	    firePropertyChange();
+	    }
+
+    List<String> getStyles()
+	    {
+	    return _styles;
+	    }
+
     @Override
     public boolean equals(Object obj)
         {
@@ -182,6 +199,7 @@ public class ExampleDataNode implements Serializable
     private List<ExampleDataNode> _children = new ArrayList<>();
     private String _name;
     private String _extra_data;
+    private List<String> _styles = new ArrayList<>();
     private UUID _id = UUID.randomUUID();
 
     public boolean _use_custom_editor = false;
