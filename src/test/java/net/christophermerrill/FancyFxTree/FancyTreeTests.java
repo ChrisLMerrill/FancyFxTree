@@ -526,10 +526,14 @@ public class FancyTreeTests extends ComponentTest
 		final ExampleDataNode node = _model.getNodeByName("1.3.3.3.1");
 		Assert.assertFalse(exists(node.getName())); // not in tree yet because it hasn't been shown
 
-		_tree.expandAndScrollTo(node);
+		List<TreeItem<ExampleTreeNodeFacade>> expanded = _tree.expandAndScrollTo(node);
 		waitForUiEvents();
-
 		Assert.assertTrue(exists(node.getName()));
+		// check the expanded nodes were returned
+		Assert.assertEquals("1.3.3.3", expanded.get(0).getValue().getLabelText());
+		Assert.assertEquals("1.3.3", expanded.get(1).getValue().getLabelText());
+		Assert.assertEquals("1.3", expanded.get(2).getValue().getLabelText());
+		Assert.assertEquals("1", expanded.get(3).getValue().getLabelText());
 
 		final ExampleDataNode still_hidden_node = _model.getNodeByName("1.3.3.3.1.2");
 		Assert.assertFalse("expanded 1 level too far", exists(still_hidden_node.getName()));

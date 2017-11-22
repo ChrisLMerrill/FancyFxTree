@@ -105,42 +105,46 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
         }
 
     @SuppressWarnings("WeakerAccess") // part of public API
-    public boolean expandToMakeVisible(Object node)
+    public List<TreeItem<T>> expandToMakeVisible(Object node)
         {
         TreeItem<T> item = findItemForModelNode(node);
         if (item == null)
-            return false;
+            return Collections.emptyList();
+
+        List<TreeItem<T>> expanded = new ArrayList<>();
         item = item.getParent();
         while (item != null)
             {
-            item.setExpanded(true);
+            if (!item.isExpanded())
+	            {
+	            item.setExpanded(true);
+	            expanded.add(item);
+	            }
             item = item.getParent();
             }
-        return true;
+        return expanded;
         }
 
     @SuppressWarnings({"unused", "WeakerAccess"})  // public API
-    public boolean expandAndScrollTo(Object node)
+    public List<TreeItem<T>> expandAndScrollTo(Object node)
         {
-        if (!expandToMakeVisible(node))
-            return false;
+        List<TreeItem<T>> expanded = expandToMakeVisible(node);
         scrollToVisibleItem(node);
-        return true;
+        return expanded;
         }
 
     @SuppressWarnings({"unused", "UnusedReturnValue"})  // public API
-    public boolean expandScrollToAndSelect(Object node)
+    public List<TreeItem<T>> expandScrollToAndSelect(Object node)
         {
-        if (!expandToMakeVisible(node))
-            return false;
-        scrollToVisibleItem(node);
-
         TreeItem item = findItemForModelNode(node);
         if (item == null)
-            return false;
+            return Collections.emptyList();
+
+        List<TreeItem<T>> expanded = expandToMakeVisible(node);
+        scrollToVisibleItem(node);
 
         getSelectionModel().select(item);
-        return true;
+        return expanded;
         }
 
     private TreeItem<T> findItemForModelNode(Object node)
