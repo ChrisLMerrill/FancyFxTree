@@ -48,7 +48,7 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
 
 	        cell.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) ->
 		        {
-		        if (e.getClickCount() % 2 == 0 && e.getButton().equals(MouseButton.PRIMARY))
+		        if (e.getClickCount() == 2 && e.getButton().equals(MouseButton.PRIMARY))
 			        {
 			        e.consume();
 			        _ops_handler.handleDoubleClick(cell, e.isControlDown(), e.isShiftDown(), e.isAltDown());
