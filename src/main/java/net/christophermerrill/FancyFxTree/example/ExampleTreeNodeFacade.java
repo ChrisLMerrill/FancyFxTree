@@ -57,11 +57,23 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         }
 
     @Override
-    public FancyTreeCellEditor getCustomCellEditor()
+    public FancyTreeCellEditor getCustomEditorUI()
 	    {
 	    if (_model._use_custom_editor)
 		    return new ExampleCustomCellEditor();
-        return null;
+	    return null;
+	    }
+
+    @Override
+    public void editStarting()
+	    {
+	    _is_editing = true;
+	    }
+
+    @Override
+    public void editFinished()
+	    {
+	    _is_editing = false;
 	    }
 
     @Override
@@ -128,7 +140,7 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
         @Override
         public void propertyChanged()
             {
-            if (_item_facade != null)
+            if (_item_facade != null && !_is_editing)
                 _item_facade.refreshDisplay();
             }
         };
@@ -142,6 +154,7 @@ public class ExampleTreeNodeFacade implements FancyTreeNodeFacade<ExampleDataNod
     private ExampleDataNode _model;
     private FancyTreeItemFacade _item_facade;
     private List<FancyTreeNodeFacade<ExampleDataNode>> _children = new ArrayList<>();
+    private boolean _is_editing = false;
     }
 
 

@@ -28,10 +28,17 @@ public interface FancyTreeNodeFacade<T>
 
     List<FancyTreeNodeFacade<T>> getChildren();
     Node getCustomCellUI();
-    FancyTreeCellEditor getCustomCellEditor();
     String getLabelText();
     T getModelNode();
     List<String> getStyles();
+
+    /**
+     * Start editing the cell. Return a FancyTreeCellEditor if a custom editor is needed.
+     * Return null for the default editor (text field)
+     */
+    void editStarting();
+    FancyTreeCellEditor getCustomEditorUI();
+    void editFinished(); // called when the edit is done
 
     /**
      * Return an icon for the tree item or null if none.

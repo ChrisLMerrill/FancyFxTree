@@ -196,6 +196,12 @@ public class ExampleDataNode implements Serializable
             && ((ExampleDataNode)obj).getId().equals(_id);
         }
 
+    @Override
+    public String toString()
+	    {
+	    return _name;
+	    }
+
     private List<ExampleDataNode> _children = new ArrayList<>();
     private String _name;
     private String _extra_data;

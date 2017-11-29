@@ -789,6 +789,24 @@ public class FancyTreeTests extends ComponentTest
 	    Assert.assertEquals("all initial styles not present", num_default_styles, styled_node.getStyleClass().size());
 	    }
 
+	/**
+	 * While editing, changes to the node should be ignored (rather than updating
+	 * the cell UI...which would close the editor).
+	 */
+	@Test
+	public void delayUpdatesWhileEditing()
+	    {
+	    createBasicTreeAndData();
+	    ExampleDataNode target_node = _model.getNodeByName("1.1.2");
+        doubleClickOn(target_node.getName());
+        Assert.assertNotNull("editor not shown", lookup("." + TextCellEditor.NODE_STYLE).query());
+
+        target_node.setName("newnamefor1.1.2");
+        waitForUiEvents();
+        Assert.assertFalse("new name shown in tree", exists("newnamefor1.1.2"));
+	    Assert.assertNotNull("editor disappeared", lookup("." + TextCellEditor.NODE_STYLE).query());
+	    }
+
 	private void createBasicTreeAndData()
 		{
 		ExampleDataNode root = ExampleDataNodeBuilder.create(new int[]{2, 2});
