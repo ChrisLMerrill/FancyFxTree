@@ -109,9 +109,16 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         }
 
     @Override
-    public DragOverInfo dragOver(Dragboard dragboard)
-        {
+    public DragOverInfo dragOver(Dragboard dragboard, ExampleTreeNodeFacade onto_node)
+	    {
         DragOverInfo info = new DragOverInfo();
+	    if (dragboard.getContent(LIST_OF_NODES) != null)
+		    {
+		    _dropped_nodes = (List<ExampleDataNode>) dragboard.getContent(LIST_OF_NODES);
+		    if (_dropped_nodes.contains(onto_node.getModelNode()))
+		    	return info;
+		    }
+
         info.addAllModesAndLocations();
         return info;
         }
@@ -122,6 +129,8 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
         if (dragboard.getContent(LIST_OF_NODES) != null)
             {
             _dropped_nodes = (List<ExampleDataNode>) dragboard.getContent(LIST_OF_NODES);
+            if (_dropped_nodes.contains(item.getModelNode()))
+            	return false;  // TODO indicate this?
             ExampleDataNode parent;
             int add_index;
             switch (location)

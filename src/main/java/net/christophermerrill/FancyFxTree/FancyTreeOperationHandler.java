@@ -24,7 +24,7 @@ public abstract class FancyTreeOperationHandler<T extends FancyTreeNodeFacade>
     public void handleDoubleClick(TreeCell<T> cell, boolean control_down, boolean shift_down, boolean alt_down) { }
     public ContextMenu getContextMenu(ObservableList<TreeItem<T>> selected_items) { return null; }
 
-    public DragOverInfo dragOver(Dragboard dragboard)
+    public DragOverInfo dragOver(Dragboard dragboard, T onto_node)
         {
         DragOverInfo info = new DragOverInfo();
         info.addAllModesAndLocations();

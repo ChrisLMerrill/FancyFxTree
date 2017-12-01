@@ -74,7 +74,7 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             Point2D sceneCoordinates = localToScene(0d, 0d);
             double cell_height = getHeight();
             double mouse_y = e.getSceneY() - (sceneCoordinates.getY());  // this will be the y-coord within the cell
-            FancyTreeOperationHandler.DragOverInfo info = _handler.dragOver(e.getDragboard());
+            FancyTreeOperationHandler.DragOverInfo info = _handler.dragOver(e.getDragboard(), getItem());
             DropLocationCalculator calculator = new DropLocationCalculator(cell_height, mouse_y, info);
             _drop_location = calculator.getDropLocation();
             if (_drop_location != null)
