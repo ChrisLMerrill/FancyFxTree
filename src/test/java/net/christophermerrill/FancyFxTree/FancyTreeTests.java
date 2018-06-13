@@ -2,6 +2,7 @@ package net.christophermerrill.FancyFxTree;
 
 import javafx.application.*;
 import javafx.collections.*;
+import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
@@ -805,6 +806,28 @@ public class FancyTreeTests extends ComponentTest
         waitForUiEvents();
         Assert.assertFalse("new name shown in tree", exists("newnamefor1.1.2"));
 	    Assert.assertNotNull("editor disappeared", lookup("." + TextCellEditor.NODE_STYLE).query());
+	    }
+
+	@Test
+	public void doubleClickCollapseExpandBug()
+	    {
+	    createBasicTreeAndData();
+
+	    ExampleDataNode target_node = _model.getNodeByName("1.1");
+        doubleClickOn(target_node.getName());
+
+        final Node node = lookup(target_node.getName()).query();
+	    final Bounds bounds = bounds(node).query();
+        final Point2D chevron = new Point2D(bounds.getMinX() - 10, bounds.getMinY() + (bounds.getMaxY() - bounds.getMinY())/2);
+
+//        type(KeyCode.ESCAPE);  // this fixes the bug
+//        waitForUiEvents();
+
+        clickOn(chevron);
+	    waitForUiEvents();
+
+	    final Node node_again = lookup(target_node.getName()).query();
+	    Assert.assertNotNull(node_again);  // the node became invisible
 	    }
 
 	private void createBasicTreeAndData()

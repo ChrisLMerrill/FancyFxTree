@@ -108,7 +108,9 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             }
         else
             {
-            if (!_is_editing)
+            if (_is_editing)
+            	cancelEdit();
+            else
                 updateCellUI(item);
             }
         }
