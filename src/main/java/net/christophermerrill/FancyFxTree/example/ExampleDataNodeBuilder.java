@@ -51,7 +51,6 @@ public class ExampleDataNodeBuilder
 
         ExampleDataNode new_node = new ExampleDataNode(node.getName() + " - new leaf ");
         node.addChild(new_node);
-        System.out.println("added new random leaf: " + new_node.getName());
         return new_node;
         }
     }
