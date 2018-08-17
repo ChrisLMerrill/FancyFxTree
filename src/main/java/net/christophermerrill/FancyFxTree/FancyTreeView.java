@@ -51,7 +51,8 @@ public class FancyTreeView<T extends FancyTreeNodeFacade> extends TreeView
 		        if (e.getClickCount() == 2 && e.getButton().equals(MouseButton.PRIMARY))
 			        {
 			        e.consume();
-			        _ops_handler.handleDoubleClick(cell, e.isControlDown(), e.isShiftDown(), e.isAltDown());
+                    _ops_handler.handleDoubleClick(cell, e.isControlDown(), e.isShiftDown(), e.isAltDown());
+//                    Platform.runLater(() -> _ops_handler.handleDoubleClick(cell, e.isControlDown(), e.isShiftDown(), e.isAltDown()));
 			        }
 		        });
 

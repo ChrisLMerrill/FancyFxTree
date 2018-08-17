@@ -108,7 +108,7 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
             }
         else
             {
-            if (_is_editing)
+            if (isEditing())
             	cancelEdit();
             else
                 updateCellUI(item);
@@ -116,20 +116,28 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
         }
 
     private void updateCellUI(FancyTreeNodeFacade item)
-	    {
-	    Node node = item.getCustomCellUI();
-	    if (node == null)
-	        {
-	        setText(item.getLabelText());
-	        setGraphic(item.getIcon());
-	        }
-	    else
-	        {
-	        setText(null);
-	        setGraphic(node);
-	        }
+        {
+        if (item == null)
+            {
+            setText(null);
+   	        setGraphic(null);
+            }
+        else
+            {
+            Node node = item.getCustomCellUI();
+    	    if (node == null)
+    	        {
+    	        setText(item.getLabelText());
+    	        setGraphic(item.getIcon());
+    	        }
+    	    else
+    	        {
+    	        setText(null);
+    	        setGraphic(node);
+    	        }
+            updateStyles(item);
+            }
 	    pseudoClassStateChanged(EDITING_CLASS, isEditing());
-	    updateStyles(item);
 	    }
 
     private void updateStyles(FancyTreeNodeFacade item)
@@ -200,43 +208,58 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     @Override
     public void startEdit()
 	    {
-	    if (getTreeView() != null
-		    && getTreeView().isEditable()
-		    && isEditable())
-		    {
-		    setText(null);
-		    getItem().editStarting();
-		    final FancyTreeCellEditor editor = getCellEditor();
-		    setGraphic(editor.getNode());
-		    editor.getNode().requestFocus();
-		    _is_editing = true;
-		    }
-	    }
+        if (! isEditable() || ! getTreeView().isEditable())
+            return;
 
+        TreeItem<FancyTreeNodeFacade> item = getTreeItem();
+        if (item == null)
+            return;
+
+        final FancyTreeCellEditor editor = getCellEditor();
+        editor.getNode().requestFocus();
+        getItem().editStarting();
+
+        super.startEdit();
+
+        if (isEditing())
+            {
+            setText(null);
+            setGraphic(editor.getNode());
+            }
+	    }
 
     @Override
     public void cancelEdit()
 	    {
-	    _is_editing = false;
+        if (getCellEditor() != null)
+            {
+            _editor.cancelEdit();
+            _editor = null;
+            }
+        super.cancelEdit();
 	    updateCellUI(getItem());
-	    getItem().editFinished();
+	    if (getItem() != null)
+	        getItem().editFinished();
 	    }
 
     @Override
     public void commitEdit(FancyTreeNodeFacade facade)
 	    {
-	    _is_editing = false;
+	    super.commitEdit(facade);
 	    updateCellUI(getItem());
 	    facade.editFinished();
 	    }
 
     private FancyTreeCellEditor getCellEditor()
 	    {
-	    FancyTreeCellEditor editor = getItem().getCustomEditorUI();
-	    if (editor == null)
-	        editor = new TextCellEditor();
-	    editor.setCell(this);
-	    return editor;
+	    if (_editor == null)
+            {
+            _editor = getItem().getCustomEditorUI();
+       	    if (_editor == null)
+       	        _editor = new TextCellEditor();
+            _editor.setCell(this);
+            }
+        return _editor;
 	    }
 
     /**
@@ -253,7 +276,7 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
     private int _cursor_y;
     private long _cursor_hover_since;
     private long _hover_expand_duration = FancyTreeView.DEFAULT_HOVER_EXPAND_DURATION;
-    private boolean _is_editing = false;
+    private FancyTreeCellEditor _editor;
 
     //
     // Styles for the cells
@@ -347,5 +370,3 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
         FancyTreeOperationHandler.DropLocation _drop_location;
         }
     }
-
-

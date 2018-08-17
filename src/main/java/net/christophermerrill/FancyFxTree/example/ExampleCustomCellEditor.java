@@ -23,7 +23,13 @@ public class ExampleCustomCellEditor implements FancyTreeCellEditor
 
 		}
 
-	public final static String NODE_STYLE = "example-custom-cell-editor";
+    @Override
+    public void cancelEdit()
+        {
+
+        }
+
+    public final static String NODE_STYLE = "example-custom-cell-editor";
 	}
 
 

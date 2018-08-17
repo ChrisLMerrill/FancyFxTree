@@ -35,7 +35,6 @@ public class TextCellEditor implements FancyTreeCellEditor
 				{
 				_done = true;
 				_cell.cancelEdit();
-				_done = true;
 				event.consume();
 				}
 			});
@@ -57,7 +56,13 @@ public class TextCellEditor implements FancyTreeCellEditor
 	private TextField _field;
 	private FancyTreeCell _cell;
 
-	/**
+    @Override
+    public void cancelEdit()
+        {
+        _done = true;
+        }
+
+    /**
 	 * False until an edit has been completed. Then true to prevent further events from duplicating the commit.
 	 */
 	private boolean _done = false;

@@ -9,5 +9,6 @@ public interface FancyTreeCellEditor
 	{
 	Node getNode();
 	void setCell(FancyTreeCell cell);
+	void cancelEdit();
 	}
 

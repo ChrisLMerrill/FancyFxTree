@@ -194,7 +194,7 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
     public void handleDoubleClick(TreeCell<ExampleTreeNodeFacade> cell, boolean control_down, boolean shift_down, boolean alt_down)
 	    {
         _double_clicked_node_name = cell.getTreeItem().getValue().getModelNode().getName();
-        if (cell.getTreeView().isEditable())
+        if (cell.getTreeView().isEditable() && !cell.isEditing())
             cell.startEdit();
 	    }
 

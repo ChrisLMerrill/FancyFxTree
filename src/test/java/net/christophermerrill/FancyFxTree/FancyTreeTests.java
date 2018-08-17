@@ -177,8 +177,7 @@ public class FancyTreeTests extends ComponentTest
 	@Test
 	public void copyPasteBySpecialKeys()
 		{
-//        Test fails due to: https://github.com/TestFX/TestFX/issues/310
-//        tryCopyPaste(CONTROL, INSERT, SHIFT, INSERT);
+        tryCopyPaste(CONTROL, INSERT, SHIFT, INSERT);
 		}
 
 	private void tryCopyPaste(KeyCode copy_modifier, KeyCode copy_key, KeyCode paste_modifier, KeyCode paste_key)
@@ -711,8 +710,45 @@ public class FancyTreeTests extends ComponentTest
 	@Test
 	public void editTwice()
 		{
-		testTextEditCompletion(KeyCode.ENTER, true);
-		testTextEditCompletion(KeyCode.ESCAPE, false);
+        createBasicTreeAndData();
+        ExampleDataNode target_node = _model.getNodeByName("1.2.1");
+        doubleClickOn(target_node.getName());
+        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(KeyCode.CONTROL, KeyCode.A).write("name1").push(KeyCode.ENTER);
+
+        waitForUiEvents();
+        Assert.assertFalse(exists("1.2.1"));
+        Assert.assertTrue(exists("name1"));
+        Assert.assertEquals("name1", target_node.getName());
+
+        doubleClickOn(target_node.getName());
+        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(KeyCode.CONTROL, KeyCode.A).write("name2").push(KeyCode.ENTER);
+        waitForUiEvents();
+        Assert.assertFalse(exists("1.2.1"));
+        Assert.assertFalse(exists("name1"));
+        Assert.assertTrue(exists("name2"));
+        Assert.assertEquals("name2", target_node.getName());
+		}
+
+	@Test
+	public void editThenCancelEdit()
+		{
+        createBasicTreeAndData();
+        ExampleDataNode target_node = _model.getNodeByName("1.2.1");
+        doubleClickOn(target_node.getName());
+        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(KeyCode.CONTROL, KeyCode.A).write("name1").push(KeyCode.ENTER);
+
+        waitForUiEvents();
+        Assert.assertFalse(exists("1.2.1"));
+        Assert.assertTrue(exists("name1"));
+        Assert.assertEquals("name1", target_node.getName());
+
+        doubleClickOn(target_node.getName());
+        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(KeyCode.CONTROL, KeyCode.A).write("name2").push(KeyCode.ESCAPE);
+        waitForUiEvents();
+        Assert.assertFalse(exists("1.2.1"));
+        Assert.assertFalse(exists("name2"));
+        Assert.assertTrue(exists("name1"));
+        Assert.assertEquals("name1", target_node.getName());
 		}
 
 	@Test
@@ -782,6 +818,7 @@ public class FancyTreeTests extends ComponentTest
         ExampleDataNode styled_data = _model.getNodeByName(node_to_style);
 	    styled_data.addStyle(style_name);
 	    waitForUiEvents();
+        styled_node = lookup(node_to_style).query();
 	    Assert.assertTrue("style was not added", styled_node.getStyleClass().contains(style_name));
 
 	    styled_data.removeStyle(style_name);
