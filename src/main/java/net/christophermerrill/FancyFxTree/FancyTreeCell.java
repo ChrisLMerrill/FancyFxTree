@@ -234,7 +234,7 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
         if (getCellEditor() != null)
             {
             _editor.cancelEdit();
-            _editor = null;
+            _editor = null;  // if you don't do this, the editor could be re-used at a future time, which is VERY hard to debug. DAMHIKT
             }
         super.cancelEdit();
 	    updateCellUI(getItem());
@@ -248,6 +248,7 @@ public class FancyTreeCell extends TreeCell<FancyTreeNodeFacade>
 	    super.commitEdit(facade);
 	    updateCellUI(getItem());
 	    facade.editFinished();
+	    _editor = null;  // if you don't do this, the editor could be re-used at a future time, which is VERY hard to debug. DAMHIKT
 	    }
 
     private FancyTreeCellEditor getCellEditor()
