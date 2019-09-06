@@ -1,12 +1,18 @@
 plugins {
     id "com.jfrog.bintray" version "1.7.3"
+    id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-version 3.3
+version 3.4
 group = 'net.christophermerrill'
+
+javafx {
+    version = "12.0.2"
+    modules = [ 'javafx.controls' ]
+}
 
 repositories
     {
@@ -16,6 +22,8 @@ repositories
 
 dependencies
     {
+    compile 'org.openjfx:javafx-controls:12.0.2'
+
     testCompile 'junit:junit:4.12'
     testCompile 'net.christophermerrill:TestFxUtils:1.2'
     }
