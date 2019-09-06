@@ -10,6 +10,7 @@ import javafx.scene.layout.*;
 import net.christophermerrill.FancyFxTree.example.*;
 import net.christophermerrill.testfx.*;
 import org.junit.*;
+import org.testfx.service.query.*;
 
 import java.util.*;
 
@@ -454,7 +455,7 @@ public class FancyTreeTests extends ComponentTest
 		waitForUiEvents();
 
 		Node collapsed = lookup("1.1").query();
-		Assert.assertNull(lookup("1.1.1").query()); // make sure it is hidden
+		Assert.assertFalse(exists("1.1.1")); // make sure it is hidden
 
 		drag("1.2.2");
 		moveTo(collapsed);
@@ -462,7 +463,7 @@ public class FancyTreeTests extends ComponentTest
 		waitForUiEvents();
 		release(MouseButton.PRIMARY);
 
-		Assert.assertNotNull(lookup("1.1.1").query());
+		Assert.assertTrue(exists("1.1.1"));
 		}
 
 	@Test
@@ -674,9 +675,9 @@ public class FancyTreeTests extends ComponentTest
 		createBasicTreeAndData();
 		ExampleDataNode target_node = _model.getNodeByName("1.2.1");
 
-		Assert.assertNull(lookup("." + TextCellEditor.NODE_STYLE).query());
+		Assert.assertFalse(exists("." + TextCellEditor.NODE_STYLE));
 		doubleClickOn(target_node.getName());
-		Assert.assertNotNull(lookup("." + TextCellEditor.NODE_STYLE).query());
+		Assert.assertTrue(exists("." + TextCellEditor.NODE_STYLE));
 		}
 
 	@Test
@@ -686,7 +687,7 @@ public class FancyTreeTests extends ComponentTest
 		_tree.setEditable(false);
 		ExampleDataNode target_node = _model.getNodeByName("1.2.1");
 		doubleClickOn(target_node.getName());
-		Assert.assertNull(lookup("." + TextCellEditor.NODE_STYLE).query());
+		Assert.assertFalse(exists("." + TextCellEditor.NODE_STYLE));
 		}
 
 	@Test
@@ -757,9 +758,9 @@ public class FancyTreeTests extends ComponentTest
 		createBasicTreeAndData();
 		ExampleDataNode target_node = _model.getNodeByName("1.2");
 
-		Assert.assertNull(lookup("." + TextCellEditor.NODE_STYLE).query());
+		Assert.assertFalse(exists("." + TextCellEditor.NODE_STYLE));
 		doubleClickOn(target_node.getName());
-		Assert.assertNotNull(lookup("." + TextCellEditor.NODE_STYLE).query());
+		Assert.assertTrue(exists("." + TextCellEditor.NODE_STYLE));
 		}
 
 	private void testTextEditCompletion(KeyCode final_keystroke, boolean changed)
@@ -784,9 +785,9 @@ public class FancyTreeTests extends ComponentTest
 
 		ExampleDataNode target_node = _model.getNodeByName("1.1.2");
 		target_node._use_custom_editor = true;
-		Assert.assertNull(lookup("." + ExampleCustomCellEditor.NODE_STYLE).query());
+		Assert.assertFalse(exists("." + ExampleCustomCellEditor.NODE_STYLE));
 		doubleClickOn(target_node.getName());
-		Assert.assertNotNull(lookup("." + ExampleCustomCellEditor.NODE_STYLE).query());
+		Assert.assertTrue(exists("." + ExampleCustomCellEditor.NODE_STYLE));
 		}
 
 	@Test
