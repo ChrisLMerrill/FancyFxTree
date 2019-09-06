@@ -3,7 +3,6 @@ plugins {
 }
 
 apply plugin: 'java'
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 version 3.3
@@ -22,12 +21,17 @@ dependencies
     }
 
 task sourcesJar(type: Jar) {
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     from sourceSets.main.allSource
     }
 
+javadoc {
+    include 'com/company/project/pkg/*'
+    options.addBooleanOption('html5', true)
+}
+
 task javadocJar(type: Jar) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from javadoc
     }
 
@@ -44,41 +48,49 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
   }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.9'
+wrapper {
+    gradleVersion = '5.6.2'
 }
 
-install {
-    repositories.mavenInstaller {
-    pom.project {
-            packaging 'jar'
-            groupId project.group
-            artifactId 'FancyFxTree'
-            description 'An extension of JavaFX TreeView that makes it easy to implement a sophisticated tree with editing, drag-n-drop, dynamic updates without designing your data model around the TreeView expectations.'
-            version project.version
-            name 'FancyFxTree' // pom.project.name must be same as bintray.pkg.name
-            url 'https://github.com/ChrisLMerrill/FancyFxTree'
-            inceptionYear '2017' // HARDCODED
-            licenses {
-                license { // HARDCODED
-                    name 'Apache-2.0'
-                    url 'https://www.apache.org/licenses/LICENSE-2.0'
-                    distribution 'repo'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'FancyFxTree' // pom.project.name must be same as bintray.pkg.name
+                description = 'An extension of JavaFX TreeView that makes it easy to implement a sophisticated tree with editing, drag-n-drop, dynamic updates without designing your data model around the TreeView expectations.'
+                url = 'https://github.com/ChrisLMerrill/FancyFxTree'
+                packaging = 'jar'
+                groupId = project.group
+                artifactId = 'FancyFxTree'
+                version = project.version
+                inceptionYear = '2017' // HARDCODED
+                licenses {
+                    license { // HARDCODED
+                        name = 'Apache-2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0'
+                        distribution = 'repo'
+                    }
                 }
-            }
-            developers {
-                developer {
-                    id 'ChrisLMerrill'
-                    name 'Chris Merrill'
-                    email 'osdev@christophermerrill.net'
+                developers {
+                    developer {
+                        id = "ChrisLMerrill"
+                        name = "Chris Merrill"
+                        email = "osdev@christophermerrill.net"
+                    }
                 }
-            }
-            scm {
-                    connection 'https://github.com/ChrisLMerrill/FancyFxTree.git'
-                    developerConnection 'https://github.com/ChrisLMerrill'
-                    url 'https://github.com/ChrisLMerrill/FancyFxTree'
+                scm {
+                    connection = 'https://github.com/ChrisLMerrill/FancyFxTree.git'
+                    developerConnection = 'https://github.com/ChrisLMerrill'
+                    url = 'https://github.com/ChrisLMerrill/FancyFxTree'
+                }
             }
         }
+    }
+    repositories {
+        mavenLocal()
     }
 }
 
