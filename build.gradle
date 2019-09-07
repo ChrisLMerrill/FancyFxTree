@@ -4,6 +4,7 @@ plugins {
 }
 
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'maven-publish'
 
 version 3.4
@@ -25,8 +26,13 @@ dependencies
     compile 'org.openjfx:javafx-controls:12.0.2'
 
     testCompile 'junit:junit:4.12'
-    testCompile 'net.christophermerrill:TestFxUtils:1.2'
+    testCompile 'net.christophermerrill:TestFxUtils:1.5'
+//    testCompile "org.testfx:openjfx-monocle:jdk-12.0.1+2" // For Java 12
     }
+
+application {
+    mainClassName = 'net.christophermerrill.FancyFxTree.example.FancyTreeExample'
+}
 
 task sourcesJar(type: Jar) {
     archiveClassifier = 'sources'
