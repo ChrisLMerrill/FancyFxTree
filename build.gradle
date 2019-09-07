@@ -1,11 +1,10 @@
 plugins {
-    id "com.jfrog.bintray" version "1.7.3"
+    id 'java-library'
+    id 'application'
+    id 'maven-publish'
+    id 'com.jfrog.bintray' version '1.7.3'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
-
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'maven-publish'
 
 version 3.4
 group = 'net.christophermerrill'
