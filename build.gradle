@@ -9,6 +9,10 @@ plugins {
 version 3.4
 group = 'net.christophermerrill'
 
+application {
+    mainClassName = 'net.christophermerrill.FancyFxTree.example.FancyTreeExample'
+}
+
 javafx {
     version = "12.0.2"
     modules = [ 'javafx.controls' ]
@@ -28,10 +32,6 @@ dependencies
     testCompile 'net.christophermerrill:TestFxUtils:1.5'
 //    testCompile "org.testfx:openjfx-monocle:jdk-12.0.1+2" // For Java 12
     }
-
-application {
-    mainClassName = 'net.christophermerrill.FancyFxTree.example.FancyTreeExample'
-}
 
 task sourcesJar(type: Jar) {
     archiveClassifier = 'sources'
