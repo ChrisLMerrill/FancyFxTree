@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'application'
     id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.7.3'
+    id 'com.jfrog.bintray' version '1.8.4'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
@@ -39,7 +39,7 @@ task sourcesJar(type: Jar) {
     }
 
 javadoc {
-    include 'com/company/project/pkg/*'
+    include 'net/christophermerrill/FancyFxTree/*'
     options.addBooleanOption('html5', true)
 }
 
@@ -102,14 +102,12 @@ publishing {
             }
         }
     }
-    repositories {
-        mavenLocal()
-    }
 }
 
 bintray {
     user = BINTRAY_UPLOAD_USERNAME
     key = BINTRAY_UPLOAD_APIKEY
+    publications = ['mavenJava']
     pkg {
         repo = 'maven'
         name = 'FancyFxTree'
@@ -129,7 +127,6 @@ bintray {
                 close = '1' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
             }
         }
-    configurations = ['archives']
     }
 
 }
