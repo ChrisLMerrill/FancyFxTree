@@ -20,16 +20,16 @@ class FancyTreeKeyHandler
             boolean handled;
             if (event.getCode().equals(KeyCode.DELETE) && !event.isShiftDown())
                 handled = _handler.handleDelete(selected_items);
-            else if ((event.isControlDown() && event.getCode().equals(KeyCode.C))
-                || (event.isControlDown() && event.getCode().equals(KeyCode.INSERT)))
+            else if ((event.isShortcutDown() && event.getCode().equals(KeyCode.C))
+                || (event.isShortcutDown() && event.getCode().equals(KeyCode.INSERT)))
                 handled = _handler.handleCopy(selected_items);
-            else if ((event.isControlDown() && event.getCode().equals(KeyCode.X))
+            else if ((event.isShortcutDown() && event.getCode().equals(KeyCode.X))
                 || (event.isShiftDown() && event.getCode().equals(KeyCode.DELETE)))
                 handled = _handler.handleCut(selected_items);
-            else if ((event.isControlDown() && event.getCode().equals(KeyCode.V))
+            else if ((event.isShortcutDown() && event.getCode().equals(KeyCode.V))
                 || (event.isShiftDown() && event.getCode().equals(KeyCode.INSERT)))
                 handled = _handler.handlePaste(selected_items);
-            else if (event.getCode().equals(KeyCode.Z) && event.isControlDown())
+            else if (event.isShortcutDown() && event.getCode().equals(KeyCode.Z))
                 handled = _handler.handleUndo();
             else
                 return;

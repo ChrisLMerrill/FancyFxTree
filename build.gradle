@@ -6,7 +6,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
-version 3.4
+version 3.5
 group = 'net.christophermerrill'
 
 application {

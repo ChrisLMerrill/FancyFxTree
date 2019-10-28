@@ -9,8 +9,8 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import net.christophermerrill.FancyFxTree.example.*;
 import net.christophermerrill.testfx.*;
+import org.hamcrest.core.*;
 import org.junit.*;
-import org.testfx.service.query.*;
 
 import java.util.*;
 
@@ -51,9 +51,9 @@ public class FancyTreeTests extends ComponentTest
 		clickOn(node1.getName());
 
 		ExampleDataNode node2 = _model.getNodeByName("1.2.1");
-		press(KeyCode.CONTROL);
+		press(SHORTCUT);
 		clickOn(node2.getName());
-		release(KeyCode.CONTROL);
+		release(SHORTCUT);
 
 		final List<List<Integer>> paths = _tree.getSelectionPaths();
 		Assert.assertEquals(2, paths.size());
@@ -172,13 +172,13 @@ public class FancyTreeTests extends ComponentTest
 	@Test
 	public void copyPasteByAlphaControlKeys()
 		{
-		tryCopyPaste(CONTROL, C, CONTROL, V);
+		tryCopyPaste(SHORTCUT, C, SHORTCUT, V);
 		}
 
 	@Test
 	public void copyPasteBySpecialKeys()
 		{
-        tryCopyPaste(CONTROL, INSERT, SHIFT, INSERT);
+        tryCopyPaste(SHORTCUT, INSERT, SHIFT, INSERT);
 		}
 
 	private void tryCopyPaste(KeyCode copy_modifier, KeyCode copy_key, KeyCode paste_modifier, KeyCode paste_key)
@@ -205,7 +205,7 @@ public class FancyTreeTests extends ComponentTest
 	@Test
 	public void cutPasteByAlphaControlKeys()
 		{
-		tryCutPaste(CONTROL, X, CONTROL, V);
+		tryCutPaste(SHORTCUT, X, SHORTCUT, V);
 		}
 
 	@Test
@@ -282,9 +282,9 @@ public class FancyTreeTests extends ComponentTest
 		Assert.assertTrue("expected destination node to start with no children", destination_node.getChildren().size() == 0);
 
 		drag(target_node.getName(), MouseButton.PRIMARY);
-		press(CONTROL);
+		press(SHORTCUT);
 		dropTo(destination_node.getName());
-		release(CONTROL);
+		release(SHORTCUT);
 		waitForUiEvents();
 
 		Assert.assertNotNull("copy not found", _model.getNodeByName(ExampleDataNode.getCopyName(target_node)));
@@ -338,10 +338,10 @@ public class FancyTreeTests extends ComponentTest
 
 		clickOn(target_node_1.getName());
 		press(SHIFT).clickOn(target_node_2.getName()).release(SHIFT);
-		press(CONTROL);
+		press(SHORTCUT);
 		drag(target_node_2.getName(), MouseButton.PRIMARY);
 		dropTo(destination.getName());
-		release(CONTROL);
+		release(SHORTCUT);
 		waitForUiEvents();
 
 		Assert.assertEquals("2 items should be dragged", 2, _operations_handler._drag_count);
@@ -714,7 +714,7 @@ public class FancyTreeTests extends ComponentTest
         createBasicTreeAndData();
         ExampleDataNode target_node = _model.getNodeByName("1.2.1");
         doubleClickOn(target_node.getName());
-        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(KeyCode.CONTROL, KeyCode.A).write("name1").push(KeyCode.ENTER);
+        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(SHORTCUT, KeyCode.A).write("name1").push(KeyCode.ENTER);
 
         waitForUiEvents();
         Assert.assertFalse(exists("1.2.1"));
@@ -722,7 +722,7 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertEquals("name1", target_node.getName());
 
         doubleClickOn(target_node.getName());
-        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(KeyCode.CONTROL, KeyCode.A).write("name2").push(KeyCode.ENTER);
+        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(SHORTCUT, KeyCode.A).write("name2").push(KeyCode.ENTER);
         waitForUiEvents();
         Assert.assertFalse(exists("1.2.1"));
         Assert.assertFalse(exists("name1"));
@@ -736,7 +736,7 @@ public class FancyTreeTests extends ComponentTest
         createBasicTreeAndData();
         ExampleDataNode target_node = _model.getNodeByName("1.2.1");
         doubleClickOn(target_node.getName());
-        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(KeyCode.CONTROL, KeyCode.A).write("name1").push(KeyCode.ENTER);
+        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(SHORTCUT, KeyCode.A).write("name1").push(KeyCode.ENTER);
 
         waitForUiEvents();
         Assert.assertFalse(exists("1.2.1"));
@@ -744,7 +744,7 @@ public class FancyTreeTests extends ComponentTest
         Assert.assertEquals("name1", target_node.getName());
 
         doubleClickOn(target_node.getName());
-        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(KeyCode.CONTROL, KeyCode.A).write("name2").push(KeyCode.ESCAPE);
+        clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(SHORTCUT, KeyCode.A).write("name2").push(KeyCode.ESCAPE);
         waitForUiEvents();
         Assert.assertFalse(exists("1.2.1"));
         Assert.assertFalse(exists("name2"));
@@ -770,7 +770,7 @@ public class FancyTreeTests extends ComponentTest
 		doubleClickOn(target_node.getName());
 
 		// don't understand why fillFieldAndTabAway() doesn't work here :(
-		clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(KeyCode.CONTROL, KeyCode.A).write("newname").push(final_keystroke);
+		clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(SHORTCUT, KeyCode.A).write("newname").push(final_keystroke);
 		waitForUiEvents();
 
 		Assert.assertEquals(!changed, exists("1.2.1"));
