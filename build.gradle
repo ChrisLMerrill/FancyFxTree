@@ -6,7 +6,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
-version 3.5
+version 3.6
 group = 'net.christophermerrill'
 
 application {
@@ -14,7 +14,7 @@ application {
 }
 
 javafx {
-    version = "12.0.2"
+    version = "14.0.1"
     modules = [ 'javafx.controls' ]
 }
 
@@ -26,15 +26,16 @@ repositories
 
 dependencies
     {
-    compile 'org.openjfx:javafx-controls:12.0.2'
+    compile 'org.openjfx:javafx-controls:14.0.1'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'net.christophermerrill:TestFxUtils:1.5'
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
+    testCompile 'net.christophermerrill:TestFxUtils:2.0'
 //    testCompile "org.testfx:openjfx-monocle:jdk-12.0.1+2" // For Java 12
     }
 
 task sourcesJar(type: Jar) {
-    archiveClassifier = 'sources'
+    archiveClassifier.set('sources')
     from sourceSets.main.allSource
     }
 
@@ -44,13 +45,8 @@ javadoc {
 }
 
 task javadocJar(type: Jar) {
-    archiveClassifier = 'javadoc'
+    archiveClassifier.set('javadoc')
     from javadoc
-    }
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
     }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -61,8 +57,22 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
   }
 
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+    }
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 wrapper {
-    gradleVersion = '5.6.2'
+    gradleVersion = '6.3'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 publishing {

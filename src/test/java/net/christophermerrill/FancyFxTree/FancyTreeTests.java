@@ -9,8 +9,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import net.christophermerrill.FancyFxTree.example.*;
 import net.christophermerrill.testfx.*;
-import org.hamcrest.core.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
 
@@ -38,8 +37,8 @@ public class FancyTreeTests extends ComponentTest
 		ExampleDataNode selected_node = _model.getNodeByName("1.1.1");
 		clickOn(selected_node.getName());
 
-		Assert.assertEquals("wrong number of items was selected", 1, _operations_handler.getSelectedNodes().size());
-		Assert.assertTrue("wrong item was selected", selected_node == _operations_handler.getSelectedNodes().get(0));
+		Assertions.assertEquals(1, _operations_handler.getSelectedNodes().size(), "wrong number of items was selected");
+        Assertions.assertSame(selected_node, _operations_handler.getSelectedNodes().get(0), "wrong item was selected");
 		}
 
 	@Test
@@ -56,12 +55,12 @@ public class FancyTreeTests extends ComponentTest
 		release(SHORTCUT);
 
 		final List<List<Integer>> paths = _tree.getSelectionPaths();
-		Assert.assertEquals(2, paths.size());
+		Assertions.assertEquals(2, paths.size());
 
 		final List<ExampleDataNode> selections = _operations_handler.getSelectedNodes();
-		Assert.assertEquals(2, selections.size());
-		Assert.assertEquals(node1, selections.get(0));
-		Assert.assertEquals(node2, selections.get(1));
+		Assertions.assertEquals(2, selections.size());
+		Assertions.assertEquals(node1, selections.get(0));
+		Assertions.assertEquals(node2, selections.get(1));
 		}
 
 	@Test
@@ -87,8 +86,8 @@ public class FancyTreeTests extends ComponentTest
 		node.setName(new_label);
 		waitForUiEvents();
 
-		Assert.assertFalse("old label is still visible", exists(old_label));
-		Assert.assertTrue("new label is not visible", exists(new_label));
+		Assertions.assertFalse(exists(old_label), "old label is still visible");
+		Assertions.assertTrue(exists(new_label), "new label is not visible");
 		}
 
 	@Test
@@ -113,7 +112,7 @@ public class FancyTreeTests extends ComponentTest
 		_tree.expandToMakeVisible(new_child);
 		waitForUiEvents();
 
-		Assert.assertTrue("new child is not visible", exists(new_child.getName()));
+		Assertions.assertTrue(exists(new_child.getName()), "new child is not visible");
 		}
 
 	private void addNodeAndVerifyDisplayed(ExampleDataNode node)
@@ -123,7 +122,7 @@ public class FancyTreeTests extends ComponentTest
 		node.addChild(new_node);
 		waitForUiEvents();
 
-		Assert.assertTrue("new node is not visible", exists(new_node_label));
+		Assertions.assertTrue(exists(new_node_label), "new node is not visible");
 		}
 
 	private void insertNodeAndVerifyDisplayed(ExampleDataNode parent, ExampleDataNode new_node)
@@ -135,7 +134,7 @@ public class FancyTreeTests extends ComponentTest
 		_tree.expandToMakeVisible(new_node);
 		waitForUiEvents();
 
-		Assert.assertTrue("new node is not visible", exists(new_node.getName()));
+		Assertions.assertTrue(exists(new_node.getName()), "new node is not visible");
 		}
 
 	@Test
@@ -166,7 +165,7 @@ public class FancyTreeTests extends ComponentTest
 		{
 		parent.removeChild(to_remove);
 		waitForUiEvents();
-		Assert.assertFalse("removed node is still visible", exists(to_remove.getName()));
+		Assertions.assertFalse(exists(to_remove.getName()), "removed node is still visible");
 		}
 
 	@Test
@@ -197,9 +196,9 @@ public class FancyTreeTests extends ComponentTest
 		push(paste_modifier, paste_key); // paste
 
 		ExampleDataNode copied_node = _model.getNodeByName(copy_name);
-		Assert.assertNotNull("copy not found in tree", copied_node);
-		Assert.assertTrue("copy not in right parent", node_to_copy_into.contains(copied_node, true));
-		Assert.assertTrue("original not found in parent", original_node_parent.contains(original_node, true));
+		Assertions.assertNotNull(copied_node, "copy not found in tree");
+		Assertions.assertTrue(node_to_copy_into.contains(copied_node, true), "copy not in right parent");
+		Assertions.assertTrue(original_node_parent.contains(original_node, true), "original not found in parent");
 		}
 
 	@Test
@@ -229,9 +228,9 @@ public class FancyTreeTests extends ComponentTest
 		clickOn(node_to_paste_after.getName());
 		push(paste_modifier, paste_key); // paste
 
-		Assert.assertNotNull("cut node not found in tree", _model.getNodeByName(original_node.getName()));
-		Assert.assertTrue("not pasted into right parent", node_to_paste_into.contains(original_node, true));
-		Assert.assertFalse("original is still in parent", original_node_parent.contains(original_node, true));
+		Assertions.assertNotNull(_model.getNodeByName(original_node.getName()), "cut node not found in tree");
+		Assertions.assertTrue(node_to_paste_into.contains(original_node, true), "not pasted into right parent");
+		Assertions.assertFalse(original_node_parent.contains(original_node, true), "original is still in parent");
 		}
 
 	@Test
@@ -244,7 +243,7 @@ public class FancyTreeTests extends ComponentTest
 		clickOn(node_to_delete.getName());
 		push(DELETE);
 
-		Assert.assertFalse("node was not removed from model", _model.contains(node_to_delete));
+		Assertions.assertFalse(_model.contains(node_to_delete), "node was not removed from model");
 		}
 
 	@Test
@@ -256,17 +255,17 @@ public class FancyTreeTests extends ComponentTest
 		ExampleDataNode target_node = _model.getNodeByName("1.1.1");
 		ExampleDataNode destination_node = _model.getNodeByName("1.2.2");
 
-		Assert.assertTrue("expected root to start with 2 children", target_parent.getChildren().size() == 2);
-		Assert.assertTrue("expected destination node to start with no children", destination_node.getChildren().size() == 0);
+        Assertions.assertEquals(2, target_parent.getChildren().size(), "expected root to start with 2 children");
+        Assertions.assertEquals(0, destination_node.getChildren().size(), "expected destination node to start with no children");
 
 		drag(target_node.getName(), MouseButton.PRIMARY).dropTo(destination_node.getName());
 		waitForUiEvents();
 
-		Assert.assertNotNull("node not found in tree", _model.getNodeByName(target_node.getName()));
-		Assert.assertTrue("the target node is not displayed", exists(target_node.getName()));
+		Assertions.assertNotNull(_model.getNodeByName(target_node.getName()), "node not found in tree");
+		Assertions.assertTrue(exists(target_node.getName()), "the target node is not displayed");
 
-		Assert.assertTrue("node was not removed from root", target_parent.getChildren().size() == 1);
-		Assert.assertTrue("node was not added to destination", destination_node.getChildren().size() == 1);
+        Assertions.assertEquals(1, target_parent.getChildren().size(), "node was not removed from root");
+        Assertions.assertEquals(1, destination_node.getChildren().size(), "node was not added to destination");
 		}
 
 	@Test
@@ -278,8 +277,8 @@ public class FancyTreeTests extends ComponentTest
 		ExampleDataNode target_node = _model.getNodeByName("1.1.1");
 		ExampleDataNode destination_node = _model.getNodeByName("1.2.2");
 
-		Assert.assertTrue("expected root to start with 2 children", target_parent.getChildren().size() == 2);
-		Assert.assertTrue("expected destination node to start with no children", destination_node.getChildren().size() == 0);
+        Assertions.assertEquals(2, target_parent.getChildren().size(), "expected root to start with 2 children");
+        Assertions.assertEquals(0, destination_node.getChildren().size(), "expected destination node to start with no children");
 
 		drag(target_node.getName(), MouseButton.PRIMARY);
 		press(SHORTCUT);
@@ -287,10 +286,10 @@ public class FancyTreeTests extends ComponentTest
 		release(SHORTCUT);
 		waitForUiEvents();
 
-		Assert.assertNotNull("copy not found", _model.getNodeByName(ExampleDataNode.getCopyName(target_node)));
+		Assertions.assertNotNull(_model.getNodeByName(ExampleDataNode.getCopyName(target_node)), "copy not found");
 
-		Assert.assertFalse("node was removed from root", target_parent.getChildren().size() == 1);
-		Assert.assertTrue("node was not added to destination", destination_node.getChildren().size() == 1);
+        Assertions.assertNotEquals(1, target_parent.getChildren().size(), "node was removed from root");
+        Assertions.assertEquals(1, destination_node.getChildren().size(), "node was not added to destination");
 		}
 
 	/**
@@ -313,12 +312,12 @@ public class FancyTreeTests extends ComponentTest
 		dropTo(destination.getName());
 		waitForUiEvents();
 
-		Assert.assertEquals("2 items should be dragged", 2, _operations_handler._drag_count);
-		Assert.assertTrue("first item was not dropped", dropListContains(_operations_handler._dropped_nodes, target1));
-		Assert.assertTrue("second item was not dropped", dropListContains(_operations_handler._dropped_nodes, target2));
+		Assertions.assertEquals(2, _operations_handler._drag_count, "2 items should be dragged");
+		Assertions.assertTrue(dropListContains(_operations_handler._dropped_nodes, target1), "first item was not dropped");
+		Assertions.assertTrue(dropListContains(_operations_handler._dropped_nodes, target2), "second item was not dropped");
 
-		Assert.assertTrue(destination.contains(target1));
-		Assert.assertTrue(destination.contains(target2));
+		Assertions.assertTrue(destination.contains(target1));
+		Assertions.assertTrue(destination.contains(target2));
 		}
 
 	/**
@@ -344,19 +343,19 @@ public class FancyTreeTests extends ComponentTest
 		release(SHORTCUT);
 		waitForUiEvents();
 
-		Assert.assertEquals("2 items should be dragged", 2, _operations_handler._drag_count);
-		Assert.assertTrue("first item was not dragged", dragListContains(_operations_handler._dragged_items, _model.getNodeByName("1.1.1")));
-		Assert.assertTrue("second item was not dragged", dragListContains(_operations_handler._dragged_items, _model.getNodeByName("1.1.2")));
+		Assertions.assertEquals(2, _operations_handler._drag_count, "2 items should be dragged");
+		Assertions.assertTrue(dragListContains(_operations_handler._dragged_items, _model.getNodeByName("1.1.1")), "first item was not dragged");
+		Assertions.assertTrue(dragListContains(_operations_handler._dragged_items, _model.getNodeByName("1.1.2")), "second item was not dragged");
 
-		Assert.assertTrue("orignal #1 was removed", target_parent.contains(target_node_1));
-		Assert.assertTrue("orignal #2 was removed", target_parent.contains(target_node_2));
+		Assertions.assertTrue(target_parent.contains(target_node_1), "orignal #1 was removed");
+		Assertions.assertTrue(target_parent.contains(target_node_2), "orignal #2 was removed");
 
 		ExampleDataNode copy_1 = _model.getNodeByName(ExampleDataNode.getCopyName(target_node_1));
-		Assert.assertNotNull("1st node was not copied", copy_1);
+		Assertions.assertNotNull(copy_1, "1st node was not copied");
 		ExampleDataNode copy_2 = _model.getNodeByName(ExampleDataNode.getCopyName(target_node_2));
-		Assert.assertNotNull("2nd node was not copied", copy_2);
-		Assert.assertTrue("1st copy is not in destination", destination.contains(copy_1));
-		Assert.assertTrue("2nd copy is not in destination", destination.contains(copy_2));
+		Assertions.assertNotNull(copy_2, "2nd node was not copied");
+		Assertions.assertTrue(destination.contains(copy_1), "1st copy is not in destination");
+		Assertions.assertTrue(destination.contains(copy_2), "2nd copy is not in destination");
 		}
 
 	private boolean dragListContains(ObservableList<TreeItem<ExampleTreeNodeFacade>> dragged_items, ExampleDataNode node)
@@ -386,7 +385,7 @@ public class FancyTreeTests extends ComponentTest
 		drag(target.getName(), MouseButton.PRIMARY);
 		dropTo(destination.getName());
 
-		Assert.assertNull("something was dragged", _operations_handler._dragged_items);
+		Assertions.assertNull(_operations_handler._dragged_items, "something was dragged");
 		}
 
 	@Test
@@ -397,7 +396,7 @@ public class FancyTreeTests extends ComponentTest
 		drag("1.1", MouseButton.PRIMARY);
 		dropTo("1.2.2");
 
-		Assert.assertEquals("the drop should have been denied", null, _operations_handler._dropped_content);
+        Assertions.assertNull(_operations_handler._dropped_content, "the drop should have been denied");
 		}
 
 	@Test
@@ -416,10 +415,10 @@ public class FancyTreeTests extends ComponentTest
 		moveBy(0, -destination_area.getBoundsInParent().getHeight() * 0.4d);
 		drop();
 
-		Assert.assertFalse("The target node was not removed from its parent", target_parent.contains(target_node));
-		Assert.assertTrue("The target node was not moved into the destination", destination_parent.contains(target_node));
-		Assert.assertTrue("The target node is not in the right place in the destination", destination_parent.getChildren().get(1).equals(target_node));
-		Assert.assertTrue("the target node is not displayed", exists(target_node.getName()));
+		Assertions.assertFalse(target_parent.contains(target_node), "The target node was not removed from its parent");
+		Assertions.assertTrue(destination_parent.contains(target_node), "The target node was not moved into the destination");
+        Assertions.assertEquals(destination_parent.getChildren().get(1), target_node, "The target node is not in the right place in the destination");
+		Assertions.assertTrue(exists(target_node.getName()), "the target node is not displayed");
 		}
 
 	@Test
@@ -438,10 +437,10 @@ public class FancyTreeTests extends ComponentTest
 		moveBy(0, destination_area.getBoundsInParent().getHeight() * 0.4d);
 		drop();
 
-		Assert.assertFalse("The target node was not removed from its parent", target_parent.contains(target_node));
-		Assert.assertTrue("The target node was not moved into the destination", destination_parent.contains(target_node));
-		Assert.assertTrue("The target node is not in the right place in the destination", destination_parent.getChildren().get(1).equals(target_node));
-		Assert.assertTrue("the target node is not displayed", exists(target_node.getName()));
+		Assertions.assertFalse(target_parent.contains(target_node), "The target node was not removed from its parent");
+		Assertions.assertTrue(destination_parent.contains(target_node), "The target node was not moved into the destination");
+        Assertions.assertEquals(destination_parent.getChildren().get(1), target_node, "The target node is not in the right place in the destination");
+		Assertions.assertTrue(exists(target_node.getName()), "the target node is not displayed");
 		}
 
 	@Test
@@ -455,7 +454,7 @@ public class FancyTreeTests extends ComponentTest
 		waitForUiEvents();
 
 		Node collapsed = lookup("1.1").query();
-		Assert.assertFalse(exists("1.1.1")); // make sure it is hidden
+		Assertions.assertFalse(exists("1.1.1")); // make sure it is hidden
 
 		drag("1.2.2");
 		moveTo(collapsed);
@@ -463,7 +462,7 @@ public class FancyTreeTests extends ComponentTest
 		waitForUiEvents();
 		release(MouseButton.PRIMARY);
 
-		Assert.assertTrue(exists("1.1.1"));
+		Assertions.assertTrue(exists("1.1.1"));
 		}
 
 	@Test
@@ -508,14 +507,14 @@ public class FancyTreeTests extends ComponentTest
 		waitForUiEvents();
 
 		// won't exist in tree if it wasn't shown initially
-		Assert.assertFalse(exists(leaf.getName()));
+		Assertions.assertFalse(exists(leaf.getName()));
 
 		_tree.expandScrollToAndSelect(leaf);
 		waitForUiEvents();
 
 		// technically, checking for exists does not verify it is visible, but at least
 		// we know it was added to the node graph, which implies it was expanded and visible
-		Assert.assertTrue(exists(leaf.getName()));
+		Assertions.assertTrue(exists(leaf.getName()));
 		}
 
 	@Test
@@ -525,19 +524,19 @@ public class FancyTreeTests extends ComponentTest
 		setupTree(root, false);
 
 		final ExampleDataNode node = _model.getNodeByName("1.3.3.3.1");
-		Assert.assertFalse(exists(node.getName())); // not in tree yet because it hasn't been shown
+		Assertions.assertFalse(exists(node.getName())); // not in tree yet because it hasn't been shown
 
 		List<TreeItem<ExampleTreeNodeFacade>> expanded = _tree.expandAndScrollTo(node);
 		waitForUiEvents();
-		Assert.assertTrue(exists(node.getName()));
+		Assertions.assertTrue(exists(node.getName()));
 		// check the expanded nodes were returned
-		Assert.assertEquals("1.3.3.3", expanded.get(0).getValue().getLabelText());
-		Assert.assertEquals("1.3.3", expanded.get(1).getValue().getLabelText());
-		Assert.assertEquals("1.3", expanded.get(2).getValue().getLabelText());
-		Assert.assertEquals("1", expanded.get(3).getValue().getLabelText());
+		Assertions.assertEquals("1.3.3.3", expanded.get(0).getValue().getLabelText());
+		Assertions.assertEquals("1.3.3", expanded.get(1).getValue().getLabelText());
+		Assertions.assertEquals("1.3", expanded.get(2).getValue().getLabelText());
+		Assertions.assertEquals("1", expanded.get(3).getValue().getLabelText());
 
 		final ExampleDataNode still_hidden_node = _model.getNodeByName("1.3.3.3.1.2");
-		Assert.assertFalse("expanded 1 level too far", exists(still_hidden_node.getName()));
+		Assertions.assertFalse(exists(still_hidden_node.getName()), "expanded 1 level too far");
 		}
 
 	@Test
@@ -545,7 +544,7 @@ public class FancyTreeTests extends ComponentTest
 		{
 		createBasicTreeAndData();
 		Node node = lookup("1.1").query();
-		Assert.assertTrue("style is missing from TreeCell", node.getStyleClass().contains(FancyTreeCell.CELL_STYLE_NAME));
+		Assertions.assertTrue(node.getStyleClass().contains(FancyTreeCell.CELL_STYLE_NAME), "style is missing from TreeCell");
 		}
 
 	@Test
@@ -558,10 +557,10 @@ public class FancyTreeTests extends ComponentTest
 		moveTo(destination_node.getName());
 
 		Node node = lookup(destination_node.getName()).query();
-		Assert.assertTrue("drop-into style is missing from cell", node.getStyleClass().contains(FancyTreeCell.DROP_ON_STYLE_NAME));
+		Assertions.assertTrue(node.getStyleClass().contains(FancyTreeCell.DROP_ON_STYLE_NAME), "drop-into style is missing from cell");
 
 		moveTo("1.1.1");
-		Assert.assertFalse("drop-into style was not removed from cell", node.getStyleClass().contains(FancyTreeCell.DROP_ON_STYLE_NAME));
+		Assertions.assertFalse(node.getStyleClass().contains(FancyTreeCell.DROP_ON_STYLE_NAME), "drop-into style was not removed from cell");
 
 		// leave the mouse in a normal state by dropping the drag that we started. If this doesn't happen, it can affect the next test
 		drop();
@@ -580,10 +579,10 @@ public class FancyTreeTests extends ComponentTest
 		moveBy(0, -destination_area.getBoundsInParent().getHeight() * 0.4d);
 
 		Node node = lookup(destination_node.getName()).query();
-		Assert.assertTrue("drop-before style is missing from cell", node.getStyleClass().contains(FancyTreeCell.DROP_BEFORE_STYLE_NAME));
+		Assertions.assertTrue(node.getStyleClass().contains(FancyTreeCell.DROP_BEFORE_STYLE_NAME), "drop-before style is missing from cell");
 
 		moveTo("1.1.1");
-		Assert.assertFalse("drop-before style was not removed from cell", node.getStyleClass().contains(FancyTreeCell.DROP_BEFORE_STYLE_NAME));
+		Assertions.assertFalse(node.getStyleClass().contains(FancyTreeCell.DROP_BEFORE_STYLE_NAME), "drop-before style was not removed from cell");
 
 		// leave the mouse in a normal state by dropping the drag that we started. If this doesn't happen, it can affect the next test
 		drop();
@@ -602,10 +601,10 @@ public class FancyTreeTests extends ComponentTest
 		moveBy(0, destination_area.getBoundsInParent().getHeight() * 0.4d);
 
 		Node node = lookup(destination_node.getName()).query();
-		Assert.assertTrue("drop-after style is missing from cell", node.getStyleClass().contains(FancyTreeCell.DROP_AFTER_STYLE_NAME));
+		Assertions.assertTrue(node.getStyleClass().contains(FancyTreeCell.DROP_AFTER_STYLE_NAME), "drop-after style is missing from cell");
 
 		moveTo("1.1.1");
-		Assert.assertFalse("drop-after style was not removed from cell", node.getStyleClass().contains(FancyTreeCell.DROP_AFTER_STYLE_NAME));
+		Assertions.assertFalse(node.getStyleClass().contains(FancyTreeCell.DROP_AFTER_STYLE_NAME), "drop-after style was not removed from cell");
 
 		// leave the mouse in a normal state by dropping the drag that we started. If this doesn't happen, it can affect the next test
 		drop();
@@ -619,7 +618,7 @@ public class FancyTreeTests extends ComponentTest
 		ExampleDataNode target_node = _model.getNodeByName("1.2.1");
 		doubleClickOn(target_node.getName());
 
-		Assert.assertEquals("double-click detected on wrong node", target_node.getName(), _operations_handler.getDoubleClickedNodeName());
+		Assertions.assertEquals("double-click detected on wrong node", target_node.getName(), _operations_handler.getDoubleClickedNodeName());
 		}
 
 	@Test
@@ -629,7 +628,7 @@ public class FancyTreeTests extends ComponentTest
 		ExampleDataNode target_node = _model.getNodeByName("1.1");
 		clickOn(target_node.getName(), MouseButton.SECONDARY);
 
-		Assert.assertTrue("context menu not visible", exists(ExampleOperationHandler.MENU_ITEM_1));
+		Assertions.assertTrue(exists(ExampleOperationHandler.MENU_ITEM_1), "context menu not visible");
 		}
 
 	@Test
@@ -637,14 +636,14 @@ public class FancyTreeTests extends ComponentTest
 		{
 		createBasicTreeAndData();
 		ExampleDataNode target_node = _model.getNodeByName("1.1");
-		Assert.assertNotNull(target_node);
+		Assertions.assertNotNull(target_node);
 		clickOn(target_node.getName(), MouseButton.SECONDARY);
 
-		Assert.assertTrue(exists(id(FancyTreeOperationHandler.EditType.Cut.getMenuId())));
+		Assertions.assertTrue(exists(id(FancyTreeOperationHandler.EditType.Cut.getMenuId())));
 		clickOn(id(FancyTreeOperationHandler.EditType.Cut.getMenuId()));
 
-		Assert.assertEquals(1, _operations_handler._cut_or_copied_nodes.size());
-		Assert.assertEquals(_model.getNodeByName("1.1"), _operations_handler._cut_or_copied_nodes.get(0));
+		Assertions.assertEquals(1, _operations_handler._cut_or_copied_nodes.size());
+		Assertions.assertEquals(_model.getNodeByName("1.1"), _operations_handler._cut_or_copied_nodes.get(0));
 		}
 
 	@Test
@@ -652,21 +651,21 @@ public class FancyTreeTests extends ComponentTest
 		{
 		createBasicTreeAndData();
 		ExampleDataNode target_node = _model.getNodeByName("1.2.1");
-		Assert.assertNotNull(target_node);
+		Assertions.assertNotNull(target_node);
 		clickOn(target_node.getName(), MouseButton.SECONDARY);
 
-		Assert.assertTrue(exists(id(FancyTreeOperationHandler.EditType.Copy.getMenuId())));
+		Assertions.assertTrue(exists(id(FancyTreeOperationHandler.EditType.Copy.getMenuId())));
 		clickOn(id(FancyTreeOperationHandler.EditType.Copy.getMenuId()));
 
-		Assert.assertEquals(1, _operations_handler._cut_or_copied_nodes.size());
-		Assert.assertEquals(_model.getNodeByName("1.2.1"), _operations_handler._cut_or_copied_nodes.get(0));
+		Assertions.assertEquals(1, _operations_handler._cut_or_copied_nodes.size());
+		Assertions.assertEquals(_model.getNodeByName("1.2.1"), _operations_handler._cut_or_copied_nodes.get(0));
 
 		String copy_name = ExampleDataNode.getCopyName(target_node);
-		Assert.assertFalse(exists(copy_name));
+		Assertions.assertFalse(exists(copy_name));
 
 		clickOn(target_node.getName(), MouseButton.SECONDARY);
 		clickOn(id(FancyTreeOperationHandler.EditType.Paste.getMenuId()));
-		Assert.assertTrue(exists(copy_name));
+		Assertions.assertTrue(exists(copy_name));
 		}
 
 	@Test
@@ -675,9 +674,9 @@ public class FancyTreeTests extends ComponentTest
 		createBasicTreeAndData();
 		ExampleDataNode target_node = _model.getNodeByName("1.2.1");
 
-		Assert.assertFalse(exists("." + TextCellEditor.NODE_STYLE));
+		Assertions.assertFalse(exists("." + TextCellEditor.NODE_STYLE));
 		doubleClickOn(target_node.getName());
-		Assert.assertTrue(exists("." + TextCellEditor.NODE_STYLE));
+		Assertions.assertTrue(exists("." + TextCellEditor.NODE_STYLE));
 		}
 
 	@Test
@@ -687,7 +686,7 @@ public class FancyTreeTests extends ComponentTest
 		_tree.setEditable(false);
 		ExampleDataNode target_node = _model.getNodeByName("1.2.1");
 		doubleClickOn(target_node.getName());
-		Assert.assertFalse(exists("." + TextCellEditor.NODE_STYLE));
+		Assertions.assertFalse(exists("." + TextCellEditor.NODE_STYLE));
 		}
 
 	@Test
@@ -717,17 +716,17 @@ public class FancyTreeTests extends ComponentTest
         clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(SHORTCUT, KeyCode.A).write("name1").push(KeyCode.ENTER);
 
         waitForUiEvents();
-        Assert.assertFalse(exists("1.2.1"));
-        Assert.assertTrue(exists("name1"));
-        Assert.assertEquals("name1", target_node.getName());
+        Assertions.assertFalse(exists("1.2.1"));
+        Assertions.assertTrue(exists("name1"));
+        Assertions.assertEquals("name1", target_node.getName());
 
         doubleClickOn(target_node.getName());
         clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(SHORTCUT, KeyCode.A).write("name2").push(KeyCode.ENTER);
         waitForUiEvents();
-        Assert.assertFalse(exists("1.2.1"));
-        Assert.assertFalse(exists("name1"));
-        Assert.assertTrue(exists("name2"));
-        Assert.assertEquals("name2", target_node.getName());
+        Assertions.assertFalse(exists("1.2.1"));
+        Assertions.assertFalse(exists("name1"));
+        Assertions.assertTrue(exists("name2"));
+        Assertions.assertEquals("name2", target_node.getName());
 		}
 
 	@Test
@@ -739,17 +738,17 @@ public class FancyTreeTests extends ComponentTest
         clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(SHORTCUT, KeyCode.A).write("name1").push(KeyCode.ENTER);
 
         waitForUiEvents();
-        Assert.assertFalse(exists("1.2.1"));
-        Assert.assertTrue(exists("name1"));
-        Assert.assertEquals("name1", target_node.getName());
+        Assertions.assertFalse(exists("1.2.1"));
+        Assertions.assertTrue(exists("name1"));
+        Assertions.assertEquals("name1", target_node.getName());
 
         doubleClickOn(target_node.getName());
         clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(SHORTCUT, KeyCode.A).write("name2").push(KeyCode.ESCAPE);
         waitForUiEvents();
-        Assert.assertFalse(exists("1.2.1"));
-        Assert.assertFalse(exists("name2"));
-        Assert.assertTrue(exists("name1"));
-        Assert.assertEquals("name1", target_node.getName());
+        Assertions.assertFalse(exists("1.2.1"));
+        Assertions.assertFalse(exists("name2"));
+        Assertions.assertTrue(exists("name1"));
+        Assertions.assertEquals("name1", target_node.getName());
 		}
 
 	@Test
@@ -758,9 +757,9 @@ public class FancyTreeTests extends ComponentTest
 		createBasicTreeAndData();
 		ExampleDataNode target_node = _model.getNodeByName("1.2");
 
-		Assert.assertFalse(exists("." + TextCellEditor.NODE_STYLE));
+		Assertions.assertFalse(exists("." + TextCellEditor.NODE_STYLE));
 		doubleClickOn(target_node.getName());
-		Assert.assertTrue(exists("." + TextCellEditor.NODE_STYLE));
+		Assertions.assertTrue(exists("." + TextCellEditor.NODE_STYLE));
 		}
 
 	private void testTextEditCompletion(KeyCode final_keystroke, boolean changed)
@@ -773,9 +772,9 @@ public class FancyTreeTests extends ComponentTest
 		clickOn(withStyle(TextCellEditor.NODE_STYLE)).push(SHORTCUT, KeyCode.A).write("newname").push(final_keystroke);
 		waitForUiEvents();
 
-		Assert.assertEquals(!changed, exists("1.2.1"));
-		Assert.assertEquals(changed, exists("newname"));
-		Assert.assertEquals(changed ? "newname" : "1.2.1", target_node.getName());
+		Assertions.assertEquals(!changed, exists("1.2.1"));
+		Assertions.assertEquals(changed, exists("newname"));
+		Assertions.assertEquals(changed ? "newname" : "1.2.1", target_node.getName());
 		}
 
 	@Test
@@ -785,9 +784,9 @@ public class FancyTreeTests extends ComponentTest
 
 		ExampleDataNode target_node = _model.getNodeByName("1.1.2");
 		target_node._use_custom_editor = true;
-		Assert.assertFalse(exists("." + ExampleCustomCellEditor.NODE_STYLE));
+		Assertions.assertFalse(exists("." + ExampleCustomCellEditor.NODE_STYLE));
 		doubleClickOn(target_node.getName());
-		Assert.assertTrue(exists("." + ExampleCustomCellEditor.NODE_STYLE));
+		Assertions.assertTrue(exists("." + ExampleCustomCellEditor.NODE_STYLE));
 		}
 
 	@Test
@@ -795,13 +794,13 @@ public class FancyTreeTests extends ComponentTest
 		{
 		createBasicTreeAndData();
 		ExampleDataNode target_node = _model.getNodeByName("1.1");
-		Assert.assertNotNull(target_node);
+		Assertions.assertNotNull(target_node);
 		clickOn(target_node.getName(), MouseButton.SECONDARY);
 
-		Assert.assertTrue(exists(id(FancyTreeOperationHandler.EditType.Delete.getMenuId())));
+		Assertions.assertTrue(exists(id(FancyTreeOperationHandler.EditType.Delete.getMenuId())));
 		clickOn(id(FancyTreeOperationHandler.EditType.Delete.getMenuId()));
 
-		Assert.assertNull(_model.getNodeByName("1.1"));
+		Assertions.assertNull(_model.getNodeByName("1.1"));
 		}
 
 	@Test
@@ -812,20 +811,20 @@ public class FancyTreeTests extends ComponentTest
 	    final String style_name = "style1";
 
 	    Node styled_node = lookup(node_to_style).query();
-	    Assert.assertFalse(styled_node.getStyleClass().contains(style_name));
+	    Assertions.assertFalse(styled_node.getStyleClass().contains(style_name));
 	    final int num_default_styles = styled_node.getStyleClass().size();
-	    Assert.assertTrue("should be at least 4 styles to start with", num_default_styles >= 4);
+	    Assertions.assertTrue(num_default_styles >= 4, "should be at least 4 styles to start with");
 
         ExampleDataNode styled_data = _model.getNodeByName(node_to_style);
 	    styled_data.addStyle(style_name);
 	    waitForUiEvents();
         styled_node = lookup(node_to_style).query();
-	    Assert.assertTrue("style was not added", styled_node.getStyleClass().contains(style_name));
+	    Assertions.assertTrue(styled_node.getStyleClass().contains(style_name), "style was not added");
 
 	    styled_data.removeStyle(style_name);
 	    waitForUiEvents();
-	    Assert.assertFalse("style was not removed", styled_node.getStyleClass().contains(style_name));
-	    Assert.assertEquals("all initial styles not present", num_default_styles, styled_node.getStyleClass().size());
+	    Assertions.assertFalse(styled_node.getStyleClass().contains(style_name), "style was not removed");
+	    Assertions.assertEquals(num_default_styles, styled_node.getStyleClass().size(), "all initial styles not present");
 	    }
 
 	/**
@@ -838,13 +837,13 @@ public class FancyTreeTests extends ComponentTest
 	    createBasicTreeAndData();
 	    ExampleDataNode target_node = _model.getNodeByName("1.1.2");
         doubleClickOn(target_node.getName());
-        Assert.assertNotNull("editor not shown", lookup("." + TextCellEditor.NODE_STYLE).query());
+        lookup("." + TextCellEditor.NODE_STYLE).query();
 
         target_node.setName("newnamefor1.1.2");
         waitForUiEvents();
-        Assert.assertFalse("new name shown in tree", exists("newnamefor1.1.2"));
-	    Assert.assertNotNull("editor disappeared", lookup("." + TextCellEditor.NODE_STYLE).query());
-	    }
+        Assertions.assertFalse(exists("newnamefor1.1.2"), "new name shown in tree");
+        lookup("." + TextCellEditor.NODE_STYLE).query();
+        }
 
 	@Test
 	public void doubleClickCollapseExpandBug()
@@ -865,7 +864,7 @@ public class FancyTreeTests extends ComponentTest
 	    waitForUiEvents();
 
 	    final Node node_again = lookup(target_node.getName()).query();
-	    Assert.assertNotNull(node_again);  // the node became invisible
+	    Assertions.assertNotNull(node_again);  // the node became invisible
 	    }
 
 	private void createBasicTreeAndData()
@@ -899,13 +898,13 @@ public class FancyTreeTests extends ComponentTest
 
 	private void checkNodesVisible122()
 		{
-		Assert.assertTrue("The root node (1) is not visible", exists("1"));
-		Assert.assertTrue("node 1.1 is not visible", exists("1.1"));
-		Assert.assertTrue("node 1.1.1 is not visible", exists("1.1.1"));
-		Assert.assertTrue("node 1.1.2 is not visible", exists("1.1.2"));
-		Assert.assertTrue("node 1.2 is not visible", exists("1.2"));
-		Assert.assertTrue("node 1.2.1 is not visible", exists("1.2.1"));
-		Assert.assertTrue("node 1.2.2 is not visible", exists("1.2.2"));
+		Assertions.assertTrue(exists("1"), "The root node (1) is not visible");
+		Assertions.assertTrue(exists("1.1"), "node 1.1 is not visible");
+		Assertions.assertTrue(exists("1.1.1"), "node 1.1.1 is not visible");
+		Assertions.assertTrue(exists("1.1.2"), "node 1.1.2 is not visible");
+		Assertions.assertTrue(exists("1.2"), "node 1.2 is not visible");
+		Assertions.assertTrue(exists("1.2.1"), "node 1.2.1 is not visible");
+		Assertions.assertTrue(exists("1.2.2"), "node 1.2.2 is not visible");
 		}
 
 	@Override
@@ -928,5 +927,3 @@ public class FancyTreeTests extends ComponentTest
 	private boolean _enable_dnd = true;
 	private long _hover_duration = FancyTreeView.DEFAULT_HOVER_EXPAND_DURATION;
 	}
-
-
