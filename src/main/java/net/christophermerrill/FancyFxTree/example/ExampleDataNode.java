@@ -128,6 +128,16 @@ public class ExampleDataNode implements Serializable
         return null;
         }
 
+    boolean isAncestorOf(ExampleDataNode target)
+        {
+        if (_children.contains(target))
+            return true;
+        for (ExampleDataNode child : _children)
+            if (child.isAncestorOf(target))
+                return true;
+        return false;
+        }
+
     void addAfter(ExampleDataNode to_add, ExampleDataNode to_follow)
         {
         int index = _children.indexOf(to_follow) + 1;

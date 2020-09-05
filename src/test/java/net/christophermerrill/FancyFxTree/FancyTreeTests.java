@@ -10,6 +10,7 @@ import javafx.scene.layout.*;
 import net.christophermerrill.FancyFxTree.example.*;
 import net.christophermerrill.testfx.*;
 import org.junit.jupiter.api.*;
+import org.testfx.api.*;
 
 import java.util.*;
 
@@ -268,7 +269,46 @@ public class FancyTreeTests extends ComponentTest
         Assertions.assertEquals(1, destination_node.getChildren().size(), "node was not added to destination");
 		}
 
-	@Test
+    @Test
+    public void dragOntoSelfDenied()
+        {
+        createBasicTreeAndData();
+
+        ExampleDataNode target_node = _model.getNodeByName("1.1.1");
+        FxRobot robot = drag(target_node.getName(), MouseButton.PRIMARY);
+        robot.moveTo("1.2.2");
+        robot.dropTo(target_node.getName());
+
+        Assertions.assertNull(_operations_handler._dropped_content, "the drop should have been denied");
+        }
+
+    @Test
+    public void dragOntoChildDenied()
+        {
+        createBasicTreeAndData();
+
+        ExampleDataNode target_node = _model.getNodeByName("1");
+        FxRobot robot = drag(target_node.getName(), MouseButton.PRIMARY);
+        robot.moveTo("1.2.1");
+        robot.dropTo("1.1");
+
+        Assertions.assertNull(_operations_handler._dropped_content, "the drop should have been denied");
+        }
+
+    @Test
+    public void dragOntoDescendentDenied()
+        {
+        createBasicTreeAndData();
+
+        ExampleDataNode target_node = _model.getNodeByName("1");
+        FxRobot robot = drag(target_node.getName(), MouseButton.PRIMARY);
+        robot.moveTo("1.2.1");
+        robot.dropTo("1.1.1");
+
+        Assertions.assertNull(_operations_handler._dropped_content, "the drop should have been denied");
+        }
+
+    @Test
 	public void copyByDragInto()
 		{
 		createBasicTreeAndData();

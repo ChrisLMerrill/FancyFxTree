@@ -117,6 +117,9 @@ public class ExampleOperationHandler extends FancyTreeOperationHandler<ExampleTr
 		    _dropped_nodes = (List<ExampleDataNode>) dragboard.getContent(LIST_OF_NODES);
 		    if (_dropped_nodes.contains(onto_node.getModelNode()))
 		    	return info;
+            for (ExampleDataNode to_be_dropped : _dropped_nodes)
+                if (to_be_dropped.isAncestorOf(onto_node.getModelNode()))
+                    return info;
 		    }
 
         info.addAllModesAndLocations();
